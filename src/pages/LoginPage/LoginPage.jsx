@@ -1,5 +1,7 @@
-import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+
 import LoginForm from '@/components/LoginForm';
+import RegisterDialog from '@/components/RegisterDialog';
 import login from '@/assets/login.jpg';
 import logo from '@/assets/logo.svg';
 
@@ -13,17 +15,15 @@ const LoginPage = () => {
         <div className='flex flex-col w-full sm:w-3/4 lg:w-2/4 xl:w-2/6 px-10 space-y-5'>
           <LoginForm />
 
-          <a
-            href='#'
+          <Link
+            to={'forgot-password'}
             className='text-center text-blue-500 cursor:pointer hover:underline'
           >
             ¿Olvidó su contraseña?
-          </a>
+          </Link>
           <hr className='text-center mx-auto w-80'></hr>
 
-          <Button className='text-lg w-auto h-14 mx-auto bg-green-600 hover:bg-green-500'>
-            Registrarse
-          </Button>
+          <RegisterDialog />
         </div>
       </div>
     </>

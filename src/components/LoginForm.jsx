@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
@@ -16,6 +17,8 @@ import { Button } from '@/components/ui/button';
 import loginSchema from '@/pages/LoginPage/schema';
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -39,6 +42,7 @@ const LoginForm = () => {
       }
 
       localStorage.setItem('token', response.data.token);
+      navigate('/home');
     } catch (error) {
       console.log(error);
       if (error.code === 'ERR_BAD_REQUEST') {
