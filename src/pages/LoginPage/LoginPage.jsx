@@ -10,7 +10,7 @@ const LoginPage = () => {
     <>
       <img src={logo} className='w-48 my-5 mx-auto' />
 
-      <div className='flex items-center md:flex-row md:justify-center'>
+      <div className='flex items-center justify-center md:flex-row'>
         <img src={login} alt='' className='hidden lg:block lg:w-2/4 xl:w-2/6' />
         <div className='flex flex-col w-full sm:w-3/4 lg:w-2/4 xl:w-2/6 px-10 space-y-5'>
           <LoginForm />
