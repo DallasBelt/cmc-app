@@ -13,16 +13,18 @@ const privateRoute = (element) => {
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <LoginPage />,
+    element: <HomePage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/login',
+    element: privateRoute(<LoginPage />),
     errorElement: <ErrorPage />,
   },
   {
     path: '/forgot-password',
     element: <ForgotPassword />,
-  },
-  {
-    path: '/home',
-    element: privateRoute(<HomePage />),
+    errorElement: <ErrorPage />,
   },
 ]);
 
