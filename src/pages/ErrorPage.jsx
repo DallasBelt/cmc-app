@@ -1,4 +1,4 @@
-import { useRouteError } from 'react-router-dom';
+import { useRouteError, Link } from 'react-router-dom';
 
 const ErrorPage = () => {
   const error = useRouteError();
@@ -14,6 +14,12 @@ const ErrorPage = () => {
       <p className='text-2xl'>
         <i>{error.statusText || error.message}</i>
       </p>
+      <Link
+        to='/'
+        className='text-center text-blue-500 cursor:pointer hover:underline'
+      >
+        Regresar a la página principal
+      </Link>
     </div>
   );
 };

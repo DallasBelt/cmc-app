@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { registerSchema } from '@/pages/LoginPage/schema';
+import { registerSchema } from '@/formSchema';
 
 const RegisterForm = () => {
   const form = useForm({

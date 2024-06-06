@@ -14,7 +14,7 @@ import {
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { loginSchema } from '@/pages/LoginPage/schema';
+import { loginSchema } from '@/formSchema';
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ const LoginForm = () => {
       }
 
       localStorage.setItem('token', response.data.token);
-      navigate('/');
+      navigate('/', { replace: true });
     } catch (error) {
       console.log(error);
       if (error.code === 'ERR_BAD_REQUEST') {

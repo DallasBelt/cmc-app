@@ -9,7 +9,7 @@ import {
   NavigationMenuViewport,
 } from '@/components/ui/navigation-menu';
 
-const HomePage = () => {
+const Home = () => {
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -24,4 +24,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Home;
