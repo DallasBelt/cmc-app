@@ -1,4 +1,7 @@
 import App from './App';
+import Medics from './pages/Medics';
+import Patients from './pages/Patients';
+import Appointments from './pages/Appointments';
 import LoginPage from './pages/LoginPage';
 import ErrorPage from './pages/ErrorPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
@@ -11,6 +14,21 @@ const routes = [
   {
     path: '/',
     element: <App />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/medics',
+    element: <Medics />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/patients',
+    element: <Patients />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/appointments',
+    element: <Appointments />,
     errorElement: <ErrorPage />,
   },
   {

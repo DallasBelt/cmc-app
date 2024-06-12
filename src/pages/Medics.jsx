@@ -1,12 +1,12 @@
 import NavBar from '@/components/NavBar';
 
-const Home = () => {
+const Medics = () => {
   return (
     <>
       <NavBar />
-      <h1>Home Page</h1>
+      <h1>Administrar Médicos</h1>
     </>
   );
 };
 
-export default Home;
+export default Medics;

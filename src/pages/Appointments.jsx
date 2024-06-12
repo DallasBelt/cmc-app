@@ -1,12 +1,12 @@
 import NavBar from '@/components/NavBar';
 
-const Home = () => {
+const Appointments = () => {
   return (
     <>
       <NavBar />
-      <h1>Home Page</h1>
+      <h1>Administrar Citas</h1>
     </>
   );
 };
 
-export default Home;
+export default Appointments;

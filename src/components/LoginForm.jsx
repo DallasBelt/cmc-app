@@ -71,7 +71,11 @@ const LoginForm = () => {
                 <Input
                   type='email'
                   placeholder='Correo electrónico'
-                  className='h-14 text-lg'
+                  className={
+                    form.formState.errors.email
+                      ? `h-14 text-lg border-red-500`
+                      : `h-14 text-lg`
+                  }
                   {...field}
                 />
               </FormControl>

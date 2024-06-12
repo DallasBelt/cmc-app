@@ -21,9 +21,9 @@ const LoginPage = () => {
           >
             ¿Olvidó su contraseña?
           </Link>
-          <hr className='text-center mx-auto w-80'></hr>
+          {/* <hr className='text-center mx-auto w-80'></hr>
 
-          <RegisterDialog />
+          <RegisterDialog /> */}
         </div>
       </div>
     </>
