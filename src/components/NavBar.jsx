@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { User, SignOut } from '@phosphor-icons/react';
 
 import {
@@ -33,29 +33,52 @@ const NavBar = () => {
       </Link>
 
       <NavigationMenu>
-        <NavigationMenuList className='gap-5'>
-          <NavigationMenuItem className='hover:underline hover:decoration-2 hover:decoration-blue-700'>
-            <Link to='/medics'>
+        <NavigationMenuList className='gap-10'>
+          <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-700'>
+            <NavLink
+              to='/medics'
+              className={({ isActive }) =>
+                isActive
+                  ? 'underline underline-offset-4 decoration-2 decoration-blue-700'
+                  : ''
+              }
+            >
               <NavigationMenuLink>Médicos</NavigationMenuLink>
-            </Link>
+            </NavLink>
           </NavigationMenuItem>
 
-          <NavigationMenuItem className='hover:underline hover:decoration-2 hover:decoration-blue-700'>
-            <Link to='/patients'>
+          <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-700'>
+            <NavLink
+              to='/patients'
+              className={({ isActive }) =>
+                isActive
+                  ? 'underline underline-offset-4 decoration-2 decoration-blue-700'
+                  : ''
+              }
+            >
               <NavigationMenuLink>Pacientes</NavigationMenuLink>
-            </Link>
+            </NavLink>
           </NavigationMenuItem>
 
-          <NavigationMenuItem className='hover:underline hover:decoration-2 hover:decoration-blue-700'>
-            <Link to='/appointments'>
+          <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-700'>
+            <NavLink
+              to='/appointments'
+              className={({ isActive }) =>
+                isActive
+                  ? 'underline underline-offset-4 decoration-2 decoration-blue-700'
+                  : ''
+              }
+            >
               <NavigationMenuLink>Citas</NavigationMenuLink>
-            </Link>
+            </NavLink>
           </NavigationMenuItem>
 
-          <NavigationMenuItem className='hover:underline hover:decoration-2 hover:decoration-blue-700'>
+          <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-700'>
             <NavigationMenuLink>Estadísticas</NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
+
+        <NavigationMenuIndicator />
       </NavigationMenu>
 
       <DropdownMenu>
