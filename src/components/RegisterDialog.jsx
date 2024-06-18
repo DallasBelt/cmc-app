@@ -21,9 +21,9 @@ const RegisterDialog = () => {
           Agregar Médico
         </Button>
       </DialogTrigger>
-      <DialogContent className='overflow-y-auto max-h-[80vh]'>
+      <DialogContent className='overflow-y-auto h-[80vh] md:max-w-3xl'>
         <DialogHeader>
-          <DialogTitle className='text-3xl'>Crear nuevo médico</DialogTitle>
+          <DialogTitle className='text-xl'>Crear nuevo médico</DialogTitle>
           <DialogDescription>
             Por favor, llene los datos solicitados.
           </DialogDescription>

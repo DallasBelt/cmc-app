@@ -2,6 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -11,7 +13,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
   Select,
@@ -20,7 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
 
 import { FloppyDisk } from '@phosphor-icons/react';
 
@@ -73,22 +73,15 @@ const RegisterForm = () => {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-3 flex flex-col'
-      >
-        <div className='flex space-x-3'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
+        <div className='space-y-3 md:grid md:grid-cols-2 md:gap-3 md:space-y-0'>
           <FormField
             control={form.control}
             name='name'
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input
-                    placeholder='Nombres'
-                    {...field}
-                    className='h-10 grow'
-                  />
+                  <Input placeholder='Nombres' {...field} className='h-10' />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -112,9 +105,7 @@ const RegisterForm = () => {
               </FormItem>
             )}
           />
-        </div>
 
-        <div className='flex space-x-3'>
           <FormField
             control={form.control}
             name='phone'
@@ -154,97 +145,111 @@ const RegisterForm = () => {
           />
         </div>
 
-        <FormField
-          control={form.control}
-          name='id'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Documento de identidad</FormLabel>
-              <div className='flex space-x-3'>
-                <FormControl>
-                  <RadioGroup
+        <div className='space-y-3 md:space-y-0 md:grid md:grid-cols-2 md:gap-3'>
+          <FormField
+            control={form.control}
+            name='id'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Documento de identidad</FormLabel>
+                <div className='flex flex-col gap-3'>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className='flex space-x-1'
+                    >
+                      <FormItem className='flex items-center space-x-1 space-y-0'>
+                        <FormControl>
+                          <RadioGroupItem value='c' />
+                        </FormControl>
+                        <FormLabel className='font-normal'>Cedula</FormLabel>
+                      </FormItem>
+                      <FormItem className='flex items-center space-x-1 space-y-0'>
+                        <FormControl>
+                          <RadioGroupItem value='r' />
+                        </FormControl>
+                        <FormLabel className='font-normal'>RUC</FormLabel>
+                      </FormItem>
+                      <FormItem className='flex items-center space-x-1 space-y-0'>
+                        <FormControl>
+                          <RadioGroupItem value='p' />
+                        </FormControl>
+                        <FormLabel className='font-normal'>Pasaporte</FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+
+                  <FormControl>
+                    <Input
+                      type='text'
+                      maxlength='10'
+                      pattern='[0-9]{10}'
+                      placeholder='0123456789'
+                      className='h-10'
+                      {...field}
+                    />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='dob'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fecha de nacimiento</FormLabel>
+                <div className='flex space-x-3'>
+                  <div className='flex flex-col gap-3 w-1/3'>
+                    <FormLabel className='text-slate-500'>día</FormLabel>
+                    <FormControl>
+                      <Input placeholder='01' {...field} className='h-10' />
+                    </FormControl>
+                  </div>
+
+                  <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className='flex space-x-1'
                   >
-                    <FormItem className='flex items-center space-x-1 space-y-0'>
+                    <div className='flex flex-col gap-3 w-1/3'>
+                      <FormLabel className='text-slate-500'>mes</FormLabel>
                       <FormControl>
-                        <RadioGroupItem value='c' />
+                        <SelectTrigger className='h-10 text-slate-500'>
+                          <SelectValue placeholder='elegir...' />
+                        </SelectTrigger>
                       </FormControl>
-                      <FormLabel className='font-normal'>Cedula</FormLabel>
-                    </FormItem>
-                    <FormItem className='flex items-center space-x-1 space-y-0'>
-                      <FormControl>
-                        <RadioGroupItem value='r' />
-                      </FormControl>
-                      <FormLabel className='font-normal'>RUC</FormLabel>
-                    </FormItem>
-                    <FormItem className='flex items-center space-x-1 space-y-0'>
-                      <FormControl>
-                        <RadioGroupItem value='p' />
-                      </FormControl>
-                      <FormLabel className='font-normal'>Pasaporte</FormLabel>
-                    </FormItem>
-                  </RadioGroup>
-                </FormControl>
-                <FormControl>
-                  <Input
-                    type='text'
-                    maxlength='10'
-                    pattern='[0-9]{10}'
-                    placeholder='0123456789'
-                    {...field}
-                    className='h-10'
-                  />
-                </FormControl>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                    </div>
+                    <SelectContent>
+                      <SelectItem value='01'>Enero</SelectItem>
+                      <SelectItem value='02'>Febrero</SelectItem>
+                      <SelectItem value='03'>Marzo</SelectItem>
+                      <SelectItem value='04'>Abril</SelectItem>
+                      <SelectItem value='05'>Mayo</SelectItem>
+                      <SelectItem value='06'>Junio</SelectItem>
+                      <SelectItem value='07'>Julio</SelectItem>
+                      <SelectItem value='08'>Agosto</SelectItem>
+                      <SelectItem value='09'>Septiembre</SelectItem>
+                      <SelectItem value='10'>Octubre</SelectItem>
+                      <SelectItem value='11'>Noviembre</SelectItem>
+                      <SelectItem value='12'>Diciembre</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-        <FormField
-          control={form.control}
-          name='dob'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fecha de nacimiento</FormLabel>
-              <div className='flex space-x-3'>
-                <FormControl>
-                  <Input placeholder='día' {...field} className='h-10' />
-                </FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className='h-10 text-slate-500'>
-                      <SelectValue placeholder='mes' />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value='01'>Enero</SelectItem>
-                    <SelectItem value='02'>Febrero</SelectItem>
-                    <SelectItem value='03'>Marzo</SelectItem>
-                    <SelectItem value='04'>Abril</SelectItem>
-                    <SelectItem value='05'>Mayo</SelectItem>
-                    <SelectItem value='06'>Junio</SelectItem>
-                    <SelectItem value='07'>Julio</SelectItem>
-                    <SelectItem value='08'>Agosto</SelectItem>
-                    <SelectItem value='09'>Septiembre</SelectItem>
-                    <SelectItem value='10'>Octubre</SelectItem>
-                    <SelectItem value='11'>Noviembre</SelectItem>
-                    <SelectItem value='12'>Diciembre</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormControl>
-                  <Input placeholder='año' {...field} className='h-10' />
-                </FormControl>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                  <div className='flex flex-col gap-3 w-1/3'>
+                    <FormLabel className='text-slate-500'>año</FormLabel>
+                    <FormControl>
+                      <Input placeholder='1990' {...field} className='h-10' />
+                    </FormControl>
+                  </div>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}
@@ -292,7 +297,7 @@ const RegisterForm = () => {
           )}
         />
 
-        <div className='mx-auto'>
+        <div className='flex justify-center'>
           <Button type='submit'>
             <FloppyDisk size={24} className='me-1' />
             Guardar
