@@ -1,45 +1,43 @@
-import App from './App';
+import Index from './pages/Index';
 import Medics from './pages/Medics';
 import Patients from './pages/Patients';
 import Appointments from './pages/Appointments';
-import LoginPage from './pages/LoginPage';
-import ErrorPage from './pages/ErrorPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-
-const isAuthenticated = () => {
-  return !!localStorage.getItem('token') ? true : false;
-};
+import LoginPage from './pages/Login';
+import ErrorPage from './pages/NotFound';
+import ForgotPasswordPage from './pages/ForgotPassword';
+import ProtectedRoute from './utils/ProtectedRoute';
 
 const routes = [
   {
     path: '/',
-    element: <App />,
+    element: <ProtectedRoute />,
     errorElement: <ErrorPage />,
-  },
-  {
-    path: '/medics',
-    element: <Medics />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: '/patients',
-    element: <Patients />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: '/appointments',
-    element: <Appointments />,
-    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <Index />,
+      },
+      {
+        path: 'medics',
+        element: <Medics />,
+      },
+      {
+        path: 'patients',
+        element: <Patients />,
+      },
+      {
+        path: 'appointments',
+        element: <Appointments />,
+      },
+    ],
   },
   {
     path: '/login',
     element: <LoginPage />,
-    errorElement: <ErrorPage />,
   },
   {
     path: '/forgot-password',
     element: <ForgotPasswordPage />,
-    errorElement: <ErrorPage />,
   },
 ];
 

@@ -8,20 +8,25 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
+import { UserPlus } from '@phosphor-icons/react';
+
 import RegisterForm from './RegisterForm';
 
 const RegisterDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='text-lg h-14 mx-auto bg-green-600 hover:bg-green-500'>
-          Crear nueva cuenta
+        <Button>
+          <UserPlus size={24} className='me-1' />
+          Agregar Médico
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className='overflow-y-auto max-h-[80vh]'>
         <DialogHeader>
-          <DialogTitle className='text-3xl'>Registrarse</DialogTitle>
-          <DialogDescription>Por favor, llene sus datos.</DialogDescription>
+          <DialogTitle className='text-3xl'>Crear nuevo médico</DialogTitle>
+          <DialogDescription>
+            Por favor, llene los datos solicitados.
+          </DialogDescription>
         </DialogHeader>
         <RegisterForm />
       </DialogContent>

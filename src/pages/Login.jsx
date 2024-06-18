@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 
 import LoginForm from '@/components/LoginForm';
-import RegisterDialog from '@/components/RegisterDialog';
 import login from '@/assets/login.jpg';
 import logo from '@/assets/logo.svg';
 
@@ -16,14 +15,11 @@ const LoginPage = () => {
           <LoginForm />
 
           <Link
-            to={'forgot-password'}
+            to={'../forgot-password'}
             className='text-center text-blue-500 cursor:pointer hover:underline'
           >
             ¿Olvidó su contraseña?
           </Link>
-          {/* <hr className='text-center mx-auto w-80'></hr>
-
-          <RegisterDialog /> */}
         </div>
       </div>
     </>

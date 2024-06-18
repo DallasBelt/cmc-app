@@ -10,7 +10,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -21,20 +20,50 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { registerSchema } from '@/formSchema';
+import { Checkbox } from '@/components/ui/checkbox';
+
+import { FloppyDisk } from '@phosphor-icons/react';
+
+import { newMedicSchema } from '@/formSchema';
+
+const items = [
+  {
+    id: 'general',
+    label: 'Medicina general',
+  },
+  {
+    id: 'accupuncture',
+    label: 'Acupuntura',
+  },
+  {
+    id: 'dentistry',
+    label: 'Odontología',
+  },
+  {
+    id: 'dermatology',
+    label: 'Dermatología',
+  },
+  {
+    id: 'cosmiatry',
+    label: 'Cosmiatría',
+  },
+  {
+    id: 'nutrition',
+    label: 'Nutrición',
+  },
+];
 
 const RegisterForm = () => {
   const form = useForm({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(newMedicSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
+      name: '',
       id: '',
       dob: '',
+      email: '',
       phone: '',
       address: '',
+      items: ['general'],
     },
   });
 
@@ -51,11 +80,15 @@ const RegisterForm = () => {
         <div className='flex space-x-3'>
           <FormField
             control={form.control}
-            name='firstName'
+            name='name'
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder='Nombre' {...field} className='h-10' />
+                  <Input
+                    placeholder='Nombres'
+                    {...field}
+                    className='h-10 grow'
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -64,11 +97,56 @@ const RegisterForm = () => {
 
           <FormField
             control={form.control}
-            name='lastName'
+            name='email'
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder='Apellido' {...field} className='h-10' />
+                  <Input
+                    type='email'
+                    placeholder='Correo electrónico'
+                    {...field}
+                    className='h-10'
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className='flex space-x-3'>
+          <FormField
+            control={form.control}
+            name='phone'
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type='tel'
+                    maxlength='10'
+                    pattern='[0-9]{10}'
+                    placeholder='Teléfono'
+                    {...field}
+                    className='h-10'
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='address'
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type='text'
+                    placeholder='Dirección'
+                    {...field}
+                    className='h-10'
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -78,29 +156,48 @@ const RegisterForm = () => {
 
         <FormField
           control={form.control}
-          name='email'
+          name='id'
           render={({ field }) => (
             <FormItem>
-              <FormControl>
-                <Input
-                  placeholder='Correo electrónico'
-                  {...field}
-                  className='h-10'
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='password'
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input placeholder='Contraseña' {...field} className='h-10' />
-              </FormControl>
+              <FormLabel>Documento de identidad</FormLabel>
+              <div className='flex space-x-3'>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className='flex space-x-1'
+                  >
+                    <FormItem className='flex items-center space-x-1 space-y-0'>
+                      <FormControl>
+                        <RadioGroupItem value='c' />
+                      </FormControl>
+                      <FormLabel className='font-normal'>Cedula</FormLabel>
+                    </FormItem>
+                    <FormItem className='flex items-center space-x-1 space-y-0'>
+                      <FormControl>
+                        <RadioGroupItem value='r' />
+                      </FormControl>
+                      <FormLabel className='font-normal'>RUC</FormLabel>
+                    </FormItem>
+                    <FormItem className='flex items-center space-x-1 space-y-0'>
+                      <FormControl>
+                        <RadioGroupItem value='p' />
+                      </FormControl>
+                      <FormLabel className='font-normal'>Pasaporte</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormControl>
+                  <Input
+                    type='text'
+                    maxlength='10'
+                    pattern='[0-9]{10}'
+                    placeholder='0123456789'
+                    {...field}
+                    className='h-10'
+                  />
+                </FormControl>
+              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -151,90 +248,54 @@ const RegisterForm = () => {
 
         <FormField
           control={form.control}
-          name='id'
-          render={({ field }) => (
+          name='items'
+          render={() => (
             <FormItem>
-              <FormLabel>Documento de identidad</FormLabel>
-              <div className='flex space-x-3'>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className='flex space-x-1'
-                  >
-                    <FormItem className='flex items-center space-x-3 space-y-0'>
-                      <FormControl>
-                        <RadioGroupItem value='c' />
-                      </FormControl>
-                      <FormLabel className='font-normal'>Cedula</FormLabel>
-                    </FormItem>
-                    <FormItem className='flex items-center space-x-3 space-y-0'>
-                      <FormControl>
-                        <RadioGroupItem value='r' />
-                      </FormControl>
-                      <FormLabel className='font-normal'>RUC</FormLabel>
-                    </FormItem>
-                    <FormItem className='flex items-center space-x-3 space-y-0'>
-                      <FormControl>
-                        <RadioGroupItem value='p' />
-                      </FormControl>
-                      <FormLabel className='font-normal'>Pasaporte</FormLabel>
-                    </FormItem>
-                  </RadioGroup>
-                </FormControl>
-                <FormControl>
-                  <Input placeholder='0123456789' {...field} className='h-10' />
-                </FormControl>
+              <div className='mb-4'>
+                <FormLabel>Especialidad(es)</FormLabel>
               </div>
+              {items.map((item) => (
+                <FormField
+                  key={item.id}
+                  control={form.control}
+                  name='items'
+                  render={({ field }) => {
+                    return (
+                      <FormItem
+                        key={item.id}
+                        className='flex items-end space-x-1 space-y-0'
+                      >
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value?.includes(item.id)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([...field.value, item.id])
+                                : field.onChange(
+                                    field.value?.filter(
+                                      (value) => value !== item.id
+                                    )
+                                  );
+                            }}
+                          />
+                        </FormControl>
+                        <FormLabel className='font-normal'>
+                          {item.label}
+                        </FormLabel>
+                      </FormItem>
+                    );
+                  }}
+                />
+              ))}
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className='flex space-x-3'>
-          <FormField
-            control={form.control}
-            name='phone'
-            render={({ field }) => (
-              <FormItem className='w-1/3'>
-                <FormControl>
-                  <Input
-                    type='tel'
-                    placeholder='Teléfono'
-                    {...field}
-                    className='h-10'
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name='address'
-            render={({ field }) => (
-              <FormItem className='w-2/3'>
-                <FormControl>
-                  <Input
-                    type='text'
-                    placeholder='Dirección'
-                    {...field}
-                    className='h-10'
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
         <div className='mx-auto'>
-          <Button
-            type='submit'
-            className='h-10 text-xl mt-5 bg-green-600 hover:bg-green-500'
-          >
-            Registrarse
+          <Button type='submit'>
+            <FloppyDisk size={24} className='me-1' />
+            Guardar
           </Button>
         </div>
       </form>

@@ -39,10 +39,10 @@ const LoginForm = () => {
           title: 'Error interno del servidor.',
           icon: 'error',
         });
+      } else {
+        localStorage.setItem('token', response.data.token);
+        navigate('/');
       }
-
-      localStorage.setItem('token', response.data.token);
-      navigate('/', { replace: true });
     } catch (error) {
       console.log(error);
       if (error.code === 'ERR_BAD_REQUEST') {
