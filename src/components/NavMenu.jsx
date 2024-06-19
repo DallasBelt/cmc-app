@@ -12,7 +12,6 @@ import { Separator } from '@/components/ui/separator';
 import {
   CalendarDots,
   House,
-  List,
   Pill,
   SignOut,
   Stethoscope,
@@ -21,7 +20,7 @@ import {
 
 const NavMenu = () => {
   return (
-    <NavigationMenu className='hidden md:flex'>
+    <NavigationMenu className='flex'>
       <NavigationMenuList className='flex flex-col items-start gap-5 md:flex-row'>
         <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-700 ms-1'>
           <NavLink

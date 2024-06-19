@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 import { UserPlus } from '@phosphor-icons/react';
 
@@ -21,14 +22,16 @@ const RegisterDialog = () => {
           Agregar Médico
         </Button>
       </DialogTrigger>
-      <DialogContent className='overflow-y-auto h-[80vh] md:max-w-3xl'>
-        <DialogHeader>
-          <DialogTitle className='text-xl'>Crear nuevo médico</DialogTitle>
-          <DialogDescription>
-            Por favor, llene los datos solicitados.
-          </DialogDescription>
-        </DialogHeader>
-        <RegisterForm />
+      <DialogContent className='md:max-w-3xl'>
+        <ScrollArea className='max-h-[80vh]'>
+          <DialogHeader>
+            <DialogTitle className='text-xl'>Crear nuevo médico</DialogTitle>
+            <DialogDescription>
+              Por favor, llene los datos solicitados.
+            </DialogDescription>
+          </DialogHeader>
+          <RegisterForm />
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

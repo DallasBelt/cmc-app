@@ -14,7 +14,7 @@ const AvatarMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className='outline-none'>
-        <Avatar className='hidden md:block'>
+        <Avatar className='md:block'>
           <AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />
           <AvatarFallback>U</AvatarFallback>
         </Avatar>
