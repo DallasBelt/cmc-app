@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 
 import NavMenu from '@/components/NavMenu';
@@ -12,25 +13,33 @@ import {
 
 import { List } from '@phosphor-icons/react';
 
-import logo from '@/assets/logo.svg';
+import imagotype from '@/assets/imagotype.svg';
+import isotypeRoot from '@/assets/isotype-root.svg';
 
 const Root = () => {
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  const handleCloseSheet = () => {
+    setIsSheetOpen(false);
+  };
+
   return (
     <>
       <div className='flex items-center justify-between h-20 mb-5 px-5 py-3 bg-slate-100 shadow-md md:px-20'>
         <Link to='/'>
-          <img src={logo} className='w-16 md:block md:w-32 md:mb-0' />
+          <img src={imagotype} className='w-16 md:hidden' />
+          <img src={isotypeRoot} className='hidden md:block md:w-64' />
         </Link>
 
-        <Sheet>
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger className='md:hidden'>
-            <List size={24} color='#2563eb' />
+            <List size={24} color='#2563eb' weight='bold' />
           </SheetTrigger>
           <SheetContent side='left'>
             <SheetHeader className='mb-5'>
               <SheetTitle>Menú</SheetTitle>
             </SheetHeader>
-            <NavMenu />
+            <NavMenu onLinkClick={handleCloseSheet} />
           </SheetContent>
         </Sheet>
 

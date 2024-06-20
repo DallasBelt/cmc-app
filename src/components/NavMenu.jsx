@@ -18,23 +18,24 @@ import {
   User,
 } from '@phosphor-icons/react';
 
-const NavMenu = () => {
+const NavMenu = ({ onLinkClick }) => {
   return (
     <NavigationMenu className='flex'>
       <NavigationMenuList className='flex flex-col items-start gap-5 md:flex-row'>
-        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-700 ms-1'>
+        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb] ms-1'>
           <NavLink
             to='/'
             className={({ isActive }) =>
               isActive
-                ? 'underline underline-offset-4 decoration-2 decoration-blue-700'
+                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
                 : ''
             }
+            onClick={onLinkClick}
           >
             <NavigationMenuLink>
               <House
                 size={24}
-                color='#1a5fb4'
+                color='#2563eb'
                 weight='fill'
                 className='me-2 inline md:hidden'
               />
@@ -43,19 +44,20 @@ const NavMenu = () => {
           </NavLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-700'>
+        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
           <NavLink
             to='/medics'
             className={({ isActive }) =>
               isActive
-                ? 'underline underline-offset-4 decoration-2 decoration-blue-700'
+                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
                 : ''
             }
+            onClick={onLinkClick}
           >
             <NavigationMenuLink>
               <Stethoscope
                 size={24}
-                color='#1a5fb4'
+                color='#2563eb'
                 weight='fill'
                 className='me-2 inline md:hidden'
               />
@@ -64,19 +66,20 @@ const NavMenu = () => {
           </NavLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-700'>
+        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
           <NavLink
             to='/patients'
             className={({ isActive }) =>
               isActive
-                ? 'underline underline-offset-4 decoration-2 decoration-blue-700'
+                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
                 : ''
             }
+            onClick={onLinkClick}
           >
             <NavigationMenuLink>
               <Pill
                 size={24}
-                color='#1a5fb4'
+                color='#2563eb'
                 weight='fill'
                 className='me-2 inline md:hidden'
               />
@@ -85,19 +88,20 @@ const NavMenu = () => {
           </NavLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-700'>
+        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
           <NavLink
             to='/appointments'
             className={({ isActive }) =>
               isActive
-                ? 'underline underline-offset-4 decoration-2 decoration-blue-700'
+                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
                 : ''
             }
+            onClick={onLinkClick}
           >
             <NavigationMenuLink>
               <CalendarDots
                 size={24}
-                color='#1a5fb4'
+                color='#2563eb'
                 weight='fill'
                 className='me-2 inline md:hidden'
               />
@@ -108,19 +112,20 @@ const NavMenu = () => {
 
         <Separator className='block md:hidden' />
 
-        <NavigationMenuItem className='block md:hidden hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-700'>
+        <NavigationMenuItem className='block md:hidden hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
           <NavLink
             to='/profile'
             className={({ isActive }) =>
               isActive
-                ? 'underline underline-offset-4 decoration-2 decoration-blue-700'
+                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
                 : ''
             }
+            onClick={onLinkClick}
           >
             <NavigationMenuLink>
               <User
                 size={24}
-                color='#1a5fb4'
+                color='#2563eb'
                 weight='fill'
                 className='me-2 inline md:hidden'
               />
@@ -129,11 +134,11 @@ const NavMenu = () => {
           </NavLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className='block md:hidden hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-blue-700 cursor-pointer'>
+        <NavigationMenuItem className='block md:hidden hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb] cursor-pointer'>
           <NavigationMenuLink>
             <SignOut
               size={24}
-              color='#1a5fb4'
+              color='#2563eb'
               weight='fill'
               className='me-2 inline md:hidden'
             />

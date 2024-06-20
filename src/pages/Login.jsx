@@ -2,12 +2,12 @@ import { Link } from 'react-router-dom';
 
 import LoginForm from '@/components/LoginForm';
 import login from '@/assets/login.jpg';
-import logo from '@/assets/logo.svg';
+import isotypeLogin from '@/assets/isotype-login.svg';
 
 const LoginPage = () => {
   return (
     <>
-      <img src={logo} className='w-48 my-5 mx-auto' />
+      <img src={isotypeLogin} className='w-36 my-5 mx-auto' />
 
       <div className='flex items-center justify-center md:flex-row'>
         <img src={login} alt='' className='hidden lg:block lg:w-2/4 xl:w-2/6' />

@@ -24,7 +24,7 @@ const RegisterDialog = () => {
       </DialogTrigger>
       <DialogContent className='md:max-w-3xl'>
         <ScrollArea className='max-h-[80vh]'>
-          <DialogHeader>
+          <DialogHeader className='mb-5'>
             <DialogTitle className='text-xl'>Crear nuevo médico</DialogTitle>
             <DialogDescription>
               Por favor, llene los datos solicitados.

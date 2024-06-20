@@ -73,7 +73,7 @@ const RegisterForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5 px-3'>
         <div className='space-y-3 md:grid md:grid-cols-2 md:gap-3 md:space-y-0'>
           <FormField
             control={form.control}
@@ -152,7 +152,7 @@ const RegisterForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Documento de identidad</FormLabel>
-                <div className='flex flex-col gap-3'>
+                <div className='flex flex-col gap-3 px-2'>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
@@ -202,7 +202,7 @@ const RegisterForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Fecha de nacimiento</FormLabel>
-                <div className='flex space-x-3'>
+                <div className='flex space-x-3 px-2'>
                   <div className='flex flex-col gap-3 w-1/3'>
                     <FormLabel className='text-slate-500'>día</FormLabel>
                     <FormControl>
@@ -268,7 +268,7 @@ const RegisterForm = () => {
                     return (
                       <FormItem
                         key={item.id}
-                        className='flex items-end space-x-1 space-y-0'
+                        className='flex items-end space-x-1 space-y-0 px-2'
                       >
                         <FormControl>
                           <Checkbox
