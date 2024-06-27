@@ -40,7 +40,7 @@ const LoginForm = () => {
           icon: 'error',
         });
       } else {
-        localStorage.setItem('token', response.data.token);
+        sessionStorage.setItem('token', response.data.token);
         navigate('/');
       }
     } catch (error) {
