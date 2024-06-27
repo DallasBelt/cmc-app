@@ -58,11 +58,11 @@ const RegisterForm = () => {
     resolver: zodResolver(newMedicSchema),
     defaultValues: {
       name: '',
-      id: '',
-      dob: '',
       email: '',
       phone: '',
       address: '',
+      id: '',
+      dob: '',
       items: ['general'],
     },
   });
