@@ -104,7 +104,7 @@ const LoginForm = () => {
           )}
         />
 
-        <Button type='submit' className='w-full h-14 text-xl'>
+        <Button type='submit' className='w-full h-12 text-xl'>
           INICIAR SESIÓN
         </Button>
       </form>

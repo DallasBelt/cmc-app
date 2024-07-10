@@ -4,6 +4,8 @@ import LoginForm from '@/components/LoginForm';
 import login from '@/assets/login.jpg';
 import isotypeLogin from '@/assets/isotype-login.svg';
 
+import RegistrationDialog from '@/components/RegistrationDialog';
+
 const LoginPage = () => {
   return (
     <>
@@ -20,6 +22,10 @@ const LoginPage = () => {
           >
             ¿Olvidó su contraseña?
           </Link>
+
+          <hr className='w-80 m-auto'></hr>
+
+          <RegistrationDialog />
         </div>
       </div>
     </>

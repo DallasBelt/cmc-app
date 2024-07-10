@@ -11,11 +11,13 @@ import { Separator } from '@/components/ui/separator';
 
 import {
   CalendarDots,
+  HandPalm,
   House,
   Pill,
   SignOut,
   Stethoscope,
   User,
+  Users,
 } from '@phosphor-icons/react';
 
 const NavMenu = ({ onLinkClick }) => {
@@ -62,6 +64,28 @@ const NavMenu = ({ onLinkClick }) => {
                 className='me-2 inline md:hidden'
               />
               Médicos
+            </NavigationMenuLink>
+          </NavLink>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
+          <NavLink
+            to='/assistants'
+            className={({ isActive }) =>
+              isActive
+                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
+                : ''
+            }
+            onClick={onLinkClick}
+          >
+            <NavigationMenuLink>
+              <HandPalm
+                size={24}
+                color='#2563eb'
+                weight='fill'
+                className='me-2 inline md:hidden'
+              />
+              Asistentes
             </NavigationMenuLink>
           </NavLink>
         </NavigationMenuItem>
