@@ -42,7 +42,11 @@ const NewPatientForm = () => {
   });
 
   const onSubmit = async (values) => {
-    console.log(values);
+    const newPatient = {
+      ...values,
+      dob: format(values.dob, 'yyyy-MM-dd'),
+    };
+    console.log(newPatient);
   };
 
   return (
