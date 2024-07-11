@@ -34,15 +34,13 @@ const NavMenu = ({ onLinkClick }) => {
             }
             onClick={onLinkClick}
           >
-            <NavigationMenuLink>
-              <House
-                size={24}
-                color='#2563eb'
-                weight='fill'
-                className='me-2 inline md:hidden'
-              />
-              Inicio
-            </NavigationMenuLink>
+            <House
+              size={24}
+              color='#2563eb'
+              weight='fill'
+              className='me-2 inline md:hidden'
+            />
+            Inicio
           </NavLink>
         </NavigationMenuItem>
 
@@ -56,15 +54,13 @@ const NavMenu = ({ onLinkClick }) => {
             }
             onClick={onLinkClick}
           >
-            <NavigationMenuLink>
-              <Stethoscope
-                size={24}
-                color='#2563eb'
-                weight='fill'
-                className='me-2 inline md:hidden'
-              />
-              Médicos
-            </NavigationMenuLink>
+            <Stethoscope
+              size={24}
+              color='#2563eb'
+              weight='fill'
+              className='me-2 inline md:hidden'
+            />
+            Médicos
           </NavLink>
         </NavigationMenuItem>
 
@@ -78,15 +74,13 @@ const NavMenu = ({ onLinkClick }) => {
             }
             onClick={onLinkClick}
           >
-            <NavigationMenuLink>
-              <HandPalm
-                size={24}
-                color='#2563eb'
-                weight='fill'
-                className='me-2 inline md:hidden'
-              />
-              Asistentes
-            </NavigationMenuLink>
+            <HandPalm
+              size={24}
+              color='#2563eb'
+              weight='fill'
+              className='me-2 inline md:hidden'
+            />
+            Asistentes
           </NavLink>
         </NavigationMenuItem>
 
@@ -100,15 +94,13 @@ const NavMenu = ({ onLinkClick }) => {
             }
             onClick={onLinkClick}
           >
-            <NavigationMenuLink>
-              <Pill
-                size={24}
-                color='#2563eb'
-                weight='fill'
-                className='me-2 inline md:hidden'
-              />
-              Pacientes
-            </NavigationMenuLink>
+            <Pill
+              size={24}
+              color='#2563eb'
+              weight='fill'
+              className='me-2 inline md:hidden'
+            />
+            Pacientes
           </NavLink>
         </NavigationMenuItem>
 
@@ -122,15 +114,13 @@ const NavMenu = ({ onLinkClick }) => {
             }
             onClick={onLinkClick}
           >
-            <NavigationMenuLink>
-              <CalendarDots
-                size={24}
-                color='#2563eb'
-                weight='fill'
-                className='me-2 inline md:hidden'
-              />
-              Citas
-            </NavigationMenuLink>
+            <CalendarDots
+              size={24}
+              color='#2563eb'
+              weight='fill'
+              className='me-2 inline md:hidden'
+            />
+            Citas
           </NavLink>
         </NavigationMenuItem>
 
@@ -146,15 +136,13 @@ const NavMenu = ({ onLinkClick }) => {
             }
             onClick={onLinkClick}
           >
-            <NavigationMenuLink>
-              <User
-                size={24}
-                color='#2563eb'
-                weight='fill'
-                className='me-2 inline md:hidden'
-              />
-              Perfil
-            </NavigationMenuLink>
+            <User
+              size={24}
+              color='#2563eb'
+              weight='fill'
+              className='me-2 inline md:hidden'
+            />
+            Perfil
           </NavLink>
         </NavigationMenuItem>
 

@@ -153,7 +153,7 @@ const RegistrationForm = () => {
           )}
         />
 
-        <div className='flex justify-center mt-36'>
+        <div className='flex justify-center'>
           <Button
             type='submit'
             className='mt-5 h-10 text-xl bg-green-500 hover:bg-green-400'

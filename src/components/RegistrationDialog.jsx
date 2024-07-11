@@ -7,7 +7,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 import RegistrationForm from './RegistrationForm';
 
@@ -19,16 +18,19 @@ const RegistrationDialog = () => {
           CREAR CUENTA
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-w-md'>
-        <ScrollArea className='max-h-[80vh]'>
-          <DialogHeader className='mb-5'>
-            <DialogTitle className='text-xl'>Registrarse</DialogTitle>
-            <DialogDescription>
-              Por favor, llene los datos solicitados.
-            </DialogDescription>
-          </DialogHeader>
-          <RegistrationForm />
-        </ScrollArea>
+      <DialogContent
+        className='max-w-md max-h-screen overflow-y-auto'
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <DialogHeader className='mb-5'>
+          <DialogTitle className='text-xl'>Registrarse</DialogTitle>
+          <DialogDescription>
+            Por favor, llene los datos solicitados.
+          </DialogDescription>
+        </DialogHeader>
+        <RegistrationForm />
       </DialogContent>
     </Dialog>
   );

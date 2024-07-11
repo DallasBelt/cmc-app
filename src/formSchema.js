@@ -21,12 +21,12 @@ export const loginSchema = z.object({
 export const newPatientSchema = z.object({
   firstName: z.string().min(1, 'Nombre requerido'),
   lastName: z.string().min(1, 'Apellido requerido'),
-  id: z.string().min(1, 'ID requerido').max(10),
+  id: z.string().min(1, 'Identificación requerida').max(10),
   email: z
     .string()
     .min(1, { message: 'Correo electrónico requerido' })
     .email('Correo electrónico no válido'),
-  phone: z.string().min(1, 'Teléfono requerido').max(10),
+  phone: z.string().min(1, 'Nº celular requerido').max(10),
   address: z.string().min(1, 'Dirección requerida'),
   dob: z.date('Fecha no válida'),
 });
