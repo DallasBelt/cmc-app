@@ -14,7 +14,7 @@ const RegistrationDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='bg-green-500 hover:bg-green-400 w-2/4 mx-auto h-12 text-xl'>
+        <Button className='bg-green-500 hover:bg-green-400 w-3/4 mx-auto h-12 text-xl'>
           CREAR CUENTA
         </Button>
       </DialogTrigger>
@@ -24,7 +24,7 @@ const RegistrationDialog = () => {
           e.preventDefault();
         }}
       >
-        <DialogHeader className='mb-5'>
+        <DialogHeader>
           <DialogTitle className='text-xl'>Registrarse</DialogTitle>
           <DialogDescription>
             Por favor, llene los datos solicitados.

@@ -1,10 +1,4 @@
-import { useState } from 'react';
-
-import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import {
   Dialog,
   DialogContent,
@@ -13,18 +7,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 
 import { UserPlus } from '@phosphor-icons/react';
 
 import NewPatientForm from './NewPatientForm';
 
 const NewPatientDialog = () => {
-  const [date, setDate] = useState(new Date());
   return (
     <>
       <Dialog>

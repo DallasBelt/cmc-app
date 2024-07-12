@@ -54,7 +54,7 @@ const Medics = () => {
           </Card>
         </div>
 
-        {/* <MedicsTable /> */}
+        <MedicsTable />
       </div>
     </>
   );

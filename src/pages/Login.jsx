@@ -1,18 +1,15 @@
 import { Link } from 'react-router-dom';
 
 import LoginForm from '@/components/LoginForm';
-import login from '@/assets/login.jpg';
 import isotypeLogin from '@/assets/isotype-login.svg';
 
 import RegistrationDialog from '@/components/RegistrationDialog';
 
 const LoginPage = () => {
   return (
-    <>
-      <img src={isotypeLogin} className='w-36 my-5 mx-auto' />
-
-      <div className='flex items-center justify-center md:flex-row'>
-        <img src={login} alt='' className='hidden lg:block lg:w-2/4 xl:w-2/6' />
+    <div className='min-h-screen flex flex-col justify-center'>
+      <div className='flex flex-col items-center justify-center md:flex-row'>
+        <img src={isotypeLogin} className='mb-10 w-60 md:mb-0 md:w-1/3' />
         <div className='flex flex-col w-full sm:w-3/4 lg:w-2/4 xl:w-2/6 px-10 space-y-5'>
           <LoginForm />
 
@@ -28,7 +25,7 @@ const LoginPage = () => {
           <RegistrationDialog />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
