@@ -25,7 +25,7 @@ import {
 import { CalendarDots } from '@phosphor-icons/react';
 import { UserPlus } from '@phosphor-icons/react';
 
-import { newPatientSchema } from '@/validators/formSchema';
+import { newPatientSchema } from '@/utils/formSchema';
 
 const NewPatientForm = () => {
   const form = useForm({

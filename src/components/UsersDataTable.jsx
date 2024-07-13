@@ -24,7 +24,7 @@ import {
 
 import NewPatientDialog from '@/components/NewPatientDialog';
 
-export function DataTable({ columns, data }) {
+export function UsersDataTable({ columns, data }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const table = useReactTable({
@@ -53,17 +53,18 @@ export function DataTable({ columns, data }) {
           }
           className='max-w-sm'
         />
-
-        <NewPatientDialog />
       </div>
       <div className='rounded-md border'>
         <Table>
-          <TableHeader>
+          <TableHeader className='bg-primary'>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      className='bg-primary text-white'
+                      key={header.id}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(

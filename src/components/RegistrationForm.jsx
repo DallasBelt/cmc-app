@@ -25,7 +25,7 @@ import {
 
 import { CalendarDots, Eye, EyeSlash } from '@phosphor-icons/react';
 
-import { registrationSchema } from '@/validators/formSchema';
+import { registrationSchema } from '@/utils/formSchema';
 
 const RegistrationForm = () => {
   const form = useForm({

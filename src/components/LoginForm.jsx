@@ -14,7 +14,8 @@ import {
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { loginSchema } from '@/validators/formSchema';
+
+import { loginSchema } from '@/utils/formSchema';
 
 const LoginForm = () => {
   const navigate = useNavigate();

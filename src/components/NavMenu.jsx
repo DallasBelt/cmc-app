@@ -46,6 +46,26 @@ const NavMenu = ({ onLinkClick }) => {
 
         <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
           <NavLink
+            to='/users'
+            className={({ isActive }) =>
+              isActive
+                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
+                : ''
+            }
+            onClick={onLinkClick}
+          >
+            <Users
+              size={24}
+              color='#2563eb'
+              weight='fill'
+              className='me-2 inline md:hidden'
+            />
+            Usuarios
+          </NavLink>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
+          <NavLink
             to='/medics'
             className={({ isActive }) =>
               isActive

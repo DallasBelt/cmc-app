@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-import { ecIdValidator } from '@/validators/ecIdValidator';
-import { ecPhoneNumberValidator } from './ecPhoneNumberValidator';
+import { ecIdValidator } from '@/utils/ecIdValidator';
+import { ecPhoneNumberValidator } from '@/utils/ecPhoneNumberValidator';
 
 export const registrationSchema = z.object({
   firstName: z.string().min(1, 'Nombre requerido'),

@@ -1,12 +1,10 @@
 import Index from './pages/Index';
-import Medics from './pages/Medics';
-import Assistants from './pages/Assistants';
-import Patients from './pages/Patients';
+import Users from './pages/Users';
 import Appointments from './pages/Appointments';
 import LoginPage from './pages/Login';
 import ErrorPage from './pages/NotFound';
 import ForgotPasswordPage from './pages/ForgotPassword';
-import ProtectedRoute from './utils/ProtectedRoute';
+import ProtectedRoute from './components/ProtectedRoute';
 import Root from './pages/Root';
 
 const routes = [
@@ -20,16 +18,8 @@ const routes = [
         element: <Index />,
       },
       {
-        path: 'medics',
-        element: <Medics />,
-      },
-      {
-        path: 'assistants',
-        element: <Assistants />,
-      },
-      {
-        path: 'patients',
-        element: <Patients />,
+        path: 'users',
+        element: <Users />,
       },
       {
         path: 'appointments',
