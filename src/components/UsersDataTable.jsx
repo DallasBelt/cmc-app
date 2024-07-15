@@ -40,6 +40,11 @@ export function UsersDataTable({ columns, data }) {
       sorting,
       columnFilters,
     },
+    initialState: {
+      pagination: {
+        pageSize: 10, // Número inicial de registros por página
+      },
+    },
   });
 
   return (
@@ -53,18 +58,32 @@ export function UsersDataTable({ columns, data }) {
           }
           className='max-w-sm'
         />
+        <div className='flex items-center space-x-2'>
+          <span>Mostrar</span>
+          <select
+            value={table.getState().pagination.pageSize}
+            onChange={(e) => {
+              table.setPageSize(Number(e.target.value));
+            }}
+            className='border rounded p-1'
+          >
+            {[10, 20, 30, 40, 50].map((pageSize) => (
+              <option key={pageSize} value={pageSize}>
+                {pageSize}
+              </option>
+            ))}
+          </select>
+          <span>registros por página</span>
+        </div>
       </div>
       <div className='rounded-md border'>
         <Table>
-          <TableHeader className='bg-primary'>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead
-                      className='bg-primary text-white'
-                      key={header.id}
-                    >
+                    <TableHead key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -108,23 +127,34 @@ export function UsersDataTable({ columns, data }) {
         </Table>
       </div>
 
-      <div className='flex items-center justify-end space-x-2 py-4'>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Anterior
-        </Button>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Siguiente
-        </Button>
+      <div className='flex items-center justify-between space-x-2 py-4'>
+        <div className='text-sm text-gray-700'>
+          Mostrando{' '}
+          {Math.min(
+            (table.getState().pagination.pageIndex + 1) *
+              table.getState().pagination.pageSize,
+            table.getFilteredRowModel().rows.length
+          )}{' '}
+          de {table.getFilteredRowModel().rows.length} registros
+        </div>
+        <div className='flex items-center space-x-2'>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Anterior
+          </Button>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Siguiente
+          </Button>
+        </div>
       </div>
     </>
   );
