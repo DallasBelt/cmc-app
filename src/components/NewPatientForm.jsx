@@ -208,7 +208,6 @@ const NewPatientForm = () => {
 
           <div className='flex justify-center'>
             <Button type='submit' className='mt-5'>
-              <UserPlus size={24} className='me-1' />
               Crear paciente
             </Button>
           </div>

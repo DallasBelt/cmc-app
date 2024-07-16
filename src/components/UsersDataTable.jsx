@@ -22,8 +22,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import NewPatientDialog from '@/components/NewPatientDialog';
-
 export function UsersDataTable({ columns, data }) {
   const [sorting, setSorting] = React.useState([]);
   const [globalFilter, setGlobalFilter] = React.useState('');

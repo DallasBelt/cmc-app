@@ -12,6 +12,8 @@ import {
 import { usersColumns } from '@/config/usersColumns';
 import { UsersDataTable } from '@/components/UsersDataTable';
 
+import NewUserDialog from '@/components/NewUserDialog';
+
 async function getData() {
   // Fetch data from your API here.
   return [
@@ -259,6 +261,8 @@ const Users = () => {
             </CardFooter>
           </Card>
         </div>
+
+        <NewUserDialog />
 
         <div>
           <UsersDataTable columns={usersColumns} data={data} />

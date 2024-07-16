@@ -22,7 +22,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 
-import { ArrowsDownUp, GearSix } from '@phosphor-icons/react';
+import { ArrowsDownUp, DotsThreeVertical } from '@phosphor-icons/react';
 
 export const usersColumns = [
   {
@@ -90,33 +90,11 @@ export const usersColumns = [
     cell: () => {
       return (
         <>
-          {/* <Dialog>
-            <DialogTrigger asChild>
-              <Button variant='ghost' className='h-8 w-8 p-0'>
-                <span className='sr-only'>Abrir modal de opciones</span>
-                <GearSix size={24} className='h-4 w-4' />
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Opciones</DialogTitle>
-              </DialogHeader>
-              <div className='flex items-center space-x-2'>
-                <Switch id='active' />
-                <Label htmlFor='active'>Activo</Label>
-              </div>
-              <div className='flex items-center space-x-2'>
-                <Switch id='active' />
-                <Label htmlFor='active'>Médico</Label>
-              </div>
-            </DialogContent>
-          </Dialog> */}
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant='ghost' className='h-8 w-8 p-0'>
                 <span className='sr-only'>Abrir modal de opciones</span>
-                <GearSix size={24} className='h-4 w-4' />
+                <DotsThreeVertical size={24} className='h-4 w-4' />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-56' data-state='open'>

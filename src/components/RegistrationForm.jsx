@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
@@ -28,6 +29,10 @@ import { CalendarDots, Eye, EyeSlash } from '@phosphor-icons/react';
 import { registrationSchema } from '@/utils/formSchema';
 
 const RegistrationForm = () => {
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const isSuperPath = currentPath.includes('super');
+
   const form = useForm({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
@@ -128,6 +133,32 @@ const RegistrationForm = () => {
 
         <FormField
           control={form.control}
+          name='confirmPassword'
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <div className='flex items-center'>
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder='Repita la contraseña'
+                    {...field}
+                    className='h-10'
+                  />
+                  <span
+                    onClick={togglePasswordVisibility}
+                    className='cursor-pointer absolute right-10 text-slate-500'
+                  >
+                    {showPassword ? <Eye size={24} /> : <EyeSlash size={24} />}
+                  </span>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name='dob'
           render={({ field }) => (
             <FormItem className='flex flex-col'>
@@ -178,9 +209,13 @@ const RegistrationForm = () => {
         <div className='flex justify-center'>
           <Button
             type='submit'
-            className='mt-5 h-10 text-xl bg-green-500 hover:bg-green-400'
+            className={
+              isSuperPath
+                ? 'mt-5 h-10'
+                : 'mt-5 h-10 text-xl bg-green-500 hover:bg-green-400'
+            }
           >
-            Registrarse
+            {isSuperPath ? 'Crear usuario' : 'Registrarse'}
           </Button>
         </div>
       </form>

@@ -40,39 +40,56 @@ const Index = () => {
   return (
     <div className='p-10 md:p-20 space-y-14'>
       <div className='flex flex-col gap-5 md:flex-row'>
-        <Card className='md:w-1/3'>
+        <Card className='md:w-1/4'>
           <CardHeader>
-            <CardTitle>Usuarios</CardTitle>
-            <CardDescription>Card Description</CardDescription>
+            <CardTitle className='text-3xl'>Usuarios</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Card Content</p>
+            <p>Total:</p>
+            <p>Activos:</p>
+            <p>Inactivos:</p>
           </CardContent>
           <CardFooter>
             <p>Card Footer</p>
           </CardFooter>
         </Card>
 
-        <Card className='md:w-1/3'>
+        <Card className='md:w-1/4'>
           <CardHeader>
-            <CardTitle>Card Title</CardTitle>
-            <CardDescription>Card Description</CardDescription>
+            <CardTitle className='text-3xl'>Médicos</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Card Content</p>
+            <p>Total:</p>
+            <p>Activos:</p>
+            <p>Especialidades:</p>
           </CardContent>
           <CardFooter>
             <p>Card Footer</p>
           </CardFooter>
         </Card>
 
-        <Card className='md:w-1/3'>
+        <Card className='md:w-1/4'>
           <CardHeader>
-            <CardTitle>Card Title</CardTitle>
-            <CardDescription>Card Description</CardDescription>
+            <CardTitle className='text-3xl'>Pacientes</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Card Content</p>
+            <p>Total:</p>
+            <p>Atendidos:</p>
+            <p>Sin atender:</p>
+          </CardContent>
+          <CardFooter>
+            <p>Card Footer</p>
+          </CardFooter>
+        </Card>
+
+        <Card className='md:w-1/4'>
+          <CardHeader>
+            <CardTitle className='text-3xl'>Citas</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Total:</p>
+            <p>Finalizadas:</p>
+            <p>Pendientes:</p>
           </CardContent>
           <CardFooter>
             <p>Card Footer</p>
@@ -80,7 +97,7 @@ const Index = () => {
         </Card>
       </div>
 
-      <div className='w-2/4'>
+      <div className='md:w-2/4'>
         <ChartContainer config={chartConfig} className='min-h-[200px] w-full'>
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />

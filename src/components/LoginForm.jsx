@@ -31,7 +31,7 @@ const LoginForm = () => {
   const onSubmit = async (values) => {
     try {
       const response = await axios.post(
-        'http://localhost:8000/v1/user/login',
+        'https://medic-api-boa3.onrender.com/api/v1/auth/login',
         values
       );
 
@@ -43,6 +43,7 @@ const LoginForm = () => {
       } else {
         sessionStorage.setItem('token', response.data.token);
         navigate('/');
+        console.log(sessionStorage);
       }
     } catch (error) {
       console.log(error);

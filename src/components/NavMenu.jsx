@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import {
   NavigationMenu,
@@ -31,11 +31,12 @@ const NavMenu = ({ onLinkClick }) => {
           <NavLink
             to='/super'
             className={({ isActive }) =>
-              isActive && location.pathname === '/super'
+              isActive
                 ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
                 : ''
             }
             onClick={onLinkClick}
+            end
           >
             <House
               size={24}
@@ -51,7 +52,7 @@ const NavMenu = ({ onLinkClick }) => {
           <NavLink
             to='/super/users'
             className={({ isActive }) =>
-              isActive && location.pathname === '/super/users'
+              isActive
                 ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
                 : ''
             }
@@ -69,7 +70,7 @@ const NavMenu = ({ onLinkClick }) => {
 
         <NavigationMenuItem
           className={({ isActive }) =>
-            isActive && location.pathname === '/super/medics'
+            isActive
               ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
               : ''
           }
@@ -97,7 +98,7 @@ const NavMenu = ({ onLinkClick }) => {
           <NavLink
             to='/super/assistants'
             className={({ isActive }) =>
-              isActive && location.pathname === '/super/assistants'
+              isActive
                 ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
                 : ''
             }
@@ -117,7 +118,7 @@ const NavMenu = ({ onLinkClick }) => {
           <NavLink
             to='/super/patients'
             className={({ isActive }) =>
-              isActive && location.pathname === '/super/patients'
+              isActive
                 ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
                 : ''
             }
@@ -137,7 +138,7 @@ const NavMenu = ({ onLinkClick }) => {
           <NavLink
             to='/super/appointments'
             className={({ isActive }) =>
-              isActive && location.pathname === '/super/appointments'
+              isActive
                 ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
                 : ''
             }
