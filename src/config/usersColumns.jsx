@@ -3,14 +3,11 @@
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
-  DialogOverlay,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
@@ -22,8 +19,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 
-import { ArrowsDownUp, DotsThreeVertical } from '@phosphor-icons/react';
+import { ArrowsDownUp, GearSix } from '@phosphor-icons/react';
 
 export const usersColumns = [
   {
@@ -89,61 +88,26 @@ export const usersColumns = [
   {
     id: 'actions',
     cell: () => {
-      const [dialogOpen, setDialogOpen] = useState(false);
-
-      const handleDialogOpen = () => {
-        if (dialogOpen === false) {
-          setDialogOpen(true);
-        } else {
-          setDialogOpen(false);
-          document.body.style.pointerEvents = 'all';
-        }
-      };
-
       return (
         <>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <Dialog>
+            <DialogTrigger asChild>
               <Button variant='ghost' className='h-8 w-8 p-0'>
-                <span className='sr-only'>Open menu</span>
-                <DotsThreeVertical
-                  size={24}
-                  weight='bold'
-                  className='h-4 w-4'
-                />
+                <span className='sr-only'>Abrir modal de opciones</span>
+                <GearSix size={24} className='h-4 w-4' />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className='cursor-pointer'
-                onSelect={handleDialogOpen}
-              >
-                Editar rol
-              </DropdownMenuItem>
-              <DropdownMenuItem className='cursor-pointer'>
-                Cambiar estado
-              </DropdownMenuItem>
-              <DropdownMenuItem className='cursor-pointer'>
-                Ver detalles...
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Dialog open={dialogOpen} onOpenChange={handleDialogOpen}>
-            <DialogContent
-              onInteractOutside={(e) => {
-                e.preventDefault();
-              }}
-            >
+            </DialogTrigger>
+            <DialogContent>
               <DialogHeader>
-                <DialogTitle>Are you absolutely sure?</DialogTitle>
-                <DialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
-                </DialogDescription>
+                <DialogTitle>Opciones</DialogTitle>
               </DialogHeader>
+              <div className='flex items-center space-x-2'>
+                <Switch id='active' />
+                <Label htmlFor='active'>Activo</Label>
+              </div>
+              <Label>Roles</Label>
+              <Checkbox id='medic'></Checkbox>
+              <Label htmlFor='medic'>Médico</Label>
             </DialogContent>
           </Dialog>
         </>
