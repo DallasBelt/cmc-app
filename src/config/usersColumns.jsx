@@ -90,7 +90,7 @@ export const usersColumns = [
     cell: () => {
       return (
         <>
-          <Dialog>
+          {/* <Dialog>
             <DialogTrigger asChild>
               <Button variant='ghost' className='h-8 w-8 p-0'>
                 <span className='sr-only'>Abrir modal de opciones</span>
@@ -105,11 +105,37 @@ export const usersColumns = [
                 <Switch id='active' />
                 <Label htmlFor='active'>Activo</Label>
               </div>
-              <Label>Roles</Label>
-              <Checkbox id='medic'></Checkbox>
-              <Label htmlFor='medic'>Médico</Label>
+              <div className='flex items-center space-x-2'>
+                <Switch id='active' />
+                <Label htmlFor='active'>Médico</Label>
+              </div>
             </DialogContent>
-          </Dialog>
+          </Dialog> */}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant='ghost' className='h-8 w-8 p-0'>
+                <span className='sr-only'>Abrir modal de opciones</span>
+                <GearSix size={24} className='h-4 w-4' />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='w-56' data-state='open'>
+              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <div className='flex items-center space-x-2'>
+                  <Switch id='set-active' />
+                  <Label htmlFor='set-active'>Activo</Label>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <div className='flex items-center space-x-2'>
+                  <Switch id='set-medic-role' />
+                  <Label htmlFor='set-medic-role'>Médico</Label>
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </>
       );
     },

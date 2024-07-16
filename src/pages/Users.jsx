@@ -218,8 +218,8 @@ const Users = () => {
 
   return (
     <>
-      <div className='px-20 md:px-36'>
-        <div className='flex flex-col md:flex-row gap-3'>
+      <div className='p-10 md:p-20 space-y-14'>
+        <div className='flex flex-col gap-5 md:flex-row'>
           <Card className='md:w-1/3'>
             <CardHeader>
               <CardTitle>Total</CardTitle>
@@ -260,7 +260,7 @@ const Users = () => {
           </Card>
         </div>
 
-        <div className='container mx-auto py-10'>
+        <div>
           <UsersDataTable columns={usersColumns} data={data} />
         </div>
       </div>

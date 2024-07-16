@@ -25,7 +25,7 @@ const Root = () => {
 
   return (
     <>
-      <div className='flex items-center justify-between h-20 mb-20 px-5 py-3 bg-slate-100 shadow-md md:px-20'>
+      <div className='flex items-center justify-between h-20 px-5 py-3 bg-slate-100 shadow-md md:px-20'>
         <Link to='/'>
           <img src={imagotype} className='w-16 md:hidden' />
           <img src={isotypeRoot} className='hidden md:block md:w-64' />

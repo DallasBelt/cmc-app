@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-const Appointments = () => {
+const Medics = () => {
   return (
     <>
       <div className='p-10 md:p-20 space-y-14'>
@@ -56,4 +56,4 @@ const Appointments = () => {
   );
 };
 
-export default Appointments;
+export default Medics;
