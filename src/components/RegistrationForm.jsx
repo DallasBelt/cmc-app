@@ -1,16 +1,14 @@
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-import Swal from 'sweetalert2';
 
-import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+// import { cn } from '@/lib/utils';
+// import { format } from 'date-fns';
+// import { es } from 'date-fns/locale';
 
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
+// import { Calendar } from '@/components/ui/calendar';
 import {
   Form,
   FormControl,
@@ -19,22 +17,32 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+// import {
+//   Popover,
+//   PopoverContent,
+//   PopoverTrigger,
+// } from '@/components/ui/popover';
 
-import { CalendarDots, Eye, EyeSlash } from '@phosphor-icons/react';
+import { toast } from 'sonner';
+
+import { Oval } from 'react-loader-spinner';
+
+import { Eye, EyeSlash } from '@phosphor-icons/react';
 
 import { registrationSchema } from '@/utils/formSchema';
-import LoadingOverlay from './LoadingOverlay';
 
 const RegistrationForm = () => {
-  const location = useLocation();
-  const currentPath = location.pathname;
-  const isSuperPath = currentPath.includes('super');
-  const [loading, setLoading] = useState(false);
+  // Hide/Show password button
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
+  // Hide/Show confirm password button
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const togglePasswordConfirmVisibility = () =>
+    setShowPasswordConfirm(!showPasswordConfirm);
+
+  // Loading with React Spinners
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(registrationSchema),
@@ -47,7 +55,12 @@ const RegistrationForm = () => {
 
   const onSubmit = async (values) => {
     try {
-      setLoading(true);
+      // Show loading React Spinners
+      setIsSubmitting(true);
+
+      // Hide password and confirm password fields
+      setShowPassword(false);
+      setShowPasswordConfirm(false);
 
       const newUser = {
         email: values.email,
@@ -60,65 +73,34 @@ const RegistrationForm = () => {
       );
 
       if (response && response.status === 201) {
-        Swal.fire({
-          title: 'Registro exitoso',
-          text: 'Ya puedes iniciar sesión.',
-          icon: 'success',
-          showConfirmButton: false,
-          timer: 2500,
-        }).then(() => {
-          form.reset();
+        toast.success('Registro exitoso', {
+          description: 'Ya puedes iniciar sesión.',
         });
+        form.reset();
       } else {
-        Swal.fire({
-          title: 'Oops...',
-          text: 'Error interno del servidor.',
-          icon: 'error',
+        toast.error('Oops...', {
+          description: 'Error interno del servidor.',
         });
       }
     } catch (error) {
-      console.log(error);
-      if (error.response) {
-        console.log('Detalles del error:', error.response.data);
-      }
-
       if (error.response && error.response.status === 400) {
-        Swal.fire({
-          title: 'Oops...',
-          text: 'Error al completar registro.',
-          icon: 'error',
-        });
-      } else if (error.message === 'Network Error') {
-        Swal.fire({
-          title: 'Oops...',
-          text: 'Error interno del servidor.',
-          icon: 'error',
+        toast.error('Error', {
+          description: 'El correo ya está registrado.',
         });
       } else {
-        Swal.fire({
-          title: 'Oops...',
-          text: 'Ocurrió un error desconocido.',
-          icon: 'error',
+        toast.error('Oops...', {
+          description: 'Error interno del servidor.',
         });
       }
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
-  const [showPassword, setShowPassword] = useState(false);
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
-
-  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-  const togglePasswordConfirmVisibility = () =>
-    setShowPasswordConfirm(!showPasswordConfirm);
-
   return (
-    <>
-      <LoadingOverlay loading={loading} />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2.5'>
-          {/* <div className='space-y-2.5 md:space-y-0 md:flex md:gap-2.5'>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2.5'>
+        {/* <div className='space-y-2.5 md:space-y-0 md:flex md:gap-2.5'>
             <FormField
               control={form.control}
               name='firstName'
@@ -146,85 +128,81 @@ const RegistrationForm = () => {
             />
           </div> */}
 
-          <FormField
-            control={form.control}
-            name='email'
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
+        <FormField
+          control={form.control}
+          name='email'
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  type='email'
+                  placeholder='Correo electrónico'
+                  {...field}
+                  className='h-10'
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='password'
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <div className='flex items-center relative'>
                   <Input
-                    type='email'
-                    placeholder='Correo electrónico'
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder='Contraseña'
                     {...field}
                     className='h-10'
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <span
+                    onClick={togglePasswordVisibility}
+                    className='cursor-pointer absolute right-3 text-slate-500'
+                  >
+                    {showPassword ? <Eye size={24} /> : <EyeSlash size={24} />}
+                  </span>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <FormField
-            control={form.control}
-            name='password'
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className='flex items-center'>
-                    <Input
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder='Contraseña'
-                      {...field}
-                      className='h-10'
-                    />
-                    <span
-                      onClick={togglePasswordVisibility}
-                      className='cursor-pointer absolute right-10 text-slate-500'
-                    >
-                      {showPassword ? (
-                        <Eye size={24} />
-                      ) : (
-                        <EyeSlash size={24} />
-                      )}
-                    </span>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <FormField
+          control={form.control}
+          name='confirmPassword'
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <div className='flex items-center relative'>
+                  <Input
+                    type={showPasswordConfirm ? 'text' : 'password'}
+                    placeholder='Repita la contraseña'
+                    {...field}
+                    className='h-10'
+                  />
+                  <span
+                    onClick={togglePasswordConfirmVisibility}
+                    className='cursor-pointer absolute right-3 text-slate-500'
+                  >
+                    {showPasswordConfirm ? (
+                      <Eye size={24} />
+                    ) : (
+                      <EyeSlash size={24} />
+                    )}
+                  </span>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <FormField
-            control={form.control}
-            name='confirmPassword'
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className='flex items-center'>
-                    <Input
-                      type={showPasswordConfirm ? 'text' : 'password'}
-                      placeholder='Repita la contraseña'
-                      {...field}
-                      className='h-10'
-                    />
-                    <span
-                      onClick={togglePasswordConfirmVisibility}
-                      className='cursor-pointer absolute right-10 text-slate-500'
-                    >
-                      {showPasswordConfirm ? (
-                        <Eye size={24} />
-                      ) : (
-                        <EyeSlash size={24} />
-                      )}
-                    </span>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* <FormField
+        {/* <FormField
             control={form.control}
             name='dob'
             render={({ field }) => (
@@ -273,21 +251,30 @@ const RegistrationForm = () => {
             )}
           /> */}
 
-          <div className='flex justify-center'>
-            <Button
-              type='submit'
-              className={
-                isSuperPath
-                  ? 'mt-5 h-10'
-                  : 'mt-5 h-10 text-xl bg-green-500 hover:bg-green-400'
-              }
-            >
-              {isSuperPath ? 'Crear usuario' : 'Registrarse'}
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </>
+        <div className='flex justify-center'>
+          <Button
+            type='submit'
+            className='mt-5 h-10 text-xl bg-green-500 hover:bg-green-400'
+            disabled={isSubmitting}
+          >
+            Registrarse
+            {isSubmitting && (
+              <span className='ms-2'>
+                <Oval
+                  visible={true}
+                  height='20'
+                  width='20'
+                  color='#FFF'
+                  secondaryColor='#22c55e'
+                  strokeWidth={6}
+                  ariaLabel='oval-loading'
+                />
+              </span>
+            )}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
 

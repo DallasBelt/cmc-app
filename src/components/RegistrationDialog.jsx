@@ -19,7 +19,7 @@ const RegistrationDialog = () => {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className='max-w-md max-h-screen overflow-y-auto'
+        className='max-w-md max-h-screen overflow-y-auto select-none'
         onInteractOutside={(e) => {
           e.preventDefault();
         }}

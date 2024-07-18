@@ -8,12 +8,16 @@ import Appointments from './pages/Appointments';
 import LoginPage from './pages/Login';
 import ErrorPage from './pages/NotFound';
 import ForgotPasswordPage from './pages/ForgotPassword';
-import ProtectedRoute from './components/ProtectedRoute';
+import { ProtectedRoute, PublicRoute } from './components/ProtectedRoute';
 
 const routes = [
   {
     path: '/super',
-    element: <Root />,
+    element: (
+      <ProtectedRoute>
+        <Root />
+      </ProtectedRoute>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
@@ -77,7 +81,11 @@ const routes = [
   },
   {
     path: '/login',
-    element: <LoginPage />,
+    element: (
+      <PublicRoute>
+        <LoginPage />
+      </PublicRoute>
+    ),
     errorElement: <div>Oops! There was an error.</div>,
   },
   {

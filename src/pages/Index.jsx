@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import { toast } from 'sonner';
 
 import {
   Card,
@@ -37,6 +40,16 @@ const chartData = [
 ];
 
 const Index = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.showToast) {
+      toast.success('Bienvenido(a)', {
+        description: location.state.toastMessage,
+      });
+    }
+  }, [location.state]);
+
   return (
     <div className='p-10 md:p-20 space-y-14'>
       <div className='flex flex-col gap-5 md:flex-row'>

@@ -1,10 +1,11 @@
 import { Navigate } from 'react-router-dom';
 
-import Root from '@/pages/Root';
-
-const ProtectedRoute = () => {
+export const ProtectedRoute = ({ children }) => {
   const token = sessionStorage.getItem('token');
-  return token ? <Root /> : <Navigate to='/login' replace />;
+  return token ? children : <Navigate to='/login' replace />;
 };
 
-export default ProtectedRoute;
+export const PublicRoute = ({ children }) => {
+  const token = sessionStorage.getItem('token');
+  return token ? <Navigate to='/super' replace /> : children;
+};
