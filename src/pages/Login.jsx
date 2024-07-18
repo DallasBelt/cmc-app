@@ -5,7 +5,7 @@ import isotypeLogin from '@/assets/isotype-login.svg';
 
 import RegistrationDialog from '@/components/RegistrationDialog';
 
-const LoginPage = () => {
+const Login = () => {
   return (
     <div className='min-h-screen flex flex-col justify-center'>
       <div className='flex flex-col items-center justify-center md:flex-row'>
@@ -29,4 +29,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;

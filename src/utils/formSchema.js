@@ -5,8 +5,8 @@ import { ecPhoneNumberValidator } from '@/utils/ecPhoneNumberValidator';
 
 export const registrationSchema = z
   .object({
-    firstName: z.string().min(1, { message: 'Nombre requerido' }),
-    lastName: z.string().min(1, { message: 'Apellido requerido' }),
+    // firstName: z.string().min(1, { message: 'Nombre requerido' }),
+    // lastName: z.string().min(1, { message: 'Apellido requerido' }),
     email: z
       .string()
       .min(1, { message: 'Correo electrónico requerido' })
@@ -31,23 +31,23 @@ export const registrationSchema = z
         },
         {
           message:
-            'Mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo (!@#$%&*)',
+            'Mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo !@#$%&*',
         }
       ),
     confirmPassword: z
       .string()
       .min(1, { message: 'Confirmación de contraseña requerida' }),
-    dob: z
-      .date()
-      .nullable()
-      .refine((val) => val !== null, {
-        message: 'Fecha de nacimiento requerida',
-      }),
+    // dob: z
+    //   .date()
+    //   .nullable()
+    //   .refine((val) => val !== null, {
+    //     message: 'Fecha de nacimiento requerida',
+    //   }),
   })
   .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {
       ctx.addIssue({
-        path: ['confirmPassword'], // Indica que el error está en el campo confirmPassword
+        path: ['confirmPassword'],
         message: 'Las contraseñas no coinciden',
       });
     }
