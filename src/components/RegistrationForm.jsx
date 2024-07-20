@@ -77,6 +77,9 @@ const RegistrationForm = () => {
           description: 'Ya puedes iniciar sesión.',
         });
         form.reset();
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       } else {
         toast.error('Oops...', {
           description: 'Error interno del servidor.',

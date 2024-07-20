@@ -9,7 +9,7 @@ import RegistrationDialog from '@/components/RegistrationDialog';
 
 const Login = () => {
   return (
-    <div className='min-h-screen flex flex-col justify-center select-none'>
+    <>
       <Toaster
         position='top-right'
         theme='light'
@@ -19,7 +19,7 @@ const Login = () => {
         visibleToasts={3}
       />
 
-      <div className='flex flex-col items-center justify-center md:flex-row'>
+      <div className='min-h-screen flex flex-col items-center justify-center md:flex-row select-none'>
         <img src={isotypeLogin} className='mb-10 w-60 md:mb-0 md:w-1/3' />
         <div className='flex flex-col w-full sm:w-3/4 lg:w-2/4 xl:w-2/6 px-10 space-y-5'>
           <LoginForm />
@@ -36,7 +36,7 @@ const Login = () => {
           <RegistrationDialog />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

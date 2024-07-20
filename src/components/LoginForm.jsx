@@ -96,7 +96,7 @@ const LoginForm = () => {
                 <Input
                   type='email'
                   placeholder='Correo electrónico'
-                  className='h-14 text-lg select-none'
+                  className='h-12 text-lg select-none'
                   {...field}
                 />
               </FormControl>
@@ -117,7 +117,7 @@ const LoginForm = () => {
                   <Input
                     type={showPassword ? 'text' : 'password'}
                     placeholder='Contraseña'
-                    className='h-14 text-lg'
+                    className='h-12 text-lg'
                     {...field}
                   />
                   <span
