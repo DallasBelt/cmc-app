@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 import {
   Card,
@@ -10,262 +11,124 @@ import {
 } from '@/components/ui/card';
 
 import { usersColumns } from '@/config/usersColumns';
-import { UsersDataTable } from '@/components/UsersDataTable';
+import { DataTable } from '@/components/DataTable';
 
-import NewUserDialog from '@/components/NewUserDialog';
+import { Oval } from 'react-loader-spinner';
 
 async function getData() {
+  const token = sessionStorage.getItem('token');
+
+  const res = await axios.get(
+    'https://cmc-api-42qy.onrender.com/api/v1/auth/all',
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+
+  return res.data.data;
   // Fetch data from your API here.
-  return [
-    {
-      fullName: 'Edwin Vargas',
-      email: 'evg@gmail.com',
-      role: 'Paciente',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Ana Perez',
-      email: 'aperez@gmail.com',
-      role: 'Paciente',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Carlos Lopez',
-      email: 'clopez@gmail.com',
-      role: 'Usuario',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Laura Garcia',
-      email: 'lgarcia@gmail.com',
-      role: 'Usuario',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Luis Fernandez',
-      email: 'lfernandez@gmail.com',
-      role: 'Médico',
-      status: 'Activo',
-    },
-    {
-      fullName: 'Maria Rodriguez',
-      email: 'mrodriguez@gmail.com',
-      role: 'Paciente',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Pedro Gonzalez',
-      email: 'pgonzalez@gmail.com',
-      role: 'Paciente',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Juan Martinez',
-      email: 'jmartinez@gmail.com',
-      role: 'Paciente',
-      status: 'Activo',
-    },
-    {
-      fullName: 'Sofia Sanchez',
-      email: 'ssanchez@gmail.com',
-      role: 'Usuario',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'David Ramirez',
-      email: 'dramirez@gmail.com',
-      role: 'Médico',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Marta Diaz',
-      email: 'mdiaz@gmail.com',
-      role: 'Paciente',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Jose Morales',
-      email: 'jmorales@gmail.com',
-      role: 'Usuario',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Lucia Ortega',
-      email: 'lortega@gmail.com',
-      role: 'Usuario',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Ricardo Vega',
-      email: 'rvega@gmail.com',
-      role: 'Médico',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Elena Torres',
-      email: 'etorres@gmail.com',
-      role: 'Paciente',
-      status: 'Activo',
-    },
-    {
-      fullName: 'Daniel Castro',
-      email: 'dcastro@gmail.com',
-      role: 'Médico',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Valeria Suarez',
-      email: 'vsuarez@gmail.com',
-      role: 'Médico',
-      status: 'Activo',
-    },
-    {
-      fullName: 'Miguel Romero',
-      email: 'mromero@gmail.com',
-      role: 'Usuario',
-      status: 'Activo',
-    },
-    {
-      fullName: 'Camila Herrera',
-      email: 'cherrera@gmail.com',
-      role: 'Médico',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Andres Gutierrez',
-      email: 'agutierrez@gmail.com',
-      role: 'Usuario',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Paula Blanco',
-      email: 'pblanco@gmail.com',
-      role: 'Médico',
-      status: 'Activo',
-    },
-    {
-      fullName: 'Alberto Ruiz',
-      email: 'aruiz@gmail.com',
-      role: 'Médico',
-      status: 'Activo',
-    },
-    {
-      fullName: 'Gabriela Mendoza',
-      email: 'gmendoza@gmail.com',
-      role: 'Médico',
-      status: 'Activo',
-    },
-    {
-      fullName: 'Rafael Soto',
-      email: 'rsoto@gmail.com',
-      role: 'Usuario',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Adriana Rios',
-      email: 'arios@gmail.com',
-      role: 'Médico',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Jorge Campos',
-      email: 'jcampos@gmail.com',
-      role: 'Usuario',
-      status: 'Inactivo',
-    },
-    {
-      fullName: 'Patricia Medina',
-      email: 'pmedina@gmail.com',
-      role: 'Paciente',
-      status: 'Activo',
-    },
-    {
-      fullName: 'Raul Guzman',
-      email: 'rguzman@gmail.com',
-      role: 'Usuario',
-      status: 'Activo',
-    },
-    {
-      fullName: 'Sandra Alvarado',
-      email: 'salvarado@gmail.com',
-      role: 'Usuario',
-      status: 'Activo',
-    },
-    {
-      fullName: 'Ivan Morales',
-      email: 'imorales@gmail.com',
-      role: 'Paciente',
-      status: 'Activo',
-    },
-  ];
+  // return [
+  //   {
+  //     email: 'luisf1988@gmail.com',
+  //     role: 'user',
+  //     status: true,
+  //   },
+  //   {
+  //     email: 'johndoe@example.com',
+  //     role: 'medic',
+  //     status: false,
+  //   },
+  //   {
+  //     email: 'janesmith@example.com',
+  //     role: 'assistant',
+  //     status: true,
+  //   },
+  //   {
+  //     email: 'peterparker@example.com',
+  //     role: 'user',
+  //     status: false,
+  //   },
+  //   {
+  //     email: 'brucewayne@example.com',
+  //     role: 'medic',
+  //     status: true,
+  //   },
+  //   {
+  //     email: 'clarkkent@example.com',
+  //     role: 'assistant',
+  //     status: false,
+  //   },
+  //   {
+  //     email: 'dianaprince@example.com',
+  //     role: 'user',
+  //     status: true,
+  //   },
+  //   {
+  //     email: 'barryallen@example.com',
+  //     role: 'medic',
+  //     status: false,
+  //   },
+  //   {
+  //     email: 'arthurcurry@example.com',
+  //     role: 'assistant',
+  //     status: true,
+  //   },
+  //   {
+  //     email: 'victorstone@example.com',
+  //     role: 'user',
+  //     status: false,
+  //   },
+  // ];
 }
 
 const Users = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalUsers, setTotalUsers] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
       const result = await getData();
       setData(result);
       setLoading(false);
+      setTotalUsers(result.length);
     }
 
     fetchData();
   }, []);
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return (
+      <div className='h-96 flex justify-center items-center'>
+        <Oval
+          visible={true}
+          height='100'
+          width='100'
+          color='#2563eb'
+          secondaryColor='#2563eb'
+          strokeWidth={6}
+          ariaLabel='oval-loading'
+        />
+      </div>
+    );
   }
 
   return (
     <>
       <div className='p-10 md:p-20 space-y-14'>
         <div className='flex flex-col gap-5 md:flex-row'>
-          <Card className='md:w-1/3'>
+          <Card className='md:w-1/3 md:h-fit'>
             <CardHeader>
-              <CardTitle>Total</CardTitle>
-              <CardDescription>Card Description</CardDescription>
+              <CardTitle className='text-3xl'>Estadísticas</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p>Card Content</p>
+            <CardContent className='text-2xl'>
+              <p>Total: {totalUsers}</p>
+              <p>Activos: </p>
+              <p>Inactivos: </p>
             </CardContent>
-            <CardFooter>
-              <p>Card Footer</p>
-            </CardFooter>
           </Card>
 
-          <Card className='md:w-1/3'>
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription>Card Description</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>Card Content</p>
-            </CardContent>
-            <CardFooter>
-              <p>Card Footer</p>
-            </CardFooter>
-          </Card>
-
-          <Card className='md:w-1/3'>
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription>Card Description</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>Card Content</p>
-            </CardContent>
-            <CardFooter>
-              <p>Card Footer</p>
-            </CardFooter>
-          </Card>
-        </div>
-
-        <NewUserDialog />
-
-        <div>
-          <UsersDataTable columns={usersColumns} data={data} />
+          <div className='md:w-2/3'>
+            <DataTable columns={usersColumns} data={data} />
+          </div>
         </div>
       </div>
     </>

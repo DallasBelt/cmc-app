@@ -20,9 +20,6 @@ import {
   Users,
 } from '@phosphor-icons/react';
 
-// const role = localStorage.getItem('role');
-const role = 'admin';
-
 const NavMenu = ({ onLinkClick }) => {
   return (
     <NavigationMenu className='flex'>
@@ -48,7 +45,13 @@ const NavMenu = ({ onLinkClick }) => {
           </NavLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
+        <NavigationMenuItem
+          className={({ isActive }) =>
+            isActive
+              ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
+              : ''
+          }
+        >
           <NavLink
             to='/super/users'
             className={({ isActive }) =>

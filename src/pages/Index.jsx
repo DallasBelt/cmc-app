@@ -53,21 +53,7 @@ const Index = () => {
   return (
     <div className='p-10 md:p-20 space-y-14'>
       <div className='flex flex-col gap-5 md:flex-row'>
-        <Card className='md:w-1/4'>
-          <CardHeader>
-            <CardTitle className='text-3xl'>Usuarios</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Total:</p>
-            <p>Activos:</p>
-            <p>Inactivos:</p>
-          </CardContent>
-          <CardFooter>
-            <p>Card Footer</p>
-          </CardFooter>
-        </Card>
-
-        <Card className='md:w-1/4'>
+        <Card className='md:w-1/3'>
           <CardHeader>
             <CardTitle className='text-3xl'>Médicos</CardTitle>
           </CardHeader>
@@ -81,7 +67,7 @@ const Index = () => {
           </CardFooter>
         </Card>
 
-        <Card className='md:w-1/4'>
+        <Card className='md:w-1/3'>
           <CardHeader>
             <CardTitle className='text-3xl'>Pacientes</CardTitle>
           </CardHeader>
@@ -95,7 +81,7 @@ const Index = () => {
           </CardFooter>
         </Card>
 
-        <Card className='md:w-1/4'>
+        <Card className='md:w-1/3'>
           <CardHeader>
             <CardTitle className='text-3xl'>Citas</CardTitle>
           </CardHeader>

@@ -14,8 +14,8 @@ const RegistrationDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='bg-green-500 hover:bg-green-400 w-3/4 mx-auto h-12 text-xl'>
-          CREAR CUENTA
+        <Button className='bg-green-500 hover:bg-green-400 mx-auto h-12 text-xl'>
+          REGISTRARSE
         </Button>
       </DialogTrigger>
       <DialogContent

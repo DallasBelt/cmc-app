@@ -25,6 +25,8 @@ import { loginSchema } from '@/utils/formSchema';
 const LoginForm = () => {
   const navigate = useNavigate();
 
+  const role = sessionStorage.getItem('role');
+
   // Hide/Show password button
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);

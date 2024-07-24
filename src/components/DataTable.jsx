@@ -22,7 +22,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-export function UsersDataTable({ columns, data }) {
+export function DataTable({ columns, data }) {
   const [sorting, setSorting] = React.useState([]);
   const [globalFilter, setGlobalFilter] = React.useState('');
 
@@ -41,7 +41,7 @@ export function UsersDataTable({ columns, data }) {
     },
     initialState: {
       pagination: {
-        pageSize: 10,
+        pageSize: 50,
       },
     },
     globalFilterFn: (row, columnId, filterValue) => {
@@ -68,23 +68,6 @@ export function UsersDataTable({ columns, data }) {
             onChange={handleGlobalFilterChange}
             className='w-full md:max-w-sm'
           />
-          <div className='flex items-center space-x-2 m-0'>
-            <span>Mostrar</span>
-            <select
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-              className='border rounded p-1'
-            >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  {pageSize}
-                </option>
-              ))}
-            </select>
-            <span>registros por página</span>
-          </div>
         </div>
         <div className='rounded-md border'>
           <Table>
@@ -137,16 +120,7 @@ export function UsersDataTable({ columns, data }) {
           </Table>
         </div>
 
-        <div className='flex flex-col space-y-5 items-center md:flex-row md:justify-between md:space-y-0'>
-          <div className='text-sm text-gray-700'>
-            Mostrando{' '}
-            {Math.min(
-              (table.getState().pagination.pageIndex + 1) *
-                table.getState().pagination.pageSize,
-              table.getFilteredRowModel().rows.length
-            )}{' '}
-            de {table.getFilteredRowModel().rows.length} registros
-          </div>
+        <div className='flex flex-col space-y-5 items-center md:flex-row md:justify-end md:space-y-0'>
           <div className='flex items-center space-x-2'>
             <Button
               variant='outline'

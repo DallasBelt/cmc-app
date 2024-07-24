@@ -15,9 +15,9 @@ const routes = [
   {
     path: '/super',
     element: (
-      <PrivateRoute>
-        <Root />
-      </PrivateRoute>
+      // <PrivateRoute>
+      <Root />
+      // </PrivateRoute>
     ),
     errorElement: <ErrorPage />,
     children: [
@@ -34,21 +34,6 @@ const routes = [
       {
         path: 'medics',
         element: <Medics />,
-        errorElement: <div>Oops! There was an error.</div>,
-      },
-      {
-        path: 'assistants',
-        element: <Assistants />,
-        errorElement: <div>Oops! There was an error.</div>,
-      },
-      {
-        path: 'patients',
-        element: <Patients />,
-        errorElement: <div>Oops! There was an error.</div>,
-      },
-      {
-        path: 'appointments',
-        element: <Appointments />,
         errorElement: <div>Oops! There was an error.</div>,
       },
     ],
