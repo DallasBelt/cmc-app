@@ -27,11 +27,14 @@ import { toast } from 'sonner';
 
 import { Oval } from 'react-loader-spinner';
 
-import { Eye, EyeSlash } from '@phosphor-icons/react';
+import { Eye, EyeSlash, UserPlus } from '@phosphor-icons/react';
 
 import { registrationSchema } from '@/utils/formSchema';
 
 const RegistrationForm = () => {
+  // Retrieve the token
+  const token = sessionStorage.getItem('token');
+
   // Hide/Show password button
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -73,13 +76,23 @@ const RegistrationForm = () => {
       );
 
       if (response && response.status === 201) {
-        toast.success('Registro exitoso', {
-          description: 'Ya puedes iniciar sesión.',
-        });
+        {
+          !token
+            ? toast.success('Registro exitoso', {
+                description: 'Ya puedes iniciar sesión.',
+              })
+            : toast.success('¡Enhorabuena!', {
+                description: 'Se ha creado un nuevo usuario.',
+              });
+        }
         form.reset();
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        {
+          !token
+            ? setTimeout(() => {
+                window.location.reload();
+              }, 2000)
+            : null;
+        }
       } else {
         toast.error('Oops...', {
           description: 'Error interno del servidor.',
@@ -254,13 +267,16 @@ const RegistrationForm = () => {
             )}
           /> */}
 
-        <div className='flex justify-center'>
+        <div className='flex justify-end pt-3'>
           <Button
             type='submit'
-            className='mt-5 h-10 text-xl bg-green-500 hover:bg-green-400'
+            className={
+              !token ? 'h-10 text-xl bg-green-500 hover:bg-green-400' : 'none'
+            }
             disabled={isSubmitting}
           >
-            Registrarse
+            <UserPlus size={24} className={!token ? 'hidden' : 'mr-2'} />
+            {!token ? 'Registrarse' : 'Crear'}
             {isSubmitting && (
               <span className='ms-2'>
                 <Oval

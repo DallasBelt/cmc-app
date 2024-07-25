@@ -22,8 +22,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+import RegistrationDialog from './RegistrationDialog';
+
 export function DataTable({ columns, data }) {
-  const [sorting, setSorting] = React.useState([]);
+  const [sorting, setSorting] = React.useState([{ id: 'email', desc: false }]);
   const [globalFilter, setGlobalFilter] = React.useState('');
 
   const table = useReactTable({
@@ -68,6 +70,7 @@ export function DataTable({ columns, data }) {
             onChange={handleGlobalFilterChange}
             className='w-full md:max-w-sm'
           />
+          <RegistrationDialog />
         </div>
         <div className='rounded-md border'>
           <Table>

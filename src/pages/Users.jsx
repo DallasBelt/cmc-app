@@ -10,8 +10,15 @@ import { Oval } from 'react-loader-spinner';
 
 async function getData() {
   try {
+    // Check auth
     const token = sessionStorage.getItem('token');
+    if (!token) {
+      toast.error('Oops!', {
+        description: `Error de autenticación.`,
+      });
+    }
 
+    // Send the request to the server
     const res = await axios.get(
       'https://cmc-api-42qy.onrender.com/api/v1/auth/all',
       { headers: { Authorization: `Bearer ${token}` } }
@@ -46,7 +53,7 @@ const Users = () => {
     }
 
     fetchData();
-  }, []);
+  }, [data]);
 
   if (loading) {
     return (
@@ -73,7 +80,7 @@ const Users = () => {
               <CardTitle className='text-3xl'>Estadísticas</CardTitle>
             </CardHeader>
             <CardContent className='text-2xl'>
-              <p>Total: {totalUsers}</p>
+              <p>Usuarios: {totalUsers}</p>
               <p>Activos: {totalUsersActive} </p>
               <p>Inactivos: {totalUsersInactive}</p>
             </CardContent>
