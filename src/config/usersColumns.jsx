@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 ('use client');
 
 import {
@@ -16,18 +17,87 @@ import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Switch } from '@/components/ui/switch';
 
+import { toast } from 'sonner';
+
 import { ArrowsDownUp, Trash, UserSwitch } from '@phosphor-icons/react';
 
-const deleteMedic = (id) => {
-  console.log('Deleting medic with id:', id);
+const changeRole = async (email, role) => {
+  try {
+    // Check auth
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      toast.error('Oops!', {
+        description: `Error de autenticación.`,
+      });
+    }
+
+    // Send the request to the server
+    const res = await axios.patch(
+      'https://cmc-api-42qy.onrender.com/api/v1/auth/change-role',
+      { email, role },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    // Give a toast message if failed
+    if (!res.data.success) {
+      toast.error('Oops...', {
+        description: 'Error al cambiar el rol.',
+      });
+    }
+
+    // Give a toast message if succeeded
+    toast.success('¡Enhorabuena!', {
+      description: `Se ha cambiado el rol del usuario.`,
+    });
+  } catch (error) {
+    console.error(error);
+    // Give a toast message if error
+    toast.error('Oops...', {
+      description: `Ha ocurrido un error.`,
+    });
+  }
+};
+
+const changeState = async (email) => {
+  try {
+    // Check auth
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      toast.error('Oops!', {
+        description: `Error de autenticación.`,
+      });
+    }
+
+    // Send the request to the server
+    const res = await axios.delete(
+      'https://cmc-api-42qy.onrender.com/api/v1/auth/',
+      { headers: { Authorization: `Bearer ${token}` }, body: email }
+    );
+
+    // Give a toast message if failed
+    if (!res.data.success) {
+      toast.error('Oops...', {
+        description: 'Error al cambiar el rol.',
+      });
+    }
+
+    // Give a toast message if succeeded
+    toast.success('¡Enhorabuena!', {
+      description: `Se ha eliminado el usuario.`,
+    });
+  } catch (error) {
+    console.error(error);
+    // Give a toast message if error
+    toast.error('Oops...', {
+      description: `Ha ocurrido un error.`,
+    });
+  }
 };
 
 export const usersColumns = [
@@ -45,22 +115,10 @@ export const usersColumns = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      return row.original.email;
+    },
   },
-  // {
-  //   accessorKey: 'role',
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         className='px-0 hover:bg-transparent'
-  //         variant='ghost'
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-  //       >
-  //         Rol
-  //         <ArrowsDownUp size={24} className='ml-2 h-4 w-4' />
-  //       </Button>
-  //     );
-  //   },
-  // },
   {
     accessorKey: 'isActive',
     header: ({ column }) => {
@@ -76,12 +134,13 @@ export const usersColumns = [
       );
     },
     cell: ({ row }) => {
-      const [status, setStatus] = useState(row.original.isActive);
+      const [statusToggle, setStatusToggle] = useState(row.original.isActive);
       return (
         <Switch
-          checked={status}
+          disabled={row.original.roles.toString() === 'admin'}
+          checked={statusToggle}
           onCheckedChange={() => {
-            setStatus(!status);
+            setStatusToggle(!statusToggle);
           }}
         />
       );
@@ -123,26 +182,58 @@ export const usersColumns = [
   {
     header: 'Acciones',
     id: 'actions',
-    cell: () => {
+    cell: ({ row }) => {
+      const [role, setRole] = useState('');
+      const email = row.original.email;
+
       return (
         <>
           {/* Switch role button */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant='ghost' className='h-8 w-8 p-0'>
+              <Button
+                disabled={row.original.roles.toString() === 'admin'}
+                variant='ghost'
+                className='h-8 w-8 p-0'
+              >
                 <UserSwitch size={24} className='h-4 w-4' />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='p-5'>
-              <RadioGroup>
+              <RadioGroup
+                defaultValue={
+                  row.original.roles.toString() === 'assistant'
+                    ? 'medic'
+                    : row.original.roles.toString() === 'medic'
+                    ? 'assistant'
+                    : ''
+                }
+                onValueChange={(value) => setRole(value)}
+              >
                 <div className='flex items-center space-x-2'>
-                  <RadioGroupItem value='medic' id='medic' />
+                  <RadioGroupItem
+                    value='medic'
+                    id='medic'
+                    disabled={row.original.roles.toString() === 'medic'}
+                  />
                   <Label htmlFor='medic'>Médico</Label>
                 </div>
                 <div className='flex items-center space-x-2'>
-                  <RadioGroupItem value='assistant' id='assistant' />
+                  <RadioGroupItem
+                    value='assistant'
+                    id='assistant'
+                    disabled={row.original.roles.toString() === 'assistant'}
+                  />
                   <Label htmlFor='assistant'>Asistente</Label>
                 </div>
+                <Button
+                  id='changeRole'
+                  onClick={() => {
+                    changeRole(email, role);
+                  }}
+                >
+                  Cambiar rol
+                </Button>
               </RadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -150,7 +241,12 @@ export const usersColumns = [
           {/* Delete button */}
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant='ghost' className='h-8 w-8 p-0'>
+              <Button
+                onClick={() => deleteUser(row.original.email)}
+                disabled={row.original.roles.toString() === 'admin'}
+                variant='ghost'
+                className='h-8 w-8 p-0'
+              >
                 <Trash size={24} className='h-4 w-4' />
               </Button>
             </AlertDialogTrigger>
@@ -165,7 +261,10 @@ export const usersColumns = [
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>No, cancelar</AlertDialogCancel>
-                <AlertDialogAction className='bg-red-600 hover:bg-red-500'>
+                <AlertDialogAction
+                  onClick={() => deleteUser()}
+                  className='bg-red-600 hover:bg-red-500'
+                >
                   Sí, continuar
                 </AlertDialogAction>
               </AlertDialogFooter>

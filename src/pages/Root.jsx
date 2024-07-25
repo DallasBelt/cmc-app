@@ -28,7 +28,7 @@ const Root = () => {
   return (
     <>
       <Toaster
-        position='top-right'
+        position='bottom-right'
         theme='light'
         richColors
         toastOptions={{}}

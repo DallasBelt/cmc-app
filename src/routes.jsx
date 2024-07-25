@@ -15,9 +15,9 @@ const routes = [
   {
     path: '/super',
     element: (
-      // <PrivateRoute>
-      <Root />
-      // </PrivateRoute>
+      <PrivateRoute>
+        <Root />
+      </PrivateRoute>
     ),
     errorElement: <ErrorPage />,
     children: [

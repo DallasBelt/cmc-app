@@ -1,14 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { usersColumns } from '@/config/usersColumns';
 import { DataTable } from '@/components/DataTable';
@@ -16,73 +9,27 @@ import { DataTable } from '@/components/DataTable';
 import { Oval } from 'react-loader-spinner';
 
 async function getData() {
-  const token = sessionStorage.getItem('token');
+  try {
+    const token = sessionStorage.getItem('token');
 
-  const res = await axios.get(
-    'https://cmc-api-42qy.onrender.com/api/v1/auth/all',
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+    const res = await axios.get(
+      'https://cmc-api-42qy.onrender.com/api/v1/auth/all',
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-  return res.data.data;
-  // Fetch data from your API here.
-  // return [
-  //   {
-  //     email: 'luisf1988@gmail.com',
-  //     role: 'user',
-  //     status: true,
-  //   },
-  //   {
-  //     email: 'johndoe@example.com',
-  //     role: 'medic',
-  //     status: false,
-  //   },
-  //   {
-  //     email: 'janesmith@example.com',
-  //     role: 'assistant',
-  //     status: true,
-  //   },
-  //   {
-  //     email: 'peterparker@example.com',
-  //     role: 'user',
-  //     status: false,
-  //   },
-  //   {
-  //     email: 'brucewayne@example.com',
-  //     role: 'medic',
-  //     status: true,
-  //   },
-  //   {
-  //     email: 'clarkkent@example.com',
-  //     role: 'assistant',
-  //     status: false,
-  //   },
-  //   {
-  //     email: 'dianaprince@example.com',
-  //     role: 'user',
-  //     status: true,
-  //   },
-  //   {
-  //     email: 'barryallen@example.com',
-  //     role: 'medic',
-  //     status: false,
-  //   },
-  //   {
-  //     email: 'arthurcurry@example.com',
-  //     role: 'assistant',
-  //     status: true,
-  //   },
-  //   {
-  //     email: 'victorstone@example.com',
-  //     role: 'user',
-  //     status: false,
-  //   },
-  // ];
+    return res.data.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return [];
+  }
 }
 
 const Users = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalUsers, setTotalUsers] = useState(0);
+  const [totalUsersActive, setTotalUsersActive] = useState(0);
+  const [totalUsersInactive, setTotalUsersInactive] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
@@ -90,6 +37,12 @@ const Users = () => {
       setData(result);
       setLoading(false);
       setTotalUsers(result.length);
+      setTotalUsersActive(
+        result.filter((user) => user.isActive === true).length
+      );
+      setTotalUsersInactive(
+        result.filter((user) => user.isActive === false).length
+      );
     }
 
     fetchData();
@@ -121,8 +74,8 @@ const Users = () => {
             </CardHeader>
             <CardContent className='text-2xl'>
               <p>Total: {totalUsers}</p>
-              <p>Activos: </p>
-              <p>Inactivos: </p>
+              <p>Activos: {totalUsersActive} </p>
+              <p>Inactivos: {totalUsersInactive}</p>
             </CardContent>
           </Card>
 
