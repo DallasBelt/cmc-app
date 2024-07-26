@@ -26,7 +26,7 @@ const NavMenu = ({ onLinkClick }) => {
       <NavigationMenuList className='flex flex-col items-start gap-5 md:flex-row'>
         <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb] ms-1'>
           <NavLink
-            to='/super'
+            to='/'
             className={({ isActive }) =>
               isActive
                 ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
@@ -45,15 +45,9 @@ const NavMenu = ({ onLinkClick }) => {
           </NavLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem
-          className={({ isActive }) =>
-            isActive
-              ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
-              : ''
-          }
-        >
+        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
           <NavLink
-            to='/super/users'
+            to='/users'
             className={({ isActive }) =>
               isActive
                 ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
@@ -71,15 +65,9 @@ const NavMenu = ({ onLinkClick }) => {
           </NavLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem
-          className={({ isActive }) =>
-            isActive
-              ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
-              : ''
-          }
-        >
+        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
           <NavLink
-            to='/super/medics'
+            to='/medics'
             className={({ isActive }) =>
               isActive
                 ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
@@ -99,7 +87,7 @@ const NavMenu = ({ onLinkClick }) => {
 
         <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
           <NavLink
-            to='/super/assistants'
+            to='/assistants'
             className={({ isActive }) =>
               isActive
                 ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
@@ -119,7 +107,7 @@ const NavMenu = ({ onLinkClick }) => {
 
         <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
           <NavLink
-            to='/super/patients'
+            to='/patients'
             className={({ isActive }) =>
               isActive
                 ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
@@ -139,7 +127,7 @@ const NavMenu = ({ onLinkClick }) => {
 
         <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
           <NavLink
-            to='/super/appointments'
+            to='/appointments'
             className={({ isActive }) =>
               isActive
                 ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'

@@ -9,11 +9,16 @@ import LoginPage from './pages/Login';
 import CompleteRegistration from './pages/CompleteRegistration';
 import ErrorPage from './pages/NotFound';
 import ForgotPasswordPage from './pages/ForgotPassword';
-import { PrivateRoute, PublicRoute } from './components/ProtectedRoutes';
+import {
+  PrivateRoute,
+  PublicRoute,
+  AdminRoute,
+  MedicRoute,
+} from './components/ProtectedRoutes';
 
 const routes = [
   {
-    path: '/super',
+    path: '/',
     element: (
       <PrivateRoute>
         <Root />
@@ -36,18 +41,6 @@ const routes = [
         element: <Medics />,
         errorElement: <div>Oops! There was an error.</div>,
       },
-    ],
-  },
-  {
-    path: '/medic',
-    element: <Root />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        index: true,
-        element: <Index />,
-        errorElement: <div>Oops! There was an error.</div>,
-      },
       {
         path: 'assistants',
         element: <Assistants />,
@@ -63,16 +56,12 @@ const routes = [
         element: <Appointments />,
         errorElement: <div>Oops! There was an error.</div>,
       },
+      {
+        path: 'complete-registration',
+        element: <Appointments />,
+        errorElement: <div>Oops! There was an error.</div>,
+      },
     ],
-  },
-  {
-    path: '/complete-registration',
-    element: (
-      <PrivateRoute>
-        <CompleteRegistration />
-      </PrivateRoute>
-    ),
-    errorElement: <div>Oops! There was an error.</div>,
   },
   {
     path: '/login',
