@@ -21,6 +21,9 @@ import {
 } from '@phosphor-icons/react';
 
 const NavMenu = ({ onLinkClick }) => {
+  const roles = sessionStorage.getItem('roles');
+  const isAdmin = roles && roles.includes('admin');
+
   return (
     <NavigationMenu className='flex'>
       <NavigationMenuList className='flex flex-col items-start gap-5 md:flex-row'>
@@ -45,7 +48,13 @@ const NavMenu = ({ onLinkClick }) => {
           </NavLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
+        <NavigationMenuItem
+          className={
+            isAdmin
+              ? 'hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'
+              : 'hidden'
+          }
+        >
           <NavLink
             to='/users'
             className={({ isActive }) =>
@@ -65,7 +74,13 @@ const NavMenu = ({ onLinkClick }) => {
           </NavLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
+        <NavigationMenuItem
+          className={
+            isAdmin
+              ? 'hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'
+              : 'hidden'
+          }
+        >
           <NavLink
             to='/medics'
             className={({ isActive }) =>

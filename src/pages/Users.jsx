@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { usersColumns } from '@/config/usersColumns';
 import { DataTable } from '@/components/DataTable';
+import { toast } from 'sonner';
 
 import { Oval } from 'react-loader-spinner';
 

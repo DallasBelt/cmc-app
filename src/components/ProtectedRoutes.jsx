@@ -5,27 +5,22 @@ export const PrivateRoute = ({ children }) => {
   return token ? children : <Navigate to='/login' replace />;
 };
 
-export const AdminRoute = ({ children }) => {
-  const token = sessionStorage.getItem('token');
-  const roles = sessionStorage.getItem('roles');
-  return token && roles.includes('admin') ? (
-    children
-  ) : (
-    <Navigate to='/login' replace />
-  );
-};
-
-export const MedicRoute = ({ children }) => {
-  const token = sessionStorage.getItem('token');
-  const roles = sessionStorage.getItem('roles');
-  return token && roles.includes('medic') ? (
-    children
-  ) : (
-    <Navigate to='/login' replace />
-  );
-};
-
 export const PublicRoute = ({ children }) => {
   const token = sessionStorage.getItem('token');
-  return token ? <Navigate to='/super' replace /> : children;
+  return token ? <Navigate to='/' replace /> : children;
+};
+
+export const RoleBasedRoute = ({ children, allowedRoles }) => {
+  const token = sessionStorage.getItem('token');
+  const role = sessionStorage.getItem('roles');
+
+  if (!token) {
+    return <Navigate to='/login' replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(role)) {
+    return <Navigate to='/unauthorized' replace />;
+  }
+
+  return children;
 };

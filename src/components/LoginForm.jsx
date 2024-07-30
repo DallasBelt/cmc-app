@@ -48,30 +48,27 @@ const LoginForm = () => {
       // Hide password field
       setShowPassword(false);
 
+      // Send the request to the server
       const response = await axios.post(
         'https://cmc-api-42qy.onrender.com/api/v1/auth/login',
         values
       );
 
-      if (response && response.status !== 201) {
-        toast.error('Oops...', {
-          description: 'Error interno del servidor.',
-        });
-        form.reset();
-      }
-
+      // Write the token and role to the sessionStorage
       sessionStorage.setItem('token', response.data.token);
+      sessionStorage.setItem('roles', response.data.roles);
 
       // Redirect after timeout
-      navigate('/super', {
+      navigate('/', {
         state: {
           showToast: true,
           toastMessage: 'Ha iniciado sesión correctamente.',
         },
       });
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        toast.error('Error', {
+      console.error(error);
+      if (error.response.status === 401) {
+        toast.error('Oops...', {
           description: 'Revise sus credenciales.',
         });
       } else {

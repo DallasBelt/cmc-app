@@ -1,78 +1,31 @@
 import { useEffect, useState } from 'react';
 
+import { toast } from 'sonner';
+
 import { medicsColumns } from '@/config/medicsColumns';
 import { DataTable } from '@/components/DataTable';
 
 async function getData() {
-  // Fetch data from your API here.
-  return [
-    {
-      fullName: 'Luis Fernandez',
-      email: 'lfernandez@gmail.com',
-      specialty: 'Cardiología',
-      status: true,
-    },
-    {
-      fullName: 'David Ramirez',
-      email: 'dramirez@gmail.com',
-      specialty: 'Neurología',
-      status: false,
-    },
-    {
-      fullName: 'Ricardo Vega',
-      email: 'rvega@gmail.com',
-      specialty: 'Pediatría',
-      status: false,
-    },
-    {
-      fullName: 'Daniel Castro',
-      email: 'dcastro@gmail.com',
-      specialty: 'Gastroenterología',
-      status: false,
-    },
-    {
-      fullName: 'Valeria Suarez',
-      email: 'vsuarez@gmail.com',
-      specialty: 'Endocrinología',
-      status: true,
-    },
-    {
-      fullName: 'Paula Blanco',
-      email: 'pblanco@gmail.com',
-      specialty: 'Neumología',
-      status: true,
-    },
-    {
-      fullName: 'Alberto Ruiz',
-      email: 'aruiz@gmail.com',
-      specialty: 'Ortopedia',
-      status: true,
-    },
-    {
-      fullName: 'Gabriela Mendoza',
-      email: 'gmendoza@gmail.com',
-      specialty: 'Oftalmología',
-      status: true,
-    },
-    {
-      fullName: 'Adriana Rios',
-      email: 'arios@gmail.com',
-      specialty: 'Dermatología',
-      status: false,
-    },
-    {
-      fullName: 'Roberto Reyes',
-      email: 'rreyes@gmail.com',
-      specialty: 'Urología',
-      status: false,
-    },
-    {
-      fullName: 'Diego Alonso',
-      email: 'dalonso@gmail.com',
-      specialty: 'Radiología',
-      status: true,
-    },
-  ];
+  try {
+    // Check auth
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      toast.error('Oops!', {
+        description: `Error de autenticación.`,
+      });
+    }
+
+    // Send the request to the server
+    const res = await axios.get(
+      'https://cmc-api-42qy.onrender.com/api/v1/user-info',
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    return res.data.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return [];
+  }
 }
 
 const Medics = () => {

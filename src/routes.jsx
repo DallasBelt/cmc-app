@@ -5,15 +5,13 @@ import Medics from './pages/Medics';
 import Assistants from './pages/Assistants';
 import Patients from './pages/Patients';
 import Appointments from './pages/Appointments';
-import LoginPage from './pages/Login';
-import CompleteRegistration from './pages/CompleteRegistration';
-import ErrorPage from './pages/NotFound';
+import Login from './pages/Login';
+import Error from './pages/Error';
 import ForgotPasswordPage from './pages/ForgotPassword';
 import {
   PrivateRoute,
   PublicRoute,
-  AdminRoute,
-  MedicRoute,
+  RoleBasedRoute,
 } from './components/ProtectedRoutes';
 
 const routes = [
@@ -24,42 +22,65 @@ const routes = [
         <Root />
       </PrivateRoute>
     ),
-    errorElement: <ErrorPage />,
+    errorElement: <Error />,
     children: [
       {
         index: true,
         element: <Index />,
-        errorElement: <div>Oops! There was an error.</div>,
+        errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
         path: 'users',
-        element: <Users />,
-        errorElement: <div>Oops! There was an error.</div>,
+        element: (
+          <RoleBasedRoute allowedRoles={['admin']}>
+            <Users />
+          </RoleBasedRoute>
+        ),
+        errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
         path: 'medics',
-        element: <Medics />,
-        errorElement: <div>Oops! There was an error.</div>,
+        element: (
+          <RoleBasedRoute allowedRoles={['admin']}>
+            <Medics />
+          </RoleBasedRoute>
+        ),
+        errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
         path: 'assistants',
-        element: <Assistants />,
-        errorElement: <div>Oops! There was an error.</div>,
+        element: (
+          <RoleBasedRoute allowedRoles={['admin', 'medic']}>
+            <Assistants />
+          </RoleBasedRoute>
+        ),
+        errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
         path: 'patients',
-        element: <Patients />,
-        errorElement: <div>Oops! There was an error.</div>,
+        element: (
+          <RoleBasedRoute allowedRoles={['admin', 'medic']}>
+            <Patients />
+          </RoleBasedRoute>
+        ),
+        errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
         path: 'appointments',
-        element: <Appointments />,
-        errorElement: <div>Oops! There was an error.</div>,
+        element: (
+          <RoleBasedRoute allowedRoles={['medic']}>
+            <Appointments />
+          </RoleBasedRoute>
+        ),
+        errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
-        path: 'complete-registration',
-        element: <Appointments />,
-        errorElement: <div>Oops! There was an error.</div>,
+        path: '/unauthorized',
+        element: (
+          <div className='min-h-80 flex justify-center items-center text-3xl'>
+            <p>🚫 No tienes permiso para acceder a esta página 🚫</p>
+          </div>
+        ),
       },
     ],
   },
@@ -67,15 +88,21 @@ const routes = [
     path: '/login',
     element: (
       <PublicRoute>
-        <LoginPage />
+        <Login />
       </PublicRoute>
     ),
-    errorElement: <div>Oops! There was an error.</div>,
   },
   {
     path: '/forgot-password',
-    element: <ForgotPasswordPage />,
-    errorElement: <div>Oops! There was an error.</div>,
+    element: (
+      <PublicRoute>
+        <ForgotPasswordPage />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: '*',
+    element: <Error />,
   },
 ];
 
