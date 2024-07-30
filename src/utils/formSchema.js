@@ -37,12 +37,6 @@ export const registrationSchema = z
     confirmPassword: z
       .string()
       .min(1, { message: 'Confirmación de contraseña requerida' }),
-    // dob: z
-    //   .date()
-    //   .nullable()
-    //   .refine((val) => val !== null, {
-    //     message: 'Fecha de nacimiento requerida',
-    //   }),
   })
   .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {
@@ -61,20 +55,23 @@ export const loginSchema = z.object({
   password: z.string().min(1, 'Contraseña requerida'),
 });
 
-export const newPatientSchema = z.object({
-  firstName: z.string().min(1, 'Nombre requerido'),
-  lastName: z.string().min(1, 'Apellido requerido'),
-  id: z
+export const userInfoSchema = z.object({
+  dniType: z.string().min(1, 'Tipo de identificación requerido'),
+  dni: z
     .string()
     .min(1, 'Identificación requerida')
     .max(10)
     .refine((val) => ecIdValidator(val), {
       message: 'Identificación inválida',
     }),
-  email: z
-    .string()
-    .min(1, { message: 'Correo electrónico requerido' })
-    .email('Correo electrónico no válido'),
+  firstName: z.string().min(1, 'Nombre requerido'),
+  lastName: z.string().min(1, 'Apellido requerido'),
+  dob: z
+    .date()
+    .nullable()
+    .refine((val) => val !== null, {
+      message: 'Fecha de nacimiento requerida',
+    }),
   phone: z
     .string()
     .min(1, 'Nº celular requerido')
@@ -83,10 +80,35 @@ export const newPatientSchema = z.object({
       message: 'Número celular inválido',
     }),
   address: z.string().min(1, 'Dirección requerida'),
+});
+
+export const patientSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: 'Correo electrónico requerido' })
+    .email('Correo electrónico no válido'),
+  dniType: z.string().min(1, 'Tipo de identificación requerido'),
+  dni: z
+    .string()
+    .min(1, 'Identificación requerida')
+    .max(10)
+    .refine((val) => ecIdValidator(val), {
+      message: 'Identificación inválida',
+    }),
+  firstName: z.string().min(1, 'Nombre requerido'),
+  lastName: z.string().min(1, 'Apellido requerido'),
   dob: z
     .date()
     .nullable()
     .refine((val) => val !== null, {
       message: 'Fecha de nacimiento requerida',
     }),
+  phone: z
+    .string()
+    .min(1, 'Nº celular requerido')
+    .max(10)
+    .refine((val) => ecPhoneNumberValidator(val), {
+      message: 'Número celular inválido',
+    }),
+  address: z.string().min(1, 'Dirección requerida'),
 });

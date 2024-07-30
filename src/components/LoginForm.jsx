@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 
 import { toast } from 'sonner';
 
-import { Oval } from 'react-loader-spinner';
+import { RotatingLines } from 'react-loader-spinner';
 
 import { Eye, EyeSlash } from '@phosphor-icons/react';
 
@@ -57,14 +57,38 @@ const LoginForm = () => {
       // Write the token and role to the sessionStorage
       sessionStorage.setItem('token', response.data.token);
       sessionStorage.setItem('roles', response.data.roles);
+      sessionStorage.setItem(
+        'isRegistrationComplete',
+        response.data.isRegistrationComplete
+      );
 
-      // Redirect after timeout
-      navigate('/', {
-        state: {
-          showToast: true,
-          toastMessage: 'Ha iniciado sesión correctamente.',
-        },
-      });
+      const roles = sessionStorage.getItem('roles');
+      const isRegistrationComplete = sessionStorage.getItem(
+        'isRegistrationComplete'
+      );
+
+      // If the role is 'user' don't allow login
+      if (roles.includes('user')) {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('roles');
+        return toast.error('Oops...', {
+          description: 'Esperando activación.',
+        });
+      } else if (
+        // If the role is 'medic' and the registration is not complete redirect to '/'complete-registration'
+        roles.includes('medic') &&
+        isRegistrationComplete.includes('false')
+      ) {
+        navigate('/complete-registration');
+      } else {
+        // Redirect to the home page
+        navigate('/', {
+          state: {
+            showToast: true,
+            toastMessage: 'Ha iniciado sesión correctamente.',
+          },
+        });
+      }
     } catch (error) {
       console.error(error);
       if (error.response.status === 401) {
@@ -138,14 +162,14 @@ const LoginForm = () => {
           INICIAR SESIÓN
           {isSubmitting && (
             <span className='ms-2'>
-              <Oval
+              <RotatingLines
                 visible={true}
                 height='20'
                 width='20'
-                color='#FFF'
-                secondaryColor='#2563eb'
-                strokeWidth={6}
-                ariaLabel='oval-loading'
+                strokeColor='#FFF'
+                strokeWidth={5}
+                animationDuration='0.75'
+                ariaLabel='rotating-lines-loading'
               />
             </span>
           )}

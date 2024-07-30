@@ -25,11 +25,11 @@ import {
 import { CalendarDots } from '@phosphor-icons/react';
 import { UserPlus } from '@phosphor-icons/react';
 
-import { newPatientSchema } from '@/utils/formSchema';
+import { patientSchema } from '@/utils/formSchema';
 
 const NewPatientForm = () => {
   const form = useForm({
-    resolver: zodResolver(newPatientSchema),
+    resolver: zodResolver(patientSchema),
     defaultValues: {
       firstName: '',
       lastName: '',

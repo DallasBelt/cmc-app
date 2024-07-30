@@ -7,7 +7,9 @@ import Patients from './pages/Patients';
 import Appointments from './pages/Appointments';
 import Login from './pages/Login';
 import Error from './pages/Error';
-import ForgotPasswordPage from './pages/ForgotPassword';
+import ForgotPassword from './pages/ForgotPassword';
+import CompleteRegistration from './pages/CompleteRegistration';
+
 import {
   PrivateRoute,
   PublicRoute,
@@ -96,9 +98,13 @@ const routes = [
     path: '/forgot-password',
     element: (
       <PublicRoute>
-        <ForgotPasswordPage />
+        <ForgotPassword />
       </PublicRoute>
     ),
+  },
+  {
+    path: '/complete-registration',
+    element: <CompleteRegistration />,
   },
   {
     path: '*',

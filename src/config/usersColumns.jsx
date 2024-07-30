@@ -30,7 +30,7 @@ const changeRole = async (email, role) => {
     const token = sessionStorage.getItem('token');
     if (!token) {
       toast.error('Oops!', {
-        description: `Error de autenticación.`,
+        description: 'Error de autenticación.',
       });
     }
 
@@ -74,6 +74,43 @@ const changeState = async (email) => {
     // Send the request to the server
     const res = await axios.patch(
       'https://cmc-api-42qy.onrender.com/api/v1/auth/soft-delete',
+      { email },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    // Give a toast message if failed
+    if (!res.data.success) {
+      toast.error('Oops...', {
+        description: 'Error al cambiar el estado.',
+      });
+    }
+
+    // Give a toast message if succeeded
+    toast.success('¡Enhorabuena!', {
+      description: `Se ha cambiado el estado del usuario.`,
+    });
+  } catch (error) {
+    console.error(error);
+    // Give a toast message if error
+    toast.error('Oops...', {
+      description: `Ha ocurrido un error.`,
+    });
+  }
+};
+
+const getUserInfo = async (id) => {
+  try {
+    // Check auth
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      toast.error('Oops!', {
+        description: `Error de autenticación.`,
+      });
+    }
+
+    // Send the request to the server
+    const res = await axios.get(
+      'https://cmc-api-42qy.onrender.com/api/v1/user-info',
       { email },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -188,7 +225,10 @@ export const usersColumns = [
               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
               <Dialog>
                 <DialogTrigger>
-                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <DropdownMenuItem
+                    onSelect={(e) => e.preventDefault()}
+                    className='cursor-pointer'
+                  >
                     Cambiar rol
                   </DropdownMenuItem>
                 </DialogTrigger>
@@ -231,7 +271,10 @@ export const usersColumns = [
 
               <Dialog>
                 <DialogTrigger>
-                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <DropdownMenuItem
+                    onSelect={(e) => e.preventDefault()}
+                    className='cursor-pointer'
+                  >
                     Cambiar estado
                   </DropdownMenuItem>
                 </DialogTrigger>
@@ -268,6 +311,32 @@ export const usersColumns = [
                       <FloppyDisk size={24} className='mr-2' />
                       Guardar
                     </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              <Dialog>
+                <DialogTrigger>
+                  <DropdownMenuItem
+                    onSelect={(e) => e.preventDefault()}
+                    className='cursor-pointer'
+                  >
+                    Ver detalles
+                  </DropdownMenuItem>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Detalles del usuario</DialogTitle>
+                    <DialogDescription>
+                      Seleccione un nuevo estado para el usuario.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div>
+                    <p>Identificacion: dni</p>
+                    <p>Nombres: fullName</p>
+                    <p>Fecha de nacimiento: birthDate</p>
+                    <p>Telefono: phone</p>
+                    <p>Direccion: address</p>
                   </div>
                 </DialogContent>
               </Dialog>

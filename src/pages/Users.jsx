@@ -7,7 +7,7 @@ import { usersColumns } from '@/config/usersColumns';
 import { DataTable } from '@/components/DataTable';
 import { toast } from 'sonner';
 
-import { Oval } from 'react-loader-spinner';
+import { RotatingLines } from 'react-loader-spinner';
 
 async function getData() {
   try {
@@ -38,6 +38,8 @@ const Users = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalUsersActive, setTotalUsersActive] = useState(0);
   const [totalUsersInactive, setTotalUsersInactive] = useState(0);
+  const [totalMedics, setTotalMedics] = useState(0);
+  const [totalAssistants, setTotalAssistants] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
@@ -51,6 +53,12 @@ const Users = () => {
       setTotalUsersInactive(
         result.filter((user) => user.isActive === false).length
       );
+      setTotalMedics(
+        result.filter((user) => user.roles.includes('medic')).length
+      );
+      setTotalAssistants(
+        result.filter((user) => user.roles.includes('assistant')).length
+      );
     }
 
     fetchData();
@@ -59,14 +67,14 @@ const Users = () => {
   if (loading) {
     return (
       <div className='h-96 flex justify-center items-center'>
-        <Oval
+        <RotatingLines
           visible={true}
           height='100'
           width='100'
-          color='#2563eb'
-          secondaryColor='#2563eb'
-          strokeWidth={6}
-          ariaLabel='oval-loading'
+          strokeColor='#2563eb'
+          strokeWidth={5}
+          animationDuration='0.75'
+          ariaLabel='rotating-lines-loading'
         />
       </div>
     );
@@ -80,10 +88,17 @@ const Users = () => {
             <CardHeader>
               <CardTitle className='text-3xl'>Estadísticas</CardTitle>
             </CardHeader>
-            <CardContent className='text-2xl'>
-              <p>Usuarios: {totalUsers}</p>
-              <p>Activos: {totalUsersActive} </p>
-              <p>Inactivos: {totalUsersInactive}</p>
+            <CardContent className='text-2xl flex gap-10'>
+              <div>
+                <p>{totalUsers} Usuarios</p>
+                <p>{totalUsersActive} Activos</p>
+                <p>{totalUsersInactive} Inactivos</p>
+              </div>
+              <div>
+                <p>{totalMedics} Médicos</p>
+                <p>{totalAssistants} Asistentes</p>
+                <p>0 Pacientes</p>
+              </div>
             </CardContent>
           </Card>
 
