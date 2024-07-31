@@ -1,4 +1,4 @@
-export function ecIdValidator(id) {
+export function cedulaValidator(id) {
   if (id.length !== 10) {
     return false;
   }
@@ -25,3 +25,28 @@ export function ecIdValidator(id) {
 
   return calculatedVerificationDigit === verificationDigit;
 }
+
+export function rucValidator(id) {
+  // Must have 13 digits
+  if (id.length !== 13) {
+    return false;
+  }
+
+  // Extract cedula (first 10 digits) and sufix (last 3 digits)
+  const cedula = id.substring(0, 10);
+  const suffix = id.substring(10);
+
+  // Check if the sufix is '001'
+  if (suffix !== '001') {
+    return false;
+  }
+
+  // Validate cedula
+  return cedulaValidator(cedula);
+}
+
+export const passportValidator = (passportNumber) => {
+  const lengthValid = passportNumber.length >= 6 && passportNumber.length <= 9;
+  const formatValid = /^[A-Z0-9]+$/.test(passportNumber);
+  return lengthValid && formatValid;
+};

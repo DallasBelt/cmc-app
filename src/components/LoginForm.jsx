@@ -54,7 +54,7 @@ const LoginForm = () => {
         values
       );
 
-      // Write the token and role to the sessionStorage
+      // Write 'token', 'roles' and 'isRegistrationComplete' to the sessionStorage
       sessionStorage.setItem('token', response.data.token);
       sessionStorage.setItem('roles', response.data.roles);
       sessionStorage.setItem(
