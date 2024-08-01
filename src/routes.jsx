@@ -104,7 +104,11 @@ const routes = [
   },
   {
     path: '/complete-registration',
-    element: <CompleteRegistration />,
+    element: (
+      <PrivateRoute>
+        <CompleteRegistration />
+      </PrivateRoute>
+    ),
   },
   {
     path: '*',

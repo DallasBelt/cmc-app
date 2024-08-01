@@ -54,18 +54,12 @@ const LoginForm = () => {
         values
       );
 
-      // Write 'token', 'roles' and 'isRegistrationComplete' to the sessionStorage
+      // Write 'token' and 'roles' to the sessionStorage
       sessionStorage.setItem('token', response.data.token);
       sessionStorage.setItem('roles', response.data.roles);
-      sessionStorage.setItem(
-        'isRegistrationComplete',
-        response.data.isRegistrationComplete
-      );
 
+      // Get the value of 'roles' from sessionStorage
       const roles = sessionStorage.getItem('roles');
-      const isRegistrationComplete = sessionStorage.getItem(
-        'isRegistrationComplete'
-      );
 
       // If the role is 'user' don't allow login
       if (roles.includes('user')) {
@@ -74,11 +68,7 @@ const LoginForm = () => {
         return toast.error('Oops...', {
           description: 'Esperando activación.',
         });
-      } else if (
-        // If the role is 'medic' and the registration is not complete redirect to '/'complete-registration'
-        roles.includes('medic') &&
-        isRegistrationComplete.includes('false')
-      ) {
+      } else if (roles.includes('medic')) {
         navigate('/complete-registration');
       } else {
         // Redirect to the home page
@@ -115,6 +105,7 @@ const LoginForm = () => {
             <FormItem>
               <FormControl>
                 <Input
+                  disabled={isSubmitting}
                   type='email'
                   placeholder='Correo electrónico'
                   className='h-12 text-lg select-none'
@@ -136,6 +127,7 @@ const LoginForm = () => {
               <FormControl>
                 <div className='flex items-center relative'>
                   <Input
+                    disabled={isSubmitting}
                     type={showPassword ? 'text' : 'password'}
                     placeholder='Contraseña'
                     className='h-12 text-lg'
