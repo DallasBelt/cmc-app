@@ -77,6 +77,21 @@ export const userInfoSchema = z
         message: 'Número celular inválido',
       }),
     address: z.string().min(1, { message: 'Dirección requerida' }),
+    specialty: z
+      .array(z.string())
+      .optional()
+      .refine((value) => value.some((item) => item), {
+        message: 'Seleccione al menos una especialidad',
+      }),
+    registry: z.string().min(1, { message: 'Registro requerido' }).optional(),
+    checkIn: z.string().time().optional(),
+    checkOut: z.string().time().optional(),
+    days: z
+      .array(z.string())
+      .optional()
+      .refine((value) => value.some((item) => item), {
+        message: 'Seleccione al menos un día',
+      }),
   })
   .superRefine((data, ctx) => {
     if (data.dniType === 'cedula') {

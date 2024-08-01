@@ -135,7 +135,11 @@ const LoginForm = () => {
                   />
                   <span
                     onClick={togglePasswordVisibility}
-                    className='cursor-pointer absolute right-3 text-slate-500'
+                    className={
+                      isSubmitting
+                        ? 'cursor-disabled absolute right-3 text-slate-500'
+                        : 'cursor-pointer absolute right-3 text-slate-500'
+                    }
                   >
                     {showPassword ? <Eye size={24} /> : <EyeSlash size={24} />}
                   </span>

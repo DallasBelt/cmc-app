@@ -11,19 +11,21 @@ import { es } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from '@/components/ui/form';
-import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormLabel,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
   Popover,
@@ -41,18 +43,80 @@ import { Toaster } from '@/components/ui/sonner';
 
 import { toast } from 'sonner';
 
+import { TimePicker } from 'antd';
+
 import { RotatingLines } from 'react-loader-spinner';
 
 import { CalendarDots } from '@phosphor-icons/react';
 
+// import { TimePicker } from '@/components/TimePicker';
 import { userInfoSchema } from '@/utils/formSchema';
 import { PhoneInput } from '@/components/PhoneInput';
+import { Label } from 'recharts';
+
+const specialties = [
+  {
+    id: 'accupuncture',
+    label: 'Acupuntura',
+  },
+  {
+    id: 'dermatology',
+    label: 'Dermatología',
+  },
+  {
+    id: 'nutrition',
+    label: 'Nutrición',
+  },
+  {
+    id: 'oral-rehab',
+    label: 'Rehabilitación Oral',
+  },
+  {
+    id: 'orthodontics',
+    label: 'Ortodoncia',
+  },
+  {
+    id: 'surgery',
+    label: 'Cirugía',
+  },
+];
+
+const days = [
+  {
+    id: 'monday',
+    label: 'Lunes',
+  },
+  {
+    id: 'tuesday',
+    label: 'Martes',
+  },
+  {
+    id: 'wednesday',
+    label: 'Miércoles',
+  },
+  {
+    id: 'thursday',
+    label: 'Jueves',
+  },
+  {
+    id: 'friday',
+    label: 'Viernes',
+  },
+  {
+    id: 'saturday',
+    label: 'Sábado',
+  },
+];
 
 const CompleteRegistration = () => {
   const navigate = useNavigate();
 
   // Loading with React Spinners
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const disabledTime = () => ({
+    disabledHours: () => [0, 1, 2, 3, 4, 5, 6, 7, 13, 20, 21, 22, 23],
+  });
 
   const form = useForm({
     resolver: zodResolver(userInfoSchema),
@@ -64,6 +128,11 @@ const CompleteRegistration = () => {
       dob: null,
       phone: '',
       address: '',
+      specialty: [],
+      registry: '',
+      checkIn: '',
+      checkOut: '',
+      days: [],
     },
   });
 
@@ -147,112 +216,99 @@ const CompleteRegistration = () => {
           <p>Por favor, llene la información solicitada.</p>
         </div>
 
-        <Carousel>
-          <CarouselContent>
-            <CarouselItem>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className='space-y-4'
-                >
-                  <div className='flex flex-col space-y-4 md:flex-row md:gap-2.5 md:space-y-0'>
-                    <FormField
-                      control={form.control}
-                      name='firstName'
-                      render={({ field }) => (
-                        <FormItem className='w-full'>
-                          <FormControl>
-                            <div className='flex items-center'>
-                              <Input
-                                type='text'
-                                placeholder='Nombre'
-                                className='h-10 text-lg'
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+        <Carousel className='w-2/3 md:w-1/3'>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <CarouselContent className='items-center'>
+                <CarouselItem className='space-y-4 md:px-10'>
+                  <FormField
+                    control={form.control}
+                    name='firstName'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <FormControl>
+                          <Input
+                            type='text'
+                            placeholder='Nombre'
+                            className='h-10 text-lg'
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                    <FormField
-                      control={form.control}
-                      name='lastName'
-                      render={({ field }) => (
-                        <FormItem className='w-full'>
-                          <FormControl>
-                            <div className='flex items-center'>
-                              <Input
-                                type='text'
-                                placeholder='Apellido'
-                                className='h-10 text-lg'
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name='lastName'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <FormControl>
+                          <Input
+                            type='text'
+                            placeholder='Apellido'
+                            className='h-10 text-lg'
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                  <div className='flex flex-col space-y-4 md:flex-row md:gap-2.5 md:space-y-0'>
-                    <FormField
-                      control={form.control}
-                      name='dniType'
-                      render={({ field }) => (
-                        <FormItem className='w-full'>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger
-                                className={`h-10 text-lg ${
-                                  field.value ? 'text-black' : 'text-slate-500'
-                                }`}
-                              >
-                                <SelectValue placeholder='Tipo de documento' />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value='cedula' className='text-lg'>
-                                Cédula
-                              </SelectItem>
-                              <SelectItem value='ruc' className='text-lg'>
-                                RUC
-                              </SelectItem>
-                              <SelectItem value='passport' className='text-lg'>
-                                Pasaporte
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name='dni'
-                      render={({ field }) => (
-                        <FormItem className='w-full'>
+                  <FormField
+                    control={form.control}
+                    name='dniType'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
                           <FormControl>
-                            <div className='flex items-center'>
-                              <Input
-                                type='text'
-                                placeholder='Nº de documento'
-                                className='h-10 text-lg'
-                                {...field}
-                              />
-                            </div>
+                            <SelectTrigger
+                              className={`h-10 text-lg ${
+                                field.value ? 'text-black' : 'text-slate-500'
+                              }`}
+                            >
+                              <SelectValue placeholder='Tipo de documento' />
+                            </SelectTrigger>
                           </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                          <SelectContent>
+                            <SelectItem value='cedula' className='text-lg'>
+                              Cédula
+                            </SelectItem>
+                            <SelectItem value='ruc' className='text-lg'>
+                              RUC
+                            </SelectItem>
+                            <SelectItem value='passport' className='text-lg'>
+                              Pasaporte
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name='dni'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <FormControl>
+                          <Input
+                            type='text'
+                            placeholder='Nº de documento'
+                            className='h-10 text-lg'
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <FormField
                     control={form.control}
@@ -310,9 +366,7 @@ const CompleteRegistration = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <div className='flex items-center'>
-                            <PhoneInput placeholder='Celular' {...field} />
-                          </div>
+                          <PhoneInput placeholder='Celular' {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -325,12 +379,158 @@ const CompleteRegistration = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <div className='flex items-center relative'>
-                            <Input
-                              type='text'
-                              placeholder='Dirección'
-                              className='h-10 text-lg'
-                              {...field}
+                          <Input
+                            type='text'
+                            placeholder='Dirección'
+                            className='h-10 text-lg'
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CarouselItem>
+
+                <CarouselItem className='space-y-4 md:px-10 md:py-1'>
+                  <FormField
+                    control={form.control}
+                    name='registry'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            type='text'
+                            placeholder='Registro'
+                            className='h-10 text-lg'
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name='specialty'
+                    render={() => (
+                      <FormItem>
+                        <FormLabel className='text-lg font-normal text-slate-500'>
+                          Especialidad
+                        </FormLabel>
+                        <div className='px-2 md:grid md:grid-cols-3 md:gap-2'>
+                          {specialties.map((item) => (
+                            <FormField
+                              key={item.id}
+                              control={form.control}
+                              name='specialty'
+                              render={({ field }) => {
+                                return (
+                                  <FormItem
+                                    key={item.id}
+                                    className='flex flex-row items-start space-x-3 space-y-0'
+                                  >
+                                    <FormControl>
+                                      <Checkbox
+                                        checked={field.value?.includes(item.id)}
+                                        onCheckedChange={(checked) => {
+                                          return checked
+                                            ? field.onChange([
+                                                ...field.value,
+                                                item.id,
+                                              ])
+                                            : field.onChange(
+                                                field.value?.filter(
+                                                  (value) => value !== item.id
+                                                )
+                                              );
+                                        }}
+                                      />
+                                    </FormControl>
+                                    <FormLabel className='text-sm font-normal'>
+                                      {item.label}
+                                    </FormLabel>
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name='days'
+                    render={() => (
+                      <FormItem>
+                        <FormLabel className='text-lg font-normal text-slate-500'>
+                          Días de trabajo
+                        </FormLabel>
+                        <div className='px-2 md:grid md:grid-cols-3 md:gap-2'>
+                          {days.map((item) => (
+                            <FormField
+                              key={item.id}
+                              control={form.control}
+                              name='days'
+                              render={({ field }) => {
+                                return (
+                                  <FormItem
+                                    key={item.id}
+                                    className='flex flex-row items-start space-x-3 space-y-0'
+                                  >
+                                    <FormControl>
+                                      <Checkbox
+                                        checked={field.value?.includes(item.id)}
+                                        onCheckedChange={(checked) => {
+                                          return checked
+                                            ? field.onChange([
+                                                ...field.value,
+                                                item.id,
+                                              ])
+                                            : field.onChange(
+                                                field.value?.filter(
+                                                  (value) => value !== item.id
+                                                )
+                                              );
+                                        }}
+                                      />
+                                    </FormControl>
+                                    <FormLabel className='text-sm font-normal'>
+                                      {item.label}
+                                    </FormLabel>
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name='checkIn'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div>
+                            <FormLabel className='text-lg font-normal text-slate-500'>
+                              Horario de atención
+                            </FormLabel>
+
+                            <TimePicker.RangePicker
+                              className='w-full'
+                              placeholder={['Inicio', 'Fin']}
+                              disabledTime={disabledTime}
+                              size='large'
+                              format='HH:mm'
+                              minuteStep={15}
                             />
                           </div>
                         </FormControl>
@@ -338,31 +538,33 @@ const CompleteRegistration = () => {
                       </FormItem>
                     )}
                   />
-                  <Button
-                    type='submit'
-                    disabled={isSubmitting}
-                    className='w-full h-10 text-xl'
-                  >
-                    Guardar
-                    {isSubmitting && (
-                      <span className='ms-2'>
-                        <RotatingLines
-                          visible={true}
-                          height='20'
-                          width='20'
-                          strokeColor='#FFF'
-                          strokeWidth={5}
-                          animationDuration='0.75'
-                          ariaLabel='rotating-lines-loading'
-                        />
-                      </span>
-                    )}
-                  </Button>
-                </form>
-              </Form>
-            </CarouselItem>
-            <CarouselItem>...</CarouselItem>
-          </CarouselContent>
+
+                  <div className='pt-5'>
+                    <Button
+                      type='submit'
+                      disabled={isSubmitting}
+                      className='w-full h-10 text-xl'
+                    >
+                      Guardar
+                      {isSubmitting && (
+                        <span className='ms-2'>
+                          <RotatingLines
+                            visible={true}
+                            height='20'
+                            width='20'
+                            strokeColor='#FFF'
+                            strokeWidth={5}
+                            animationDuration='0.75'
+                            ariaLabel='rotating-lines-loading'
+                          />
+                        </span>
+                      )}
+                    </Button>
+                  </div>
+                </CarouselItem>
+              </CarouselContent>
+            </form>
+          </Form>
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
