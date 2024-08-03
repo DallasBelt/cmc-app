@@ -99,11 +99,7 @@ export const patientsColumns = [
         <>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                disabled={row.original.roles.toString() === 'admin'}
-                variant='ghost'
-                className='h-8 w-8 p-0'
-              >
+              <Button variant='ghost' className='h-8 w-8 p-0'>
                 <DotsThree size={24} className='h-4 w-4' />
               </Button>
             </DropdownMenuTrigger>

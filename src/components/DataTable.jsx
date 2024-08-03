@@ -22,8 +22,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import RegistrationDialog from './RegistrationDialog';
-
 export function DataTable({ columns, data }) {
   const isAdmin = sessionStorage.getItem('roles').includes('admin');
 
@@ -56,9 +54,9 @@ export function DataTable({ columns, data }) {
     },
     globalFilterFn: (row, columnId, filterValue) => {
       const email = isAdmin ? row.getValue('email') || '' : '';
-      const dni = getNonAdminValue(row, 'dni');
-      const lastName = getNonAdminValue(row, 'lastName');
-      const firstName = getNonAdminValue(row, 'firstName');
+      const dni = getMedicValue(row, 'dni');
+      const lastName = getMedicValue(row, 'lastName');
+      const firstName = getMedicValue(row, 'firstName');
 
       return (
         email.toLowerCase().includes(filterValue.toLowerCase()) ||
@@ -77,15 +75,12 @@ export function DataTable({ columns, data }) {
   return (
     <>
       <div className='flex flex-col gap-5'>
-        <div className='flex flex-col space-y-5 items-center md:flex-row md:justify-between md:space-y-0'>
-          <Input
-            placeholder='Buscar...'
-            value={globalFilter}
-            onChange={handleGlobalFilterChange}
-            className='w-full md:max-w-sm'
-          />
-          <RegistrationDialog />
-        </div>
+        <Input
+          placeholder='Buscar...'
+          value={globalFilter}
+          onChange={handleGlobalFilterChange}
+          className='w-full md:max-w-sm'
+        />
         <div className='rounded-md border'>
           <Table>
             <TableHeader>
