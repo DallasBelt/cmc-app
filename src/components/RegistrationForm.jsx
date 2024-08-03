@@ -60,17 +60,21 @@ const RegistrationForm = () => {
         password: values.password,
       };
 
+      // https://cmc-api-42qy.onrender.com/api/v1/auth/register
       const response = await axios.post(
-        'https://cmc-api-42qy.onrender.com/api/v1/auth/register',
+        'http://localhost:3000/api/v1/auth/register',
         newUser
       );
 
       if (response && response.status === 201) {
         {
           !token
-            ? toast.success('Registro exitoso', {
-                description: 'Ya puedes iniciar sesión.',
-              })
+            ? (toast.success('Registro exitoso'),
+              toast.info('Importante', {
+                description:
+                  'Espere activación del administrador para iniciar sesión.',
+                duration: 5000,
+              }))
             : toast.success('¡Enhorabuena!', {
                 description: 'Se ha creado un nuevo usuario.',
               });

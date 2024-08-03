@@ -2,30 +2,87 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
-import { usersColumns } from '@/config/usersColumns';
 import { DataTable } from '@/components/DataTable';
+
 import { toast } from 'sonner';
 
 import { RotatingLines } from 'react-loader-spinner';
 
-async function getData() {
+import { usersColumns } from '@/config/usersColumns';
+import { patientsColumns } from '@/config/patientsColumns';
+
+async function getData(isAdmin, token) {
   try {
     // Check auth
-    const token = sessionStorage.getItem('token');
     if (!token) {
       toast.error('Oops!', {
         description: `Error de autenticación.`,
       });
+      return [];
     }
 
-    // Send the request to the server
-    const res = await axios.get(
-      'https://cmc-api-42qy.onrender.com/api/v1/auth/all',
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    return res.data.data;
+    if (isAdmin) {
+      // Send the request to the server
+      // https://cmc-api-42qy.onrender.com/api/v1/auth/all
+      const res = await axios.get('http://localhost:3000/api/v1/auth/all', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return res.data.data;
+    } else {
+      // Return dummy data if not admin
+      return [
+        {
+          lastName: 'Gonzalez',
+          firstName: 'Juan',
+          dni: '1234567890', // 10 números
+        },
+        {
+          lastName: 'Martinez',
+          firstName: 'Ana',
+          dni: '0987654321001', // 13 números que terminan en 001
+        },
+        {
+          lastName: 'Perez',
+          firstName: 'Maria',
+          dni: 'A1234567', // Número de pasaporte
+        },
+        {
+          lastName: 'Rodriguez',
+          firstName: 'Carlos',
+          dni: '1122334455', // 10 números
+        },
+        {
+          lastName: 'Lopez',
+          firstName: 'Sofia',
+          dni: '987654321001', // 13 números que terminan en 001
+        },
+        {
+          lastName: 'Fernandez',
+          firstName: 'Luis',
+          dni: 'B7654321', // Número de pasaporte
+        },
+        {
+          lastName: 'Gomez',
+          firstName: 'Laura',
+          dni: '2233445566', // 10 números
+        },
+        {
+          lastName: 'Diaz',
+          firstName: 'Jose',
+          dni: '123456789001', // 13 números que terminan en 001
+        },
+        {
+          lastName: 'Torres',
+          firstName: 'Marta',
+          dni: 'C9876543', // Número de pasaporte
+        },
+        {
+          lastName: 'Ruiz',
+          firstName: 'Miguel',
+          dni: '3344556677', // 10 números
+        },
+      ];
+    }
   } catch (error) {
     console.error('Error fetching data:', error);
     return [];
@@ -33,6 +90,9 @@ async function getData() {
 }
 
 const Users = () => {
+  const isAdmin = sessionStorage.getItem('roles').includes('admin');
+  const token = sessionStorage.getItem('token');
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalUsers, setTotalUsers] = useState(0);
@@ -43,7 +103,7 @@ const Users = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const result = await getData();
+      const result = await getData(isAdmin, token);
       setData(result);
       setLoading(false);
       setTotalUsers(result.length);
@@ -103,7 +163,10 @@ const Users = () => {
           </Card>
 
           <div className='md:w-2/3'>
-            <DataTable columns={usersColumns} data={data} />
+            <DataTable
+              columns={isAdmin ? usersColumns : patientsColumns}
+              data={data}
+            />
           </div>
         </div>
       </div>

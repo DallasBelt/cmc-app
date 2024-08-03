@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { Button } from '@/components/ui/button';
@@ -49,10 +49,8 @@ import { RotatingLines } from 'react-loader-spinner';
 
 import { CalendarDots } from '@phosphor-icons/react';
 
-// import { TimePicker } from '@/components/TimePicker';
 import { userInfoSchema } from '@/utils/formSchema';
 import { PhoneInput } from '@/components/PhoneInput';
-import { Label } from 'recharts';
 
 const specialties = [
   {
@@ -83,27 +81,27 @@ const specialties = [
 
 const days = [
   {
-    id: 'monday',
+    id: 'lunes',
     label: 'Lunes',
   },
   {
-    id: 'tuesday',
+    id: 'martes',
     label: 'Martes',
   },
   {
-    id: 'wednesday',
+    id: 'miercoles',
     label: 'Miércoles',
   },
   {
-    id: 'thursday',
+    id: 'jueves',
     label: 'Jueves',
   },
   {
-    id: 'friday',
+    id: 'viernes',
     label: 'Viernes',
   },
   {
-    id: 'saturday',
+    id: 'sabado',
     label: 'Sábado',
   },
 ];
@@ -114,6 +112,7 @@ const CompleteRegistration = () => {
   // Loading with React Spinners
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Disable 00:00 to 07:00, 13:00, 20:00 to 23:00
   const disabledTime = () => ({
     disabledHours: () => [0, 1, 2, 3, 4, 5, 6, 7, 13, 20, 21, 22, 23],
   });
@@ -128,17 +127,16 @@ const CompleteRegistration = () => {
       dob: null,
       phone: '',
       address: '',
-      specialty: [],
       registry: '',
-      checkIn: '',
-      checkOut: '',
+      speciality: [],
       days: [],
+      hours: [],
     },
   });
 
   const onSubmit = async (values) => {
     try {
-      // Check auth
+      //   // Check auth
       const token = sessionStorage.getItem('token');
       if (!token) {
         toast.error('Oops!', {
@@ -146,43 +144,53 @@ const CompleteRegistration = () => {
         });
       }
 
-      // Define the object to send
+      // Define the object to send to userData
       const userData = {
-        ...values,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        dniType: values.dniType,
+        dni: values.dni,
         dob: format(values.dob, 'dd-MM-yyyy'),
+        phone: values.phone,
+        address: values.address,
       };
+
+      // Define the object to send to medicData
+      const medicData = {
+        registry: values.registry,
+        speciality: values.speciality,
+        days: values.days,
+        checkIn:
+          format(parseISO(values.hours?.[0]), 'dd-MM-yyyy HH:mm:ss') || '',
+        checkOut:
+          format(parseISO(values.hours?.[1]), 'dd-MM-yyyy HH:mm:ss') || '',
+      };
+
+      const [response1, response2] = await Promise.all([
+        axios.post('http://localhost:3000/api/v1/user-info', userData, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.post('http://localhost:3000/api/v1/medic-info', medicData, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
 
       // Show loading React Spinners
       setIsSubmitting(true);
 
-      // Send the request to the server
-      const response = await axios.post(
-        'https://cmc-api-42qy.onrender.com/api/v1/user-info',
-        userData,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      // const [response1, response2] = await Promise.all([
-      //   axios.post(
-      //     'https://cmc-api-42qy.onrender.com/api/v1/user-info',
-      //     userData,
-      //     { headers: { Authorization: `Bearer ${token}` } }
-      //   ),
-      //   axios.patch(
-      //     'https://cmc-api-42qy.onrender.com/api/v1/another-endpoint',
-      //     anotherData,
-      //     { headers: { Authorization: `Bearer ${token}` } }
-      //   )
-      // ]);
-
-      if (response && response.status === 201) {
+      if (
+        response1 &&
+        response2 &&
+        response1.status === 201 &&
+        response2.status === 201
+      ) {
         form.reset();
 
         toast.success('¡Enhorabuena!', {
           description: 'Se ha guardado la información.',
         });
         toast.info('Redireccionando...', {
-          description: 'Por favor espera.',
+          description: 'Por favor espere.',
         });
 
         setTimeout(() => {
@@ -190,7 +198,7 @@ const CompleteRegistration = () => {
         }, 3000);
       }
     } catch (error) {
-      console.error(error.response.data.message);
+      console.error(error);
       toast.error('Oops...', {
         description: 'Error interno del servidor.',
       });
@@ -413,7 +421,7 @@ const CompleteRegistration = () => {
 
                   <FormField
                     control={form.control}
-                    name='specialty'
+                    name='speciality'
                     render={() => (
                       <FormItem>
                         <FormLabel className='text-lg font-normal text-slate-500'>
@@ -424,7 +432,7 @@ const CompleteRegistration = () => {
                             <FormField
                               key={item.id}
                               control={form.control}
-                              name='specialty'
+                              name='speciality'
                               render={({ field }) => {
                                 return (
                                   <FormItem
@@ -515,7 +523,7 @@ const CompleteRegistration = () => {
 
                   <FormField
                     control={form.control}
-                    name='checkIn'
+                    name='hours'
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
@@ -531,6 +539,14 @@ const CompleteRegistration = () => {
                               size='large'
                               format='HH:mm'
                               minuteStep={15}
+                              onChange={(value) => {
+                                // Convert Day.js object to ISO string so it can be validated by Zod
+                                const isoValues = value.map((v) =>
+                                  v.toISOString()
+                                );
+
+                                field.onChange(isoValues);
+                              }}
                             />
                           </div>
                         </FormControl>

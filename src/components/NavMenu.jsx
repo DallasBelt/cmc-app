@@ -15,7 +15,6 @@ import {
   House,
   Pill,
   SignOut,
-  Stethoscope,
   User,
   Users,
 } from '@phosphor-icons/react';
@@ -77,50 +76,10 @@ const NavMenu = ({ onLinkClick }) => {
         <NavigationMenuItem
           className={
             isAdmin
-              ? 'hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'
-              : 'hidden'
+              ? 'hidden'
+              : 'hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'
           }
         >
-          <NavLink
-            to='/medics'
-            className={({ isActive }) =>
-              isActive
-                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
-                : ''
-            }
-            onClick={onLinkClick}
-          >
-            <Stethoscope
-              size={24}
-              color='#2563eb'
-              weight='fill'
-              className='me-2 inline md:hidden'
-            />
-            Médicos
-          </NavLink>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
-          <NavLink
-            to='/assistants'
-            className={({ isActive }) =>
-              isActive
-                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
-                : ''
-            }
-            onClick={onLinkClick}
-          >
-            <HandPalm
-              size={24}
-              color='#2563eb'
-              weight='fill'
-              className='me-2 inline md:hidden'
-            />
-            Asistentes
-          </NavLink>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
           <NavLink
             to='/patients'
             className={({ isActive }) =>
@@ -140,7 +99,13 @@ const NavMenu = ({ onLinkClick }) => {
           </NavLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
+        <NavigationMenuItem
+          className={
+            isAdmin
+              ? 'hidden'
+              : 'hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'
+          }
+        >
           <NavLink
             to='/appointments'
             className={({ isActive }) =>
@@ -157,6 +122,32 @@ const NavMenu = ({ onLinkClick }) => {
               className='me-2 inline md:hidden'
             />
             Citas
+          </NavLink>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem
+          className={
+            isAdmin
+              ? 'hidden'
+              : 'hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'
+          }
+        >
+          <NavLink
+            to='/assistants'
+            className={({ isActive }) =>
+              isActive
+                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
+                : ''
+            }
+            onClick={onLinkClick}
+          >
+            <HandPalm
+              size={24}
+              color='#2563eb'
+              weight='fill'
+              className='me-2 inline md:hidden'
+            />
+            Asistentes
           </NavLink>
         </NavigationMenuItem>
 

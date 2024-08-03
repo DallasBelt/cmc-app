@@ -35,8 +35,9 @@ const changeRole = async (email, role) => {
     }
 
     // Send the request to the server
+    // https://cmc-api-42qy.onrender.com/api/v1/auth/change-role
     const res = await axios.patch(
-      'https://cmc-api-42qy.onrender.com/api/v1/auth/change-role',
+      'http://localhost:3000/api/v1/auth/change-role',
       { email, role },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -72,8 +73,9 @@ const changeState = async (email) => {
     }
 
     // Send the request to the server
+    // https://cmc-api-42qy.onrender.com/api/v1/auth/soft-delete
     const res = await axios.patch(
-      'https://cmc-api-42qy.onrender.com/api/v1/auth/soft-delete',
+      'http://localhost:3000/api/v1/auth/soft-delete',
       { email },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -109,8 +111,9 @@ const getUserInfo = async (id) => {
     }
 
     // Send the request to the server
+    // https://cmc-api-42qy.onrender.com/api/v1/user-info
     const res = await axios.get(
-      'https://cmc-api-42qy.onrender.com/api/v1/user-info',
+      'http://localhost:3000/api/v1/user-info',
       { email },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -334,7 +337,7 @@ export const usersColumns = [
                   <div>
                     <p>Identificacion: dni</p>
                     <p>Nombres: fullName</p>
-                    <p>Fecha de nacimiento: birthDate</p>
+                    <p>Edad: Date.now - birthDate</p>
                     <p>Telefono: phone</p>
                     <p>Direccion: address</p>
                   </div>

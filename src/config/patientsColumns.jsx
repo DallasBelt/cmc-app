@@ -24,7 +24,25 @@ import { toast } from 'sonner';
 
 import { ArrowsDownUp, DotsThree, FloppyDisk } from '@phosphor-icons/react';
 
-export const medicsColumns = [
+export const patientsColumns = [
+  {
+    accessorKey: 'dni',
+    header: ({ column }) => {
+      return (
+        <Button
+          className='px-0 hover:bg-transparent'
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Nº Documento
+          <ArrowsDownUp size={24} className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    // cell: ({ row }) => {
+    //   return row.original.dni;
+    // },
+  },
   {
     accessorKey: 'lastName',
     header: ({ column }) => {
@@ -39,9 +57,6 @@ export const medicsColumns = [
         </Button>
       );
     },
-    // cell: ({ row }) => {
-    //   return row.original.email;
-    // },
   },
   {
     accessorKey: 'firstName',
@@ -57,12 +72,9 @@ export const medicsColumns = [
         </Button>
       );
     },
-    // cell: ({ row }) => {
-    //   return row.original.email;
-    // },
   },
   {
-    accessorKey: 'specialty',
+    accessorKey: 'age',
     header: ({ column }) => {
       return (
         <Button
@@ -70,45 +82,12 @@ export const medicsColumns = [
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Especialidad
+          Edad
           <ArrowsDownUp size={24} className='ml-2 h-4 w-4' />
         </Button>
       );
     },
     cell: ({ row }) => (row.original.isActive ? 'Activo' : 'Inactivo'),
-  },
-  {
-    accessorKey: 'roles',
-    header: ({ column }) => {
-      return (
-        <Button
-          className='px-0 hover:bg-transparent'
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Rol
-          <ArrowsDownUp size={24} className='ml-2 h-4 w-4' />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      return row.original.roles
-        .map((role) => {
-          switch (role) {
-            case 'admin':
-              return 'Administrador';
-            case 'user':
-              return 'Usuario';
-            case 'medic':
-              return 'Médico';
-            case 'assistant':
-              return 'Asistente';
-            default:
-              return 'Rol desconocido';
-          }
-        })
-        .join(', ');
-    },
   },
   {
     id: 'actions',
@@ -133,58 +112,28 @@ export const medicsColumns = [
               <Dialog>
                 <DialogTrigger>
                   <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                    Cambiar rol
+                    Ver historial
                   </DropdownMenuItem>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Cambiar rol</DialogTitle>
-                    <DialogDescription>
-                      Seleccione el nuevo rol para el usuario.
-                    </DialogDescription>
+                    <DialogTitle>Historial clínico</DialogTitle>
+                    <DialogDescription>Description.</DialogDescription>
                   </DialogHeader>
-                  <RadioGroup onValueChange={(value) => setRole(value)}>
-                    <div className='flex items-center space-x-2'>
-                      <RadioGroupItem
-                        value='medic'
-                        id='medic'
-                        disabled={row.original.roles.toString() === 'medic'}
-                      />
-                      <Label htmlFor='medic'>Médico</Label>
-                    </div>
-                    <div className='flex items-center space-x-2'>
-                      <RadioGroupItem
-                        value='assistant'
-                        id='assistant'
-                        disabled={row.original.roles.toString() === 'assistant'}
-                      />
-                      <Label htmlFor='assistant'>Asistente</Label>
-                    </div>
-                  </RadioGroup>
-                  <div className='flex justify-end'>
-                    <Button
-                      className='w-fit'
-                      onClick={() => changeRole(email, role)}
-                    >
-                      <FloppyDisk size={24} className='mr-2' />
-                      Guardar
-                    </Button>
-                  </div>
+                  {/* todo: historial clínico modal content */}
                 </DialogContent>
               </Dialog>
 
               <Dialog>
                 <DialogTrigger>
                   <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                    Cambiar estado
+                    Ver información
                   </DropdownMenuItem>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Cambiar estado</DialogTitle>
-                    <DialogDescription>
-                      Seleccione un nuevo estado para el usuario.
-                    </DialogDescription>
+                    <DialogTitle>Información del paciente</DialogTitle>
+                    <DialogDescription>Description.</DialogDescription>
                   </DialogHeader>
                   <RadioGroup onValueChange={(value) => setRole(value)}>
                     <div className='flex items-center space-x-2'>

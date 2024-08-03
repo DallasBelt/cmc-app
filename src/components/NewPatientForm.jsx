@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
@@ -21,23 +22,39 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
-import { CalendarDots } from '@phosphor-icons/react';
-import { UserPlus } from '@phosphor-icons/react';
+import { toast } from 'sonner';
+
+import { RotatingLines } from 'react-loader-spinner';
+
+import { CalendarDots, Plus } from '@phosphor-icons/react';
+
+import { PhoneInput } from '@/components/PhoneInput';
 
 import { patientSchema } from '@/utils/formSchema';
 
 const NewPatientForm = () => {
+  // Loading with React Spinners
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const form = useForm({
     resolver: zodResolver(patientSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
-      id: '',
+      dniType: '',
+      dni: '',
       email: '',
+      dob: null,
       phone: '',
       address: '',
-      dob: null,
     },
   });
 
@@ -53,14 +70,19 @@ const NewPatientForm = () => {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2.5'>
-          <div className='space-y-2.5 md:flex md:gap-2.5 md:space-y-0'>
+          <div className='flex flex-col space-y-2.5 md:flex-row md:gap-2.5 md:space-y-0'>
             <FormField
               control={form.control}
               name='firstName'
               render={({ field }) => (
-                <FormItem>
+                <FormItem className='w-full'>
                   <FormControl>
-                    <Input placeholder='Nombre' {...field} className='h-10' />
+                    <Input
+                      type='text'
+                      placeholder='Nombre'
+                      className='h-10 text-lg'
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -71,9 +93,14 @@ const NewPatientForm = () => {
               control={form.control}
               name='lastName'
               render={({ field }) => (
-                <FormItem>
+                <FormItem className='w-full'>
                   <FormControl>
-                    <Input placeholder='Apellido' {...field} className='h-10' />
+                    <Input
+                      type='text'
+                      placeholder='Apellido'
+                      className='h-10 text-lg'
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -83,73 +110,68 @@ const NewPatientForm = () => {
 
           <FormField
             control={form.control}
+            name='dniType'
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger
+                      className={`h-10 text-lg ${
+                        field.value ? 'text-black' : 'text-slate-500'
+                      }`}
+                    >
+                      <SelectValue placeholder='Tipo de documento' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value='cedula' className='text-lg'>
+                      Cédula
+                    </SelectItem>
+                    <SelectItem value='ruc' className='text-lg'>
+                      RUC
+                    </SelectItem>
+                    <SelectItem value='passport' className='text-lg'>
+                      Pasaporte
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='dni'
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormControl>
+                  <Input
+                    type='text'
+                    placeholder='Nº de documento'
+                    className='h-10 text-lg'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name='email'
             render={({ field }) => (
-              <FormItem>
+              <FormItem className='w-full'>
                 <FormControl>
                   <Input
-                    type='email'
+                    type='text'
                     placeholder='Correo electrónico'
+                    className='h-10 text-lg'
                     {...field}
-                    className='h-10'
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name='id'
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    type='text'
-                    pattern='\d{10}'
-                    maxLength='10'
-                    placeholder='Identificación'
-                    {...field}
-                    className='h-10'
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name='phone'
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    type='text'
-                    pattern='\d{10}'
-                    maxLength='10'
-                    placeholder='Nº Celular'
-                    {...field}
-                    className='h-10'
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name='address'
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    type='text'
-                    placeholder='Dirección'
-                    {...field}
-                    className='h-10'
                   />
                 </FormControl>
                 <FormMessage />
@@ -168,7 +190,7 @@ const NewPatientForm = () => {
                       <Button
                         variant={'outline'}
                         className={cn(
-                          'pl-3 h-10 text-left font-normal',
+                          'pl-3 text-left font-normal h-10 text-lg',
                           !field.value && 'text-muted-foreground'
                         )}
                       >
@@ -178,7 +200,7 @@ const NewPatientForm = () => {
                           <span>Fecha de nacimiento</span>
                         )}
                         <CalendarDots
-                          size={24}
+                          weight='bold'
                           className='ml-auto h-4 w-4 opacity-50'
                         />
                       </Button>
@@ -206,9 +228,58 @@ const NewPatientForm = () => {
             )}
           />
 
-          <div className='flex justify-center'>
-            <Button type='submit' className='mt-5'>
-              Crear paciente
+          <FormField
+            control={form.control}
+            name='phone'
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <PhoneInput placeholder='Celular' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='address'
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type='text'
+                    placeholder='Dirección'
+                    className='h-10 text-lg'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className='pt-5 md:flex md:justify-center'>
+            <Button
+              type='submit'
+              disabled={isSubmitting}
+              className='w-full h-10 text-xl md:w-fit'
+            >
+              <Plus size={24} className='me-2' />
+              Crear
+              {isSubmitting && (
+                <span className='ms-2'>
+                  <RotatingLines
+                    visible={true}
+                    height='20'
+                    width='20'
+                    strokeColor='#FFF'
+                    strokeWidth={5}
+                    animationDuration='0.75'
+                    ariaLabel='rotating-lines-loading'
+                  />
+                </span>
+              )}
             </Button>
           </div>
         </form>

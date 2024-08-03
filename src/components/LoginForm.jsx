@@ -49,8 +49,9 @@ const LoginForm = () => {
       setShowPassword(false);
 
       // Send the request to the server
+      // https://cmc-api-42qy.onrender.com/api/v1/auth/login
       const response = await axios.post(
-        'https://cmc-api-42qy.onrender.com/api/v1/auth/login',
+        'http://localhost:3000/api/v1/auth/login',
         values
       );
 
@@ -137,7 +138,7 @@ const LoginForm = () => {
                     onClick={togglePasswordVisibility}
                     className={
                       isSubmitting
-                        ? 'cursor-disabled absolute right-3 text-slate-500'
+                        ? 'cursor-not-allowed absolute right-3 text-slate-500'
                         : 'cursor-pointer absolute right-3 text-slate-500'
                     }
                   >

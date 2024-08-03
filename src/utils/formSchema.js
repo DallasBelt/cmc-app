@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import validator from 'validator';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 
 import {
@@ -77,21 +76,23 @@ export const userInfoSchema = z
         message: 'Número celular inválido',
       }),
     address: z.string().min(1, { message: 'Dirección requerida' }),
-    specialty: z
+    registry: z.string().min(1, { message: 'Registro requerido' }).optional(),
+    speciality: z
       .array(z.string())
       .optional()
       .refine((value) => value.some((item) => item), {
         message: 'Seleccione al menos una especialidad',
       }),
-    registry: z.string().min(1, { message: 'Registro requerido' }).optional(),
-    checkIn: z.string().time().optional(),
-    checkOut: z.string().time().optional(),
     days: z
       .array(z.string())
       .optional()
       .refine((value) => value.some((item) => item), {
         message: 'Seleccione al menos un día',
       }),
+    hours: z
+      .array(z.string())
+      .length(2, 'Seleccione un rango de inicio y fin')
+      .optional(),
   })
   .superRefine((data, ctx) => {
     if (data.dniType === 'cedula') {
@@ -128,19 +129,14 @@ export const userInfoSchema = z
   });
 
 export const patientSchema = z.object({
+  firstName: z.string().min(1, { message: 'Nombre requerido' }),
+  lastName: z.string().min(1, { message: 'Apellido requerido' }),
+  dniType: z.string().min(1, { message: 'Tipo de documento requerido' }),
+  dni: z.string().min(1, { message: 'Nº de documento requerido' }),
   email: z
     .string()
     .min(1, { message: 'Correo electrónico requerido' })
     .email({ message: 'Correo electrónico no válido' }),
-  dniType: z.string().min(1, { message: 'Tipo de documento requerido' }),
-  dni: z
-    .string()
-    .min(1, { message: 'Nº de documento requerido' })
-    .refine((val) => ecIdValidator(val), {
-      message: 'Nº de documento inválido',
-    }),
-  firstName: z.string().min(1, { message: 'Nombre requerido' }),
-  lastName: z.string().min(1, { message: 'Apellido requerido' }),
   dob: z
     .date()
     .nullable()
@@ -150,6 +146,8 @@ export const patientSchema = z.object({
   phone: z
     .string()
     .min(1, { message: 'Número celular requerido' })
-    .refine(isValidPhoneNumber, { message: 'Número celular inválido' }),
+    .refine((val) => isValidPhoneNumber(val), {
+      message: 'Número celular inválido',
+    }),
   address: z.string().min(1, { message: 'Dirección requerida' }),
 });

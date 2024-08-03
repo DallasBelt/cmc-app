@@ -25,8 +25,16 @@ import {
 import RegistrationDialog from './RegistrationDialog';
 
 export function DataTable({ columns, data }) {
-  const [sorting, setSorting] = React.useState([{ id: 'email', desc: false }]);
+  const isAdmin = sessionStorage.getItem('roles').includes('admin');
+
+  const [sorting, setSorting] = React.useState([
+    { id: isAdmin ? 'email' : 'lastName', desc: false },
+  ]);
   const [globalFilter, setGlobalFilter] = React.useState('');
+
+  const getMedicValue = (row, columnId) => {
+    return isAdmin ? '' : row.getValue(columnId) || '';
+  };
 
   const table = useReactTable({
     data,
@@ -47,11 +55,17 @@ export function DataTable({ columns, data }) {
       },
     },
     globalFilterFn: (row, columnId, filterValue) => {
-      const email = row.getValue('email') || '';
-      const fullName = row.getValue('fullName') || '';
+      const email = isAdmin ? row.getValue('email') || '' : '';
+      const dni = getNonAdminValue(row, 'dni');
+      const lastName = getNonAdminValue(row, 'lastName');
+      const firstName = getNonAdminValue(row, 'firstName');
+
       return (
         email.toLowerCase().includes(filterValue.toLowerCase()) ||
-        fullName.toLowerCase().includes(filterValue.toLowerCase())
+        (!isAdmin &&
+          (lastName.toLowerCase().includes(filterValue.toLowerCase()) ||
+            firstName.toLowerCase().includes(filterValue.toLowerCase()) ||
+            dni.includes(filterValue)))
       );
     },
   });

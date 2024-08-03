@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { SignOut, User } from '@phosphor-icons/react';
+import { Gear, SignOut, User } from '@phosphor-icons/react';
 
 const AvatarMenu = () => {
   const navigate = useNavigate();
@@ -37,6 +37,10 @@ const AvatarMenu = () => {
         <DropdownMenuItem className='cursor-pointer'>
           <User size={24} className='me-1' />
           Perfil
+        </DropdownMenuItem>
+        <DropdownMenuItem className='cursor-pointer'>
+          <Gear size={24} className='me-1' />
+          Ajustes
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleSignOut} className='cursor-pointer'>
           <SignOut size={24} className='me-1' />

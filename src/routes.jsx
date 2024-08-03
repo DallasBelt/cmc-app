@@ -1,7 +1,6 @@
 import Root from './pages/Root';
 import Index from './pages/Index';
 import Users from './pages/Users';
-import Medics from './pages/Medics';
 import Assistants from './pages/Assistants';
 import Patients from './pages/Patients';
 import Appointments from './pages/Appointments';
@@ -36,15 +35,6 @@ const routes = [
         element: (
           <RoleBasedRoute allowedRoles={['admin']}>
             <Users />
-          </RoleBasedRoute>
-        ),
-        errorElement: <div>Oops! Hubo un error.</div>,
-      },
-      {
-        path: 'medics',
-        element: (
-          <RoleBasedRoute allowedRoles={['admin']}>
-            <Medics />
           </RoleBasedRoute>
         ),
         errorElement: <div>Oops! Hubo un error.</div>,
