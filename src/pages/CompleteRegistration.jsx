@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 
 import { cn } from '@/lib/utils';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { Button } from '@/components/ui/button';
@@ -51,6 +51,8 @@ import { CalendarDots } from '@phosphor-icons/react';
 
 import { userInfoSchema } from '@/utils/formSchema';
 import { PhoneInput } from '@/components/PhoneInput';
+
+setDefaultOptions({ locale: es });
 
 const specialties = [
   {

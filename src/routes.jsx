@@ -4,6 +4,7 @@ import Users from './pages/Users';
 import Assistants from './pages/Assistants';
 import Patients from './pages/Patients';
 import Appointments from './pages/Appointments';
+import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Error from './pages/Error';
 import ForgotPassword from './pages/ForgotPassword';
@@ -62,6 +63,15 @@ const routes = [
         element: (
           <RoleBasedRoute allowedRoles={['medic']}>
             <Appointments />
+          </RoleBasedRoute>
+        ),
+        errorElement: <div>Oops! Hubo un error.</div>,
+      },
+      {
+        path: 'profile',
+        element: (
+          <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
+            <Profile />
           </RoleBasedRoute>
         ),
         errorElement: <div>Oops! Hubo un error.</div>,

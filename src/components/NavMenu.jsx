@@ -139,7 +139,7 @@ const NavMenu = ({ onLinkClick }) => {
 
         <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb] md:hidden'>
           <NavLink
-            to='/settings'
+            to='/profile'
             className={({ isActive }) =>
               isActive
                 ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
@@ -148,7 +148,7 @@ const NavMenu = ({ onLinkClick }) => {
             onClick={onLinkClick}
           >
             <User size={24} className='me-2 inline md:hidden' />
-            Cuenta
+            Perfil
           </NavLink>
         </NavigationMenuItem>
 

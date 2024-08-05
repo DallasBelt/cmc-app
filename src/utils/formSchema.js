@@ -128,6 +128,24 @@ export const userInfoSchema = z
     }
   });
 
+export const personalInfoSchema = z.object({
+  firstName: z.string().min(1, { message: 'Nombre requerido' }),
+  lastName: z.string().min(1, { message: 'Apellido requerido' }),
+  dob: z
+    .date()
+    .nullable()
+    .refine((val) => val !== null, {
+      message: 'Fecha de nacimiento requerida',
+    }),
+  phone: z
+    .string()
+    .min(1, { message: 'Número celular requerido' })
+    .refine((val) => isValidPhoneNumber(val), {
+      message: 'Número celular inválido',
+    }),
+  address: z.string().min(1, { message: 'Dirección requerida' }),
+});
+
 export const patientSchema = z.object({
   firstName: z.string().min(1, { message: 'Nombre requerido' }),
   lastName: z.string().min(1, { message: 'Apellido requerido' }),
