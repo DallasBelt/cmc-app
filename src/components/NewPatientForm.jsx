@@ -265,7 +265,6 @@ const NewPatientForm = () => {
               disabled={isSubmitting}
               className='w-full h-10 text-xl md:w-fit'
             >
-              <Plus size={24} className='me-2' />
               Crear
               {isSubmitting && (
                 <span className='ms-2'>

@@ -49,7 +49,7 @@ export function DataTable({ columns, data }) {
     },
     initialState: {
       pagination: {
-        pageSize: 50,
+        pageSize: 10,
       },
     },
     globalFilterFn: (row, columnId, filterValue) => {
@@ -79,7 +79,7 @@ export function DataTable({ columns, data }) {
           placeholder='Buscar...'
           value={globalFilter}
           onChange={handleGlobalFilterChange}
-          className='w-full md:max-w-sm'
+          className='w-full lg:max-w-sm'
         />
         <div className='rounded-md border'>
           <Table>

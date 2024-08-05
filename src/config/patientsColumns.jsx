@@ -27,18 +27,7 @@ import { ArrowsDownUp, DotsThree, FloppyDisk } from '@phosphor-icons/react';
 export const patientsColumns = [
   {
     accessorKey: 'dni',
-    header: ({ column }) => {
-      return (
-        <Button
-          className='px-0 hover:bg-transparent'
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Nº Documento
-          <ArrowsDownUp size={24} className='ml-2 h-4 w-4' />
-        </Button>
-      );
-    },
+    header: 'Nº Documento',
     // cell: ({ row }) => {
     //   return row.original.dni;
     // },
@@ -74,7 +63,7 @@ export const patientsColumns = [
     },
   },
   {
-    accessorKey: 'age',
+    accessorKey: 'dob',
     header: ({ column }) => {
       return (
         <Button
@@ -87,7 +76,7 @@ export const patientsColumns = [
         </Button>
       );
     },
-    cell: ({ row }) => (row.original.isActive ? 'Activo' : 'Inactivo'),
+    // cell: ({ row }) => (new Date - row.original.dob),
   },
   {
     id: 'actions',

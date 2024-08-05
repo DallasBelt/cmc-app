@@ -32,7 +32,7 @@ const getTableData = (endpoint, token) => {
     };
 
     fetchData();
-  }, [endpoint, token]);
+  }, [data, endpoint, token]);
 
   return { data, loading };
 };

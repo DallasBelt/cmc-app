@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom';
 
+import LoginForm from '@/components/LoginForm';
 import { Toaster } from '@/components/ui/sonner';
 
-import LoginForm from '@/components/LoginForm';
-import isotypeLogin from '@/assets/isotype-login.svg';
-
 import RegistrationDialog from '@/components/RegistrationDialog';
+import { useTheme } from '@/components/theme-provider';
+import LoginLight from '@/assets/login-light.svg';
+import LoginDark from '@/assets/login-dark.svg';
 
 const Login = () => {
+  const { effectiveTheme } = useTheme();
+
   return (
     <>
       <Toaster
@@ -20,7 +23,10 @@ const Login = () => {
       />
 
       <div className='min-h-screen flex flex-col items-center justify-center md:flex-row select-none'>
-        <img src={isotypeLogin} className='mb-10 w-60 md:mb-0 md:w-1/3' />
+        <img
+          src={effectiveTheme === 'light' ? LoginLight : LoginDark}
+          className='mb-10 w-60 md:mb-0 md:w-1/3'
+        />
         <div className='flex flex-col w-full sm:w-3/4 lg:w-2/4 xl:w-2/6 px-10 space-y-5'>
           <LoginForm />
 

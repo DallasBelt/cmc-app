@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 import {
   NavigationMenu,
@@ -20,8 +20,17 @@ import {
 } from '@phosphor-icons/react';
 
 const NavMenu = ({ onLinkClick }) => {
+  const navigate = useNavigate();
   const roles = sessionStorage.getItem('roles');
   const isAdmin = roles && roles.includes('admin');
+
+  const handleSignOut = () => {
+    // Remove the token
+    sessionStorage.removeItem('token');
+
+    // Redirects to the login page
+    navigate('/login');
+  };
 
   return (
     <NavigationMenu className='flex'>
@@ -37,12 +46,7 @@ const NavMenu = ({ onLinkClick }) => {
             onClick={onLinkClick}
             end
           >
-            <House
-              size={24}
-              color='#2563eb'
-              weight='fill'
-              className='me-2 inline md:hidden'
-            />
+            <House size={24} className='me-2 inline md:hidden' />
             Inicio
           </NavLink>
         </NavigationMenuItem>
@@ -63,12 +67,7 @@ const NavMenu = ({ onLinkClick }) => {
             }
             onClick={onLinkClick}
           >
-            <Users
-              size={24}
-              color='#2563eb'
-              weight='fill'
-              className='me-2 inline md:hidden'
-            />
+            <Users size={24} className='me-2 inline md:hidden' />
             Usuarios
           </NavLink>
         </NavigationMenuItem>
@@ -89,12 +88,7 @@ const NavMenu = ({ onLinkClick }) => {
             }
             onClick={onLinkClick}
           >
-            <Pill
-              size={24}
-              color='#2563eb'
-              weight='fill'
-              className='me-2 inline md:hidden'
-            />
+            <Pill size={24} className='me-2 inline md:hidden' />
             Pacientes
           </NavLink>
         </NavigationMenuItem>
@@ -115,12 +109,7 @@ const NavMenu = ({ onLinkClick }) => {
             }
             onClick={onLinkClick}
           >
-            <CalendarDots
-              size={24}
-              color='#2563eb'
-              weight='fill'
-              className='me-2 inline md:hidden'
-            />
+            <CalendarDots size={24} className='me-2 inline md:hidden' />
             Citas
           </NavLink>
         </NavigationMenuItem>
@@ -141,21 +130,16 @@ const NavMenu = ({ onLinkClick }) => {
             }
             onClick={onLinkClick}
           >
-            <HandPalm
-              size={24}
-              color='#2563eb'
-              weight='fill'
-              className='me-2 inline md:hidden'
-            />
+            <HandPalm size={24} className='me-2 inline md:hidden' />
             Asistentes
           </NavLink>
         </NavigationMenuItem>
 
         <Separator className='block md:hidden' />
 
-        <NavigationMenuItem className='block md:hidden hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
+        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb] md:hidden'>
           <NavLink
-            to='/profile'
+            to='/settings'
             className={({ isActive }) =>
               isActive
                 ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
@@ -163,25 +147,15 @@ const NavMenu = ({ onLinkClick }) => {
             }
             onClick={onLinkClick}
           >
-            <User
-              size={24}
-              color='#2563eb'
-              weight='fill'
-              className='me-2 inline md:hidden'
-            />
-            Perfil
+            <User size={24} className='me-2 inline md:hidden' />
+            Cuenta
           </NavLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className='block md:hidden hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb] cursor-pointer'>
-          <NavigationMenuLink>
-            <SignOut
-              size={24}
-              color='#2563eb'
-              weight='fill'
-              className='me-2 inline md:hidden'
-            />
-            Cerrar sesión
+        <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb] cursor-pointer md:hidden'>
+          <NavigationMenuLink onSelect={handleSignOut}>
+            <SignOut size={24} className='me-2 inline md:hidden' />
+            Salir
           </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>

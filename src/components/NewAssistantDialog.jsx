@@ -12,14 +12,14 @@ import { UserPlus } from '@phosphor-icons/react';
 
 import NewPatientForm from './NewPatientForm';
 
-const NewPatientDialog = () => {
+const NewAssistantDialog = () => {
   return (
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button className='w-full lg:max-w-fit'>
+          <Button>
             <UserPlus size={24} className='mr-2' />
-            Nuevo paciente
+            Nuevo asistente
           </Button>
         </DialogTrigger>
         <DialogContent
@@ -29,7 +29,7 @@ const NewPatientDialog = () => {
           }}
         >
           <DialogHeader>
-            <DialogTitle className='text-xl'>Crear nuevo paciente</DialogTitle>
+            <DialogTitle className='text-xl'>Crear nuevo asistente</DialogTitle>
             <DialogDescription>
               Por favor, llene los datos solicitados.
             </DialogDescription>
@@ -41,4 +41,4 @@ const NewPatientDialog = () => {
   );
 };
 
-export default NewPatientDialog;
+export default NewAssistantDialog;

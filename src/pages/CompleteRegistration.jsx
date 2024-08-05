@@ -218,17 +218,15 @@ const CompleteRegistration = () => {
         visibleToasts={2}
       />
 
-      <div className='flex flex-col justify-center items-center min-h-screen'>
-        <div className='text-center mb-8'>
-          <h1 className='text-4xl font-bold'>Completar registro</h1>
-          <p>Por favor, llene la información solicitada.</p>
-        </div>
+      <div className='flex flex-col justify-center items-center h-screen'>
+        <h1 className='text-4xl font-bold'>Completar registro</h1>
+        <p className='mb-5'>Por favor, llene la información solicitada.</p>
 
         <Carousel className='w-2/3 md:w-1/3'>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <CarouselContent className='items-center'>
-                <CarouselItem className='space-y-4 md:px-10'>
+                <CarouselItem className='space-y-4'>
                   <FormField
                     control={form.control}
                     name='firstName'
@@ -400,7 +398,7 @@ const CompleteRegistration = () => {
                   />
                 </CarouselItem>
 
-                <CarouselItem className='space-y-4 md:px-10 md:py-1'>
+                <CarouselItem className='space-y-4'>
                   <FormField
                     control={form.control}
                     name='registry'
@@ -427,7 +425,7 @@ const CompleteRegistration = () => {
                         <FormLabel className='text-lg font-normal text-slate-500'>
                           Especialidad
                         </FormLabel>
-                        <div className='px-2 md:grid md:grid-cols-3 md:gap-2'>
+                        <div className='px-2 lg:grid lg:grid-cols-3 lg:gap-2'>
                           {specialties.map((item) => (
                             <FormField
                               key={item.id}
@@ -478,7 +476,7 @@ const CompleteRegistration = () => {
                         <FormLabel className='text-lg font-normal text-slate-500'>
                           Días de trabajo
                         </FormLabel>
-                        <div className='px-2 md:grid md:grid-cols-3 md:gap-2'>
+                        <div className='px-2 lg:grid lg:grid-cols-3 lg:gap-2'>
                           {days.map((item) => (
                             <FormField
                               key={item.id}

@@ -3,13 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import { toast } from 'sonner';
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ChartContainer,
   ChartLegend,
@@ -41,6 +35,8 @@ const chartData = [
 const Index = () => {
   const location = useLocation();
 
+  const isAdmin = sessionStorage.getItem('roles').includes('admin');
+
   useEffect(() => {
     if (location.state?.showToast) {
       toast.success('Bienvenido(a)', {
@@ -50,48 +46,43 @@ const Index = () => {
   }, [location.state]);
 
   return (
-    <div className='p-10 md:p-20 space-y-14'>
+    <div className='py-16 space-y-16'>
       <div className='flex flex-col gap-5 md:flex-row'>
-        <Card className='md:w-1/3'>
-          <CardHeader>
-            <CardTitle className='text-3xl'>Médicos</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Total:</p>
-            <p>Activos:</p>
-            <p>Especialidades:</p>
-          </CardContent>
-          <CardFooter>
-            <p>Card Footer</p>
-          </CardFooter>
-        </Card>
+        {isAdmin ? (
+          <Card className='md:w-1/3'>
+            <CardHeader>
+              <CardTitle className='text-4xl'>Médicos</CardTitle>
+            </CardHeader>
+            <CardContent className='text-3xl'>
+              <p>Total:</p>
+              <p>Activos:</p>
+              <p>Especialidades:</p>
+            </CardContent>
+          </Card>
+        ) : (
+          ''
+        )}
 
-        <Card className='md:w-1/3'>
+        <Card className={isAdmin ? 'md:w-1/3' : 'md:w-1/2'}>
           <CardHeader>
-            <CardTitle className='text-3xl'>Pacientes</CardTitle>
+            <CardTitle className='text-4xl'>Pacientes</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className='text-3xl'>
             <p>Total:</p>
             <p>Atendidos:</p>
             <p>Sin atender:</p>
           </CardContent>
-          <CardFooter>
-            <p>Card Footer</p>
-          </CardFooter>
         </Card>
 
-        <Card className='md:w-1/3'>
+        <Card className={isAdmin ? 'md:w-1/3' : 'md:w-1/2'}>
           <CardHeader>
-            <CardTitle className='text-3xl'>Citas</CardTitle>
+            <CardTitle className='text-4xl'>Citas</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className='text-3xl'>
             <p>Total:</p>
             <p>Finalizadas:</p>
             <p>Pendientes:</p>
           </CardContent>
-          <CardFooter>
-            <p>Card Footer</p>
-          </CardFooter>
         </Card>
       </div>
 

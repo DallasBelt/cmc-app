@@ -1,13 +1,7 @@
 import { DataTable } from '@/components/DataTable';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+import NewPatientDialog from '@/components/NewPatientDialog';
 import { patientsColumns } from '@/config/patientsColumns';
 
 const data = [
@@ -15,51 +9,61 @@ const data = [
     lastName: 'Gonzalez',
     firstName: 'Juan',
     dni: '1234567890',
+    dob: '34',
   },
   {
     lastName: 'Martinez',
     firstName: 'Ana',
     dni: '0987654321001',
+    dob: '38',
   },
   {
     lastName: 'Perez',
     firstName: 'Maria',
     dni: 'A1234567',
+    dob: '31',
   },
   {
     lastName: 'Rodriguez',
     firstName: 'Carlos',
     dni: '1122334455',
+    dob: '36',
   },
   {
     lastName: 'Lopez',
     firstName: 'Sofia',
     dni: '987654321001',
+    dob: '29',
   },
   {
     lastName: 'Fernandez',
     firstName: 'Luis',
     dni: 'B7654321',
+    dob: '45',
   },
   {
     lastName: 'Gomez',
     firstName: 'Laura',
     dni: '2233445566',
+    dob: '33',
   },
   {
     lastName: 'Diaz',
     firstName: 'Jose',
     dni: '123456789001',
+    dob: '41',
   },
   {
     lastName: 'Torres',
     firstName: 'Marta',
     dni: 'C9876543',
+    dob: '30',
   },
   {
     lastName: 'Ruiz',
     firstName: 'Miguel',
     dni: '3344556677',
+    dob: '37',
   },
 ];
 
@@ -88,26 +92,29 @@ const Patients = () => {
   // }
 
   return (
-    <>
-      <div className='p-10 md:p-20 space-y-14'>
-        <Card>
+    <div className='py-16'>
+      <div className='flex flex-col gap-8 lg:flex-row'>
+        <Card className='w-full h-fit'>
           <CardHeader>
-            <CardTitle>Estadísticas</CardTitle>
-            <CardDescription>Card Description</CardDescription>
+            <CardTitle className='text-2xl lg:text-4xl'>Estadísticas</CardTitle>
           </CardHeader>
-          <CardContent>
-            <p>Total</p>
+          <CardContent className='text-lg lg:text-3xl'>
+            <p>{data.length} Pacientes</p>
             <p>Atendidos</p>
             <p>Por atender</p>
           </CardContent>
-          <CardFooter>
-            <p>Card Footer</p>
-          </CardFooter>
         </Card>
 
-        <DataTable columns={patientsColumns} data={data} />
+        <div className='w-full'>
+          <div className='flex flex-col gap-5'>
+            <div>
+              <NewPatientDialog />
+            </div>
+            <DataTable columns={patientsColumns} data={data} />
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
