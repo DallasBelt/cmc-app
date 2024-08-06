@@ -199,6 +199,7 @@ const CompleteRegistration = () => {
           navigate('/');
         }, 3000);
       }
+      increasePopulation();
     } catch (error) {
       console.error(error);
       toast.error('Oops...', {

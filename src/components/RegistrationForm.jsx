@@ -20,10 +20,12 @@ import { RotatingLines } from 'react-loader-spinner';
 import { Eye, EyeSlash, UserPlus } from '@phosphor-icons/react';
 
 import { registrationSchema } from '@/utils/formSchema';
+import useRegistrationStore from '@/store/store';
 
 const RegistrationForm = () => {
   // Retrieve the token
   const token = sessionStorage.getItem('token');
+  const setOpenModal = useRegistrationStore((state) => state.setOpenModal);
 
   // Hide/Show password button
   const [showPassword, setShowPassword] = useState(false);
@@ -79,14 +81,16 @@ const RegistrationForm = () => {
                 description: 'Se ha creado un nuevo usuario.',
               });
         }
+
         form.reset();
-        {
-          !token
-            ? setTimeout(() => {
-                window.location.reload();
-              }, 2000)
-            : null;
-        }
+        setOpenModal(false);
+        // {
+        //   !token
+        //     ? setTimeout(() => {
+        //         window.location.reload();
+        //       }, 2000)
+        //     : null;
+        // }
       } else {
         toast.error('Oops...', {
           description: 'Error interno del servidor.',
