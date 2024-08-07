@@ -80,7 +80,13 @@ const LoginForm = () => {
       }
     } catch (error) {
       console.error(error);
-      if (error.response.status === 401) {
+      if (error && error.code === 'ERR_NETWORK') {
+        toast.error('Oops...', {
+          description: 'Error de conexión.',
+        });
+      }
+
+      if (error && error.response.status === 401) {
         toast.error('Oops...', {
           description: 'Revise sus credenciales.',
         });
