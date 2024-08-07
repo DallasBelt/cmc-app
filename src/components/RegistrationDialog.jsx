@@ -5,7 +5,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 
 import { UserPlus } from '@phosphor-icons/react';
@@ -16,6 +15,8 @@ import useRegistrationStore from '@/store/store';
 const RegistrationDialog = () => {
   // Retrieve the token
   const token = sessionStorage.getItem('token');
+
+  // Control modal global state
   const modal = useRegistrationStore((state) => state.modal);
   const setOpenModal = useRegistrationStore((state) => state.setOpenModal);
 
