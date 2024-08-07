@@ -210,7 +210,7 @@ const CompleteRegistration = () => {
   // Use useEffect to show toast notifications for form errors
   useEffect(() => {
     // Loop through each error field and display a toast
-    Object.entries(errors).forEach(([fieldName, error]) => {
+    Object.entries(errors).forEach(([_, error]) => {
       toast.error('Error de validación', {
         description: error.message,
       });
@@ -243,12 +243,7 @@ const CompleteRegistration = () => {
                     render={({ field }) => (
                       <FormItem className='w-full'>
                         <FormControl>
-                          <Input
-                            type='text'
-                            placeholder='Nombre'
-                            className='h-10 text-lg'
-                            {...field}
-                          />
+                          <InputfieldName {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
