@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -202,6 +202,20 @@ const CompleteRegistration = () => {
       setIsSubmitting(false);
     }
   };
+
+  const {
+    formState: { errors },
+  } = form;
+
+  // Use useEffect to show toast notifications for form errors
+  useEffect(() => {
+    // Loop through each error field and display a toast
+    Object.entries(errors).forEach(([fieldName, error]) => {
+      toast.error('Error de validación', {
+        description: error.message,
+      });
+    });
+  }, [errors]); // Run this effect whenever errors change
 
   return (
     <>
@@ -542,23 +556,6 @@ const CompleteRegistration = () => {
                                 field.onChange(isoValues);
                               }}
                             />
-
-                            {/* <TimePicker.RangePicker
-                              className='w-full'
-                              placeholder={['Inicio', 'Fin']}
-                              disabledTime={disabledTime}
-                              size='large'
-                              format='HH:mm'
-                              minuteStep={15}
-                              onChange={(value) => {
-                                // Convert Day.js object to ISO string so it can be validated by Zod
-                                const isoValues = value.map((v) =>
-                                  v.toISOString()
-                                );
-
-                                field.onChange(isoValues);
-                              }}
-                            /> */}
                           </div>
                         </FormControl>
                         <FormMessage />
