@@ -43,14 +43,13 @@ import { Toaster } from '@/components/ui/sonner';
 
 import { toast } from 'sonner';
 
-import { TimePicker } from 'antd';
-
 import { RotatingLines } from 'react-loader-spinner';
 
 import { CalendarDots } from '@phosphor-icons/react';
 
 import { userInfoSchema } from '@/utils/formSchema';
 import { PhoneInput } from '@/components/PhoneInput';
+import TimeRangePicker from '@/components/TimeRangePicker';
 
 setDefaultOptions({ locale: es });
 
@@ -113,11 +112,6 @@ const CompleteRegistration = () => {
 
   // Loading with React Spinners
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Disable 00:00 to 07:00, 13:00, 20:00 to 23:00
-  const disabledTime = () => ({
-    disabledHours: () => [0, 1, 2, 3, 4, 5, 6, 7, 13, 20, 21, 22, 23],
-  });
 
   const form = useForm({
     resolver: zodResolver(userInfoSchema),
@@ -199,7 +193,6 @@ const CompleteRegistration = () => {
           navigate('/');
         }, 3000);
       }
-      increasePopulation();
     } catch (error) {
       console.error(error);
       toast.error('Oops...', {
@@ -221,7 +214,7 @@ const CompleteRegistration = () => {
         visibleToasts={2}
       />
 
-      <div className='flex flex-col justify-center items-center h-screen'>
+      <div className='flex flex-col justify-center items-center'>
         <h1 className='text-4xl font-bold'>Completar registro</h1>
         <p className='mb-5'>Por favor, llene la información solicitada.</p>
 
@@ -276,11 +269,7 @@ const CompleteRegistration = () => {
                           defaultValue={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger
-                              className={`h-10 text-lg ${
-                                field.value ? 'text-black' : 'text-slate-500'
-                              }`}
-                            >
+                            <SelectTrigger className='h-10 text-lg'>
                               <SelectValue placeholder='Tipo de documento' />
                             </SelectTrigger>
                           </FormControl>
@@ -425,7 +414,7 @@ const CompleteRegistration = () => {
                     name='speciality'
                     render={() => (
                       <FormItem>
-                        <FormLabel className='text-lg font-normal text-slate-500'>
+                        <FormLabel className='text-lg font-normal text-slate-400'>
                           Especialidad
                         </FormLabel>
                         <div className='px-2 lg:grid lg:grid-cols-3 lg:gap-2'>
@@ -476,7 +465,7 @@ const CompleteRegistration = () => {
                     name='days'
                     render={() => (
                       <FormItem>
-                        <FormLabel className='text-lg font-normal text-slate-500'>
+                        <FormLabel className='text-lg font-normal text-slate-400'>
                           Días de trabajo
                         </FormLabel>
                         <div className='px-2 lg:grid lg:grid-cols-3 lg:gap-2'>
@@ -529,11 +518,32 @@ const CompleteRegistration = () => {
                       <FormItem>
                         <FormControl>
                           <div>
-                            <FormLabel className='text-lg font-normal text-slate-500'>
+                            <FormLabel className='text-lg font-normal text-slate-400'>
                               Horario de atención
                             </FormLabel>
 
-                            <TimePicker.RangePicker
+                            <TimeRangePicker
+                              startHour={8}
+                              endHour={19}
+                              blockedHours={[13]}
+                              minuteStep={30}
+                              onChange={(value) => {
+                                const isoValues = value.map((v) => {
+                                  // Convert each value to ISO format
+                                  if (v) {
+                                    const [hour, minute] = v.split(':');
+                                    const now = new Date();
+                                    now.setHours(hour, minute, 0, 0);
+                                    return now.toISOString();
+                                  }
+                                  return '';
+                                });
+
+                                field.onChange(isoValues);
+                              }}
+                            />
+
+                            {/* <TimePicker.RangePicker
                               className='w-full'
                               placeholder={['Inicio', 'Fin']}
                               disabledTime={disabledTime}
@@ -548,7 +558,7 @@ const CompleteRegistration = () => {
 
                                 field.onChange(isoValues);
                               }}
-                            />
+                            /> */}
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -556,11 +566,11 @@ const CompleteRegistration = () => {
                     )}
                   />
 
-                  <div className='pt-5'>
+                  <div className='pt-5 md:flex md:justify-center'>
                     <Button
                       type='submit'
                       disabled={isSubmitting}
-                      className='w-full h-10 text-xl'
+                      className='w-full h-10 text-xl md:w-fit'
                     >
                       Guardar
                       {isSubmitting && (

@@ -22,7 +22,7 @@ const Login = () => {
         visibleToasts={3}
       />
 
-      <div className='min-h-screen flex flex-col items-center justify-center md:flex-row select-none'>
+      <div className='min-h-screen flex flex-col items-center justify-center select-none md:flex-row'>
         <img
           src={effectiveTheme === 'light' ? LoginLight : LoginDark}
           className='mb-10 w-60 md:mb-0 md:w-1/3'

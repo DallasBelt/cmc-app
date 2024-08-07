@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import NavMenu from '@/components/NavMenu';
@@ -19,6 +19,10 @@ import { useTheme } from '@/components/theme-provider';
 import { ModeToggle } from '@/components/ModeToggle';
 
 const Root = () => {
+  const location = useLocation();
+  const disabledPaths = ['/complete-registration'];
+  const isDisabled = disabledPaths.includes(location.pathname);
+
   const navigate = useNavigate();
   const { effectiveTheme } = useTheme();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -48,36 +52,44 @@ const Root = () => {
 
       <div className='container mx-auto'>
         <nav className='flex items-center justify-between gap-5 h-20 backdrop-filter backdrop-blur-lg bg-opacity-30'>
-          <Link to='/' className='hidden md:flex'>
-            <img src={NavbarLogo} className='md:w-12' />
+          <Link
+            to={isDisabled ? location.pathname : '/'}
+            className={isDisabled ? 'flex' : 'hidden md:flex'}
+          >
+            <img src={NavbarLogo} className='w-12' />
           </Link>
 
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetTrigger className='flex md:hidden'>
-              <List size={24} weight='bold' />
-            </SheetTrigger>
-            <SheetContent side='left'>
-              <SheetHeader className='mb-5'>
-                <SheetTitle>Menú</SheetTitle>
-              </SheetHeader>
-              <NavMenu onLinkClick={handleCloseSheet} />
-            </SheetContent>
-          </Sheet>
+          <div className={isDisabled ? 'hidden' : 'block'}>
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetTrigger className='flex md:hidden'>
+                <List size={24} weight='bold' />
+              </SheetTrigger>
+              <SheetContent side='left'>
+                <SheetHeader className='mb-5'>
+                  <SheetTitle>Menú</SheetTitle>
+                </SheetHeader>
+                <NavMenu onLinkClick={handleCloseSheet} />
+              </SheetContent>
+            </Sheet>
+          </div>
 
-          <div className='hidden md:flex md:mr-auto'>
+          <div className={isDisabled ? 'hidden' : 'hidden md:flex md:mr-auto'}>
             <NavMenu />
           </div>
 
           <div className='flex'>
             <ModeToggle />
 
-            <Link to='/profile' className='hidden md:flex'>
+            <Link
+              to='/profile'
+              className={isDisabled ? 'hidden' : 'hidden md:flex'}
+            >
               <Button variant='ghost' size='icon'>
                 <User size={20} />
               </Button>
             </Link>
 
-            <div className='hidden md:flex'>
+            <div className={isDisabled ? 'flex' : 'hidden md:flex'}>
               <Button onClick={handleSignOut} variant='ghost' size='icon'>
                 <SignOut size={20} />
               </Button>

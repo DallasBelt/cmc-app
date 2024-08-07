@@ -55,8 +55,6 @@ const LoginForm = () => {
         values
       );
 
-      console.log(response);
-
       // Write 'token' and 'roles' to the sessionStorage
       sessionStorage.setItem('token', response.data.token);
       sessionStorage.setItem('roles', response.data.roles);
@@ -71,8 +69,6 @@ const LoginForm = () => {
         return toast.error('Oops...', {
           description: 'Esperando activación.',
         });
-      } else if (roles.includes('medic')) {
-        navigate('/complete-registration');
       } else {
         // Redirect to the home page
         navigate('/', {
