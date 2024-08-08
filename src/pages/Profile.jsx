@@ -44,6 +44,31 @@ import { personalInfoSchema } from '@/utils/formSchema';
 setDefaultOptions({ locale: es });
 
 const Profile = () => {
+  const onLoad = async () => {
+    // Check auth
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      toast.error('Oops!', {
+        description: `Error de autenticación.`,
+      });
+    }
+
+    // Send get request
+    const res = await axios.get('http://localhost:3000/api/v1/user-info', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const userInfo = {
+      firstName: res?.data?.firstName,
+      lastName: res?.data?.lastName,
+      dob: res?.data?.dob,
+      phone: res?.data?.phone,
+      address: res?.data?.address,
+    };
+  };
+
+  onLoad();
+
   const form = useForm({
     resolver: zodResolver(personalInfoSchema),
     defaultValues: {
@@ -132,7 +157,7 @@ const Profile = () => {
   return (
     <div className='py-16 flex flex-col gap-5 items-center'>
       <h1 className='text-4xl'>Perfil</h1>
-      <Tabs defaultValue='account' className='w-full'>
+      <Tabs defaultValue='account' className='w-full md:w-fit'>
         <TabsList className='grid w-full grid-cols-2'>
           <TabsTrigger value='account'>Personal</TabsTrigger>
           <TabsTrigger value='password'>Profesional</TabsTrigger>
@@ -268,11 +293,11 @@ const Profile = () => {
                     )}
                   />
 
-                  <div className='pt-5'>
+                  <div className='pt-5 md:flex md:justify-center'>
                     <Button
                       type='submit'
                       disabled={isSubmitting}
-                      className='w-full h-10 text-xl'
+                      className='w-full h-10 text-xl md:w-fit'
                     >
                       Guardar cambios
                       {isSubmitting && (
@@ -295,6 +320,7 @@ const Profile = () => {
             </CardContent>
           </Card>
         </TabsContent>
+
         <TabsContent value='password'>
           <Card>
             <CardHeader>

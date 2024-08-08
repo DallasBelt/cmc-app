@@ -243,7 +243,12 @@ const CompleteRegistration = () => {
                     render={({ field }) => (
                       <FormItem className='w-full'>
                         <FormControl>
-                          <InputfieldName {...field} />
+                          <Input
+                            type='text'
+                            placeholder='Nombre'
+                            className='h-10 text-lg'
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
