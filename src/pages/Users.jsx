@@ -1,15 +1,9 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { RotatingLines } from 'react-loader-spinner';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTable } from '@/components/DataTable';
 
-import { toast } from 'sonner';
-
-import { RotatingLines } from 'react-loader-spinner';
-
 import { usersColumns } from '@/config/usersColumns';
-
 import getTableData from '@/hooks/getTableData';
 
 const Users = () => {

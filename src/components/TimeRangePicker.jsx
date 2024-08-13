@@ -63,7 +63,7 @@ const TimeRangePicker = ({
   return (
     <div className='flex gap-2.5'>
       <div className='w-1/2'>
-        <Label htmlFor='start-time'>Inicio</Label>
+        <Label htmlFor='start-time'>Hora inicial</Label>
         <Select value={startTime} onValueChange={handleStartTimeChange}>
           <SelectTrigger id='start-time'>
             <SelectValue placeholder='Seleccione una hora' />
@@ -79,7 +79,7 @@ const TimeRangePicker = ({
       </div>
 
       <div className='w-1/2'>
-        <Label htmlFor='end-time'>Fin</Label>
+        <Label htmlFor='end-time'>Hora final</Label>
         <Select value={endTime} onValueChange={handleEndTimeChange}>
           <SelectTrigger id='end-time'>
             <SelectValue placeholder='Seleccione una hora' />

@@ -15,7 +15,7 @@ const Login = () => {
     <>
       <Toaster
         position='bottom-right'
-        theme='light'
+        theme={effectiveTheme}
         richColors
         toastOptions={{}}
         expand

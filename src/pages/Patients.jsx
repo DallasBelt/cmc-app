@@ -92,26 +92,24 @@ const Patients = () => {
   // }
 
   return (
-    <div className='py-16'>
-      <div className='flex flex-col gap-8 lg:flex-row'>
-        <Card className='w-full h-fit'>
-          <CardHeader>
-            <CardTitle className='text-2xl lg:text-4xl'>Estadísticas</CardTitle>
-          </CardHeader>
-          <CardContent className='text-lg lg:text-3xl'>
-            <p>{data.length} Pacientes</p>
-            <p>Atendidos</p>
-            <p>Por atender</p>
-          </CardContent>
-        </Card>
+    <div className='flex flex-col gap-8 lg:flex-row'>
+      <Card className='w-full h-fit'>
+        <CardHeader>
+          <CardTitle className='text-2xl lg:text-4xl'>Estadísticas</CardTitle>
+        </CardHeader>
+        <CardContent className='text-lg lg:text-3xl'>
+          <p>{data.length} Pacientes</p>
+          <p>Atendidos</p>
+          <p>Por atender</p>
+        </CardContent>
+      </Card>
 
-        <div className='w-full'>
-          <div className='flex flex-col gap-5'>
-            <div>
-              <NewPatientDialog />
-            </div>
-            <DataTable columns={patientsColumns} data={data} />
+      <div className='w-full'>
+        <div className='flex flex-col gap-5'>
+          <div>
+            <NewPatientDialog />
           </div>
+          <DataTable columns={patientsColumns} data={data} />
         </div>
       </div>
     </div>

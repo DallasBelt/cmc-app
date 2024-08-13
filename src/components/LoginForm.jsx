@@ -21,9 +21,12 @@ import { RotatingLines } from 'react-loader-spinner';
 import { Eye, EyeSlash } from '@phosphor-icons/react';
 
 import { loginSchema } from '@/utils/formSchema';
+import { useToastStore } from '@/store/store';
 
 const LoginForm = () => {
   const navigate = useNavigate();
+
+  const setToast = useToastStore((state) => state.setToast);
 
   // Hide/Show password button
   const [showPassword, setShowPassword] = useState(false);
@@ -70,13 +73,10 @@ const LoginForm = () => {
           description: 'Esperando activación.',
         });
       } else {
+        // Update toast state
+        setToast(true, 'Ha iniciado sesión correctamente.');
         // Redirect to the home page
-        navigate('/', {
-          state: {
-            showToast: true,
-            toastMessage: 'Ha iniciado sesión correctamente.',
-          },
-        });
+        navigate('/');
       }
     } catch (error) {
       console.error(error);
@@ -86,7 +86,10 @@ const LoginForm = () => {
         });
       }
 
-      if (error && error.response.status === 401) {
+      if (
+        error &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
         toast.error('Oops...', {
           description: 'Revise sus credenciales.',
         });

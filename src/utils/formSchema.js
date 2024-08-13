@@ -76,23 +76,6 @@ export const userInfoSchema = z
         message: 'Número celular inválido',
       }),
     address: z.string().min(1, { message: 'Dirección requerida' }),
-    registry: z.string().min(1, { message: 'Registro requerido' }).optional(),
-    speciality: z
-      .array(z.string())
-      .optional()
-      .refine((value) => value.some((item) => item), {
-        message: 'Seleccione al menos una especialidad',
-      }),
-    days: z
-      .array(z.string())
-      .optional()
-      .refine((value) => value.some((item) => item), {
-        message: 'Seleccione al menos un día',
-      }),
-    hours: z
-      .array(z.string())
-      .length(2, 'Seleccione un rango de inicio y fin')
-      .optional(),
   })
   .superRefine((data, ctx) => {
     if (data.dniType === 'cedula') {
@@ -128,22 +111,34 @@ export const userInfoSchema = z
     }
   });
 
-export const personalInfoSchema = z.object({
-  firstName: z.string().min(1, { message: 'Nombre requerido' }),
-  lastName: z.string().min(1, { message: 'Apellido requerido' }),
-  dob: z
-    .date()
-    .nullable()
-    .refine((val) => val !== null, {
-      message: 'Fecha de nacimiento requerida',
-    }),
-  phone: z
-    .string()
-    .min(1, { message: 'Número celular requerido' })
-    .refine((val) => isValidPhoneNumber(val), {
-      message: 'Número celular inválido',
-    }),
-  address: z.string().min(1, { message: 'Dirección requerida' }),
+// export const medicInfoSchema = z.object({
+//   registry: z.string().min(1, { message: 'Registro requerido' }),
+//   speciality: z
+//     .array(z.string())
+//     .refine((value) => value.some((item) => item), {
+//       message: 'Seleccione al menos una especialidad',
+//     }),
+//   days: z.array(z.string()).refine((value) => value.some((item) => item), {
+//     message: 'Seleccione al menos un día',
+//   }),
+//   hours: z.array(z.string()).length(2, 'Seleccione un rango de inicio y fin'),
+// });
+
+export const medicInfoSchema = z.object({
+  registry: z.string().min(1, { message: 'Registro requerido' }),
+  speciality: z
+    .array(z.string())
+    .nonempty('Seleccione al menos una especialidad'),
+  days: z.array(z.string()).nonempty('Seleccione al menos un día'),
+  hours: z.array(z.string()).length(2, 'Seleccione un rango de inicio y fin'),
+  // .refine(
+  //   (value) => {
+  //     if (value.length !== 2) return false;
+  //     const [start, end] = value;
+  //     return new Date(start) < new Date(end);
+  //   },
+  //   { message: 'El rango de horas debe ser válido' }
+  // ),
 });
 
 export const patientSchema = z.object({

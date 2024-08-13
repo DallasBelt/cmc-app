@@ -10,7 +10,7 @@ import {
 import { UserPlus } from '@phosphor-icons/react';
 
 import RegistrationForm from './RegistrationForm';
-import useRegistrationStore from '@/store/store';
+import { useRegistrationStore } from '@/store/store';
 
 const RegistrationDialog = () => {
   // Retrieve the token

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -32,17 +32,17 @@ const AvatarMenu = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
-        <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className='cursor-pointer'>
+        {/* <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel> */}
+        {/* <DropdownMenuSeparator /> */}
+        <DropdownMenuItem
+          onSelect={() => navigate('/profile')}
+          className='cursor-pointer'
+        >
           <User size={24} className='me-1' />
           Perfil
         </DropdownMenuItem>
-        <DropdownMenuItem className='cursor-pointer'>
-          <Gear size={24} className='me-1' />
-          Ajustes
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleSignOut} className='cursor-pointer'>
+
+        <DropdownMenuItem onSelect={handleSignOut} className='cursor-pointer'>
           <SignOut size={24} className='me-1' />
           Cerrar sesión
         </DropdownMenuItem>

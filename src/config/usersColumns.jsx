@@ -32,18 +32,21 @@ const changeRole = async (email, role) => {
       toast.error('Oops!', {
         description: 'Error de autenticación.',
       });
+
+      return;
     }
 
     // Send the request to the server
-    // https://cmc-api-42qy.onrender.com/api/v1/auth/change-role
     const res = await axios.patch(
       'http://localhost:3000/api/v1/auth/change-role',
       { email, role },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
+    console.log(res);
+
     // Give a toast message if failed
-    if (!res.data.success) {
+    if (!res.status === 200) {
       toast.error('Oops...', {
         description: 'Error al cambiar el rol.',
       });
@@ -76,44 +79,6 @@ const changeState = async (email) => {
     // https://cmc-api-42qy.onrender.com/api/v1/auth/soft-delete
     const res = await axios.patch(
       'http://localhost:3000/api/v1/auth/soft-delete',
-      { email },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    // Give a toast message if failed
-    if (!res.data.success) {
-      toast.error('Oops...', {
-        description: 'Error al cambiar el estado.',
-      });
-    }
-
-    // Give a toast message if succeeded
-    toast.success('¡Enhorabuena!', {
-      description: `Se ha cambiado el estado del usuario.`,
-    });
-  } catch (error) {
-    console.error(error);
-    // Give a toast message if error
-    toast.error('Oops...', {
-      description: `Ha ocurrido un error.`,
-    });
-  }
-};
-
-const getUserInfo = async (id) => {
-  try {
-    // Check auth
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-      toast.error('Oops!', {
-        description: `Error de autenticación.`,
-      });
-    }
-
-    // Send the request to the server
-    // https://cmc-api-42qy.onrender.com/api/v1/user-info
-    const res = await axios.get(
-      'http://localhost:3000/api/v1/user-info',
       { email },
       { headers: { Authorization: `Bearer ${token}` } }
     );

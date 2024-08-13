@@ -1,77 +1,109 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-
-import { cn } from '@/lib/utils';
 import { format, parseISO, setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { RotatingLines } from 'react-loader-spinner';
+import { toast } from 'sonner';
+
+import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-import { RotatingLines } from 'react-loader-spinner';
+import TimeRangePicker from '@/components/TimeRangePicker';
+import { PhoneInput } from '@/components/PhoneInput';
 
 import { CalendarDots } from '@phosphor-icons/react';
 
-import { PhoneInput } from '@/components/PhoneInput';
-import { personalInfoSchema } from '@/utils/formSchema';
+import { medicInfoSchema, userInfoSchema } from '@/utils/formSchema';
 
 setDefaultOptions({ locale: es });
 
+const specialties = [
+  {
+    id: 'accupuncture',
+    label: 'Acupuntura',
+  },
+  {
+    id: 'dermatology',
+    label: 'Dermatología',
+  },
+  {
+    id: 'nutrition',
+    label: 'Nutrición',
+  },
+  {
+    id: 'oral-rehab',
+    label: 'Rehabilitación Oral',
+  },
+  {
+    id: 'orthodontics',
+    label: 'Ortodoncia',
+  },
+  {
+    id: 'surgery',
+    label: 'Cirugía',
+  },
+];
+
+const days = [
+  {
+    id: 'lunes',
+    label: 'Lunes',
+  },
+  {
+    id: 'martes',
+    label: 'Martes',
+  },
+  {
+    id: 'miercoles',
+    label: 'Miércoles',
+  },
+  {
+    id: 'jueves',
+    label: 'Jueves',
+  },
+  {
+    id: 'viernes',
+    label: 'Viernes',
+  },
+  {
+    id: 'sabado',
+    label: 'Sábado',
+  },
+];
+
 const Profile = () => {
-  const onLoad = async () => {
-    // Check auth
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-      toast.error('Oops!', {
-        description: `Error de autenticación.`,
-      });
-    }
-
-    // Send get request
-    const res = await axios.get('http://localhost:3000/api/v1/user-info', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    const userInfo = {
-      firstName: res?.data?.firstName,
-      lastName: res?.data?.lastName,
-      dob: res?.data?.dob,
-      phone: res?.data?.phone,
-      address: res?.data?.address,
-    };
-  };
-
-  onLoad();
-
   const form = useForm({
-    resolver: zodResolver(personalInfoSchema),
+    resolver: zodResolver(userInfoSchema),
     defaultValues: {
+      dniType: '',
+      dni: '',
       firstName: '',
       lastName: '',
       dob: null,
@@ -80,74 +112,246 @@ const Profile = () => {
     },
   });
 
-  // Loading with React Spinners
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const medicInfoForm = useForm({
+    resolver: zodResolver(medicInfoSchema),
+    defaultValues: {
+      registry: '',
+      speciality: [],
+      days: [],
+      hours: [],
+    },
+  });
 
-  const onSubmit = async (values) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [initialUserData, setInitialUserData] = useState(null);
+  const [initialMedicData, setInitialMedicData] = useState(null);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [tabValue, setTabValue] = useState('userInfo');
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const token = sessionStorage.getItem('token');
+        if (!token) {
+          toast.error('Oops!', {
+            description: 'Error de autenticación.',
+          });
+
+          return;
+        }
+
+        if (tabValue === 'userInfo') {
+          const res = await axios.get(
+            'http://localhost:3000/api/v1/user-info',
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          if (res.status === 200) {
+            const userData = {
+              firstName: res?.data?.firstName || '',
+              lastName: res?.data?.lastName || '',
+              dniType: res?.data?.dniType || '',
+              dni: res?.data?.dni || '',
+              dob: res?.data?.dob ? new Date(res?.data?.dob) : null,
+              phone: res?.data?.phone || '',
+              address: res?.data?.address || '',
+            };
+
+            setInitialUserData(userData);
+            form.reset(userData); // Load data in the form fields
+            setIsDisabled(true);
+          }
+        } else {
+          const res = await axios.get(
+            'http://localhost:3000/api/v1/medic-info',
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          if (res.status === 200) {
+            const medicData = {
+              registry: res?.data?.registry || '',
+              speciality: res?.data?.speciality || [],
+              days: res?.data?.days || [],
+              checkIn: res?.data?.checkIn ? new Date(res?.data?.checkIn) : null,
+              checkOut: res?.data?.checkOut
+                ? new Date(res?.data?.checkOut)
+                : null,
+            };
+
+            setInitialMedicData(medicData);
+            medicInfoForm.reset(medicData); // Load data in the form fields
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUserInfo();
+  }, [form, medicInfoForm, tabValue]);
+
+  const onSubmit = async (data) => {
     try {
+      // Show loading React Spinners
+      setIsSubmitting(true);
+
       // Check auth
       const token = sessionStorage.getItem('token');
       if (!token) {
         toast.error('Oops!', {
-          description: `Error de autenticación.`,
+          description: 'Error de autenticación.',
         });
+        return;
       }
 
-      // Define the object to send to userData
-      const userData = {
-        firstName: values?.firstName,
-        lastName: values?.lastName,
-        dob: format(values?.dob, 'dd-MM-yyyy'),
-        phone: values?.phone,
-        address: values?.address,
-      };
+      if (initialUserData) {
+        // If initialUserData exists, it's an update
 
-      // Define the object to send to medicData
-      const medicData = {
-        registry: values.registry,
-        speciality: values.speciality,
-        days: values.days,
-        checkIn:
-          format(parseISO(values.hours?.[0]), 'dd-MM-yyyy HH:mm:ss') || '',
-        checkOut:
-          format(parseISO(values.hours?.[1]), 'dd-MM-yyyy HH:mm:ss') || '',
-      };
+        // Compare if the values have changed
+        const currentValues = form.getValues();
+        const hasChanges =
+          JSON.stringify(currentValues) !== JSON.stringify(initialUserData);
 
-      const [response1, response2] = await Promise.all([
-        axios.post('http://localhost:3000/api/v1/user-info', userData, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.post('http://localhost:3000/api/v1/medic-info', medicData, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-      ]);
+        if (!hasChanges) {
+          toast.warning('Oops!', {
+            description: 'No se detectaron cambios.',
+          });
+          return;
+        }
 
-      // Show loading React Spinners
-      setIsSubmitting(true);
+        // Format the birthdate
+        data = {
+          ...data,
+          dob: data.dob ? format(data.dob, 'dd-MM-yyyy') : null,
+        };
 
-      if (
-        response1 &&
-        response2 &&
-        response1.status === 201 &&
-        response2.status === 201
-      ) {
-        form.reset();
+        const res = await axios.patch(
+          'http://localhost:3000/api/v1/user-info',
+          data,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-        toast.success('¡Enhorabuena!', {
-          description: 'Se ha guardado la información.',
-        });
-        toast.info('Redireccionando...', {
-          description: 'Por favor espere.',
-        });
+        if (res.status === 200) {
+          toast.success('¡Enhorabuena!', {
+            description: 'Información actualizada con éxito.',
+          });
 
-        setTimeout(() => {
-          navigate('/');
-        }, 3000);
+          // Set new current values after editing
+          setInitialUserData(currentValues);
+        }
+      } else {
+        // If no initialUserData, it's a new entry
+        const res = await axios.post(
+          'http://localhost:3000/api/v1/user-info',
+          { ...data, dob: format(data.dob, 'dd-MM-yyyy') },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (res.status === 201) {
+          toast.success('¡Enhorabuena!', {
+            description: 'Información guardada con éxito.',
+          });
+
+          setInitialUserData(data);
+          setIsDisabled(true);
+        }
       }
     } catch (error) {
       console.error(error);
       toast.error('Oops...', {
-        description: 'Error interno del servidor.',
+        description: 'Error al guardar la información.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const onMedicInfoFormSubmit = async (data) => {
+    try {
+      // Show loading React Spinners
+      setIsSubmitting(true);
+
+      // Check auth
+      const token = sessionStorage.getItem('token');
+      if (!token) {
+        toast.error('Oops!', {
+          description: 'Error de autenticación.',
+        });
+        return;
+      }
+
+      // Taking out the 'hours' property
+      const { hours, ...rest } = data;
+
+      // Format the hours
+      const medicData = {
+        ...rest,
+        checkIn: format(parseISO(data.hours?.[0]), 'dd-MM-yyyy HH:mm:ss') || '',
+        checkOut:
+          format(parseISO(data.hours?.[1]), 'dd-MM-yyyy HH:mm:ss') || '',
+      };
+
+      if (initialMedicData) {
+        // Update
+
+        // Compare if the values have changed
+        const currentValues = medicInfoForm.getValues();
+        const hasChanges =
+          JSON.stringify(currentValues) !== JSON.stringify(initialMedicData);
+
+        if (!hasChanges) {
+          toast.warning('Oops!', {
+            description: 'No se detectaron cambios.',
+          });
+          return;
+        }
+
+        const res = await axios.patch(
+          'http://localhost:3000/api/v1/user-info',
+          medicData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (res.status === 200) {
+          toast.success('¡Enhorabuena!', {
+            description: 'Información actualizada con éxito.',
+          });
+
+          // Set new current values after editing
+          setInitialMedicData(currentValues);
+        }
+      } else {
+        // New entry
+        const res = await axios.post(
+          'http://localhost:3000/api/v1/medic-info',
+          medicData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (res.status === 201) {
+          toast.success('¡Enhorabuena!', {
+            description: 'Información guardada con éxito.',
+          });
+
+          setInitialMedicData(data);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Oops...', {
+        description: 'Error al guardar la información.',
       });
     } finally {
       setIsSubmitting(false);
@@ -155,40 +359,82 @@ const Profile = () => {
   };
 
   return (
-    <div className='py-16 flex flex-col gap-5 items-center'>
-      <h1 className='text-4xl'>Perfil</h1>
-      <Tabs defaultValue='account' className='w-full md:w-fit'>
+    <div className='flex justify-center'>
+      <Tabs
+        defaultValue='userInfo'
+        className='w-full md:w-fit'
+        onValueChange={(value) => setTabValue(value)}
+      >
         <TabsList className='grid w-full grid-cols-2'>
-          <TabsTrigger value='account'>Personal</TabsTrigger>
-          <TabsTrigger value='password'>Profesional</TabsTrigger>
+          <TabsTrigger value='userInfo'>Datos Personales</TabsTrigger>
+          <TabsTrigger value='medicInfo'>Datos Profesionales</TabsTrigger>
         </TabsList>
-        <TabsContent value='account'>
+        <TabsContent value='userInfo'>
           <Card>
-            <CardHeader>
-              <CardTitle>Personal</CardTitle>
-              <CardDescription>
-                Make changes to your account here. Click save when you're done.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className='space-y-2'>
+            <CardContent className='p-5'>
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
                   className='space-y-2.5'
                 >
+                  <div className='flex flex-col space-y-2.5 md:flex-row md:gap-2.5 md:space-y-0'>
+                    <FormField
+                      control={form.control}
+                      name='firstName'
+                      render={({ field }) => (
+                        <FormItem className='w-full'>
+                          <FormLabel>Nombre</FormLabel>
+                          <FormControl>
+                            <Input type='text' {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name='lastName'
+                      render={({ field }) => (
+                        <FormItem className='w-full'>
+                          <FormLabel>Apellido</FormLabel>
+                          <FormControl>
+                            <Input type='text' {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
                   <FormField
                     control={form.control}
-                    name='firstName'
+                    name='dniType'
                     render={({ field }) => (
                       <FormItem className='w-full'>
-                        <FormControl>
-                          <Input
-                            type='text'
-                            placeholder='Nombre'
-                            className='h-10 text-lg'
-                            {...field}
-                          />
-                        </FormControl>
+                        <FormLabel>Tipo de documento</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          disabled={isDisabled}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder='Seleccionar...' />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value='cedula' className='text-lg'>
+                              Cédula
+                            </SelectItem>
+                            <SelectItem value='ruc' className='text-lg'>
+                              RUC
+                            </SelectItem>
+                            <SelectItem value='passport' className='text-lg'>
+                              Pasaporte
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -196,16 +442,12 @@ const Profile = () => {
 
                   <FormField
                     control={form.control}
-                    name='lastName'
+                    name='dni'
                     render={({ field }) => (
                       <FormItem className='w-full'>
+                        <FormLabel>Nº de documento</FormLabel>
                         <FormControl>
-                          <Input
-                            type='text'
-                            placeholder='Apellido'
-                            className='h-10 text-lg'
-                            {...field}
-                          />
+                          <Input type='text' disabled={isDisabled} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -216,21 +458,24 @@ const Profile = () => {
                     control={form.control}
                     name='dob'
                     render={({ field }) => (
-                      <FormItem className='flex flex-col'>
+                      <FormItem className='flex flex-col gap-1'>
+                        <FormLabel className='mt-1'>
+                          Fecha de nacimiento
+                        </FormLabel>
                         <Popover modal={true}>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
                                 variant={'outline'}
                                 className={cn(
-                                  'pl-3 text-left font-normal h-10 text-lg',
+                                  'pl-3 text-left font-normal',
                                   !field.value && 'text-muted-foreground'
                                 )}
                               >
                                 {field.value ? (
                                   format(field.value, 'PPP')
                                 ) : (
-                                  <span>Fecha de nacimiento</span>
+                                  <span>Seleccionar...</span>
                                 )}
                                 <CalendarDots
                                   weight='bold'
@@ -267,8 +512,9 @@ const Profile = () => {
                     name='phone'
                     render={({ field }) => (
                       <FormItem>
+                        <FormLabel>Nº Celular</FormLabel>
                         <FormControl>
-                          <PhoneInput placeholder='Celular' {...field} />
+                          <PhoneInput {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -280,13 +526,9 @@ const Profile = () => {
                     name='address'
                     render={({ field }) => (
                       <FormItem>
+                        <FormLabel>Dirección</FormLabel>
                         <FormControl>
-                          <Input
-                            type='text'
-                            placeholder='Dirección'
-                            className='h-10 text-lg'
-                            {...field}
-                          />
+                          <Input type='text' {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -297,9 +539,9 @@ const Profile = () => {
                     <Button
                       type='submit'
                       disabled={isSubmitting}
-                      className='w-full h-10 text-xl md:w-fit'
+                      className='w-full md:w-fit'
                     >
-                      Guardar cambios
+                      Guardar
                       {isSubmitting && (
                         <span className='ms-2'>
                           <RotatingLines
@@ -321,27 +563,186 @@ const Profile = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value='password'>
+        <TabsContent value='medicInfo'>
           <Card>
-            <CardHeader>
-              <CardTitle>Profesional</CardTitle>
-              <CardDescription>
-                Change your password here. After saving, you'll be logged out.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className='space-y-2'>
-              <div className='space-y-1'>
-                <Label htmlFor='current'>Current password</Label>
-                <Input id='current' type='password' />
-              </div>
-              <div className='space-y-1'>
-                <Label htmlFor='new'>New password</Label>
-                <Input id='new' type='password' />
-              </div>
+            <CardContent className='p-5'>
+              <Form {...medicInfoForm}>
+                <form
+                  onSubmit={medicInfoForm.handleSubmit(onMedicInfoFormSubmit)}
+                  className='space-y-2.5'
+                >
+                  <FormField
+                    control={medicInfoForm.control}
+                    name='registry'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            type='text'
+                            placeholder='Registro'
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={medicInfoForm.control}
+                    name='speciality'
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>Especialidad</FormLabel>
+                        <div className='px-2 lg:grid lg:grid-cols-3 lg:gap-2'>
+                          {specialties.map((item) => (
+                            <FormField
+                              key={item.id}
+                              control={medicInfoForm.control}
+                              name='speciality'
+                              render={({ field }) => {
+                                return (
+                                  <FormItem
+                                    key={item.id}
+                                    className='flex flex-row items-start space-x-3 space-y-0'
+                                  >
+                                    <FormControl>
+                                      <Checkbox
+                                        checked={field.value?.includes(item.id)}
+                                        onCheckedChange={(checked) => {
+                                          return checked
+                                            ? field.onChange([
+                                                ...field.value,
+                                                item.id,
+                                              ])
+                                            : field.onChange(
+                                                field.value?.filter(
+                                                  (value) => value !== item.id
+                                                )
+                                              );
+                                        }}
+                                      />
+                                    </FormControl>
+                                    <FormLabel className='text-sm font-normal'>
+                                      {item.label}
+                                    </FormLabel>
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={medicInfoForm.control}
+                    name='days'
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>Días de trabajo</FormLabel>
+                        <div className='px-2 lg:grid lg:grid-cols-3 lg:gap-2'>
+                          {days.map((item) => (
+                            <FormField
+                              key={item.id}
+                              control={medicInfoForm.control}
+                              name='days'
+                              render={({ field }) => {
+                                return (
+                                  <FormItem
+                                    key={item.id}
+                                    className='flex flex-row items-start space-x-3 space-y-0'
+                                  >
+                                    <FormControl>
+                                      <Checkbox
+                                        checked={field.value?.includes(item.id)}
+                                        onCheckedChange={(checked) => {
+                                          return checked
+                                            ? field.onChange([
+                                                ...field.value,
+                                                item.id,
+                                              ])
+                                            : field.onChange(
+                                                field.value?.filter(
+                                                  (value) => value !== item.id
+                                                )
+                                              );
+                                        }}
+                                      />
+                                    </FormControl>
+                                    <FormLabel className='text-sm font-normal'>
+                                      {item.label}
+                                    </FormLabel>
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={medicInfoForm.control}
+                    name='hours'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <TimeRangePicker
+                            startHour={8}
+                            endHour={19}
+                            blockedHours={[13]}
+                            minuteStep={30}
+                            onChange={(value) => {
+                              const isoValues = value.map((v) => {
+                                // Convert each value to ISO format
+                                if (v) {
+                                  const [hour, minute] = v.split(':');
+                                  const now = new Date();
+                                  now.setHours(hour, minute, 0, 0);
+                                  return now.toISOString();
+                                }
+                                return '';
+                              });
+
+                              field.onChange(isoValues);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className='pt-5 md:flex md:justify-center'>
+                    <Button
+                      type='submit'
+                      disabled={isSubmitting}
+                      className='w-full md:w-fit'
+                    >
+                      Guardar
+                      {isSubmitting && (
+                        <span className='ms-2'>
+                          <RotatingLines
+                            visible={true}
+                            height='20'
+                            width='20'
+                            strokeColor='#FFF'
+                            strokeWidth={5}
+                            animationDuration='0.75'
+                            ariaLabel='rotating-lines-loading'
+                          />
+                        </span>
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
             </CardContent>
-            <CardFooter>
-              <Button>Save password</Button>
-            </CardFooter>
           </Card>
         </TabsContent>
       </Tabs>
