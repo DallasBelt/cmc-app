@@ -66,7 +66,7 @@ const TimeRangePicker = ({
         <Label htmlFor='start-time'>Hora inicial</Label>
         <Select value={startTime} onValueChange={handleStartTimeChange}>
           <SelectTrigger id='start-time'>
-            <SelectValue placeholder='Seleccione una hora' />
+            <SelectValue placeholder='Seleccionar...' />
           </SelectTrigger>
           <SelectContent>
             {times.map((time) => (
@@ -82,7 +82,7 @@ const TimeRangePicker = ({
         <Label htmlFor='end-time'>Hora final</Label>
         <Select value={endTime} onValueChange={handleEndTimeChange}>
           <SelectTrigger id='end-time'>
-            <SelectValue placeholder='Seleccione una hora' />
+            <SelectValue placeholder='Seleccionar...' />
           </SelectTrigger>
           <SelectContent>
             {availableEndTimes.map((time) => (

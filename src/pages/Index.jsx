@@ -40,7 +40,6 @@ const Index = () => {
   useEffect(() => {
     if (showToast) {
       toast.success(toastMessage);
-
       setToast(false, '');
     }
   }, [showToast, toastMessage, setToast]);
