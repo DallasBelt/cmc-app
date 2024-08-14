@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Popover,
   PopoverContent,
@@ -97,6 +98,24 @@ const days = [
     label: 'Sábado',
   },
 ];
+
+const generateHoursOptions = (startHour, endHour, interval) => {
+  const options = [];
+  for (let i = startHour; i <= endHour; i++) {
+    for (let j = 0; j < 60; j += interval) {
+      if (i === endHour && j > 0) break; // Break loop for last hour and if above interval
+      const hourString = i.toString().padStart(2, '0'); // Two digits for hours
+      const minuteString = j.toString().padStart(2, '0'); // Two digits for minutes
+      options.push({
+        value: `${hourString}:${minuteString}`,
+        label: `${hourString}:${minuteString}`,
+      });
+    }
+  }
+  return options;
+};
+
+const hours = generateHoursOptions(7, 19, 15);
 
 const Profile = () => {
   const form = useForm({
@@ -701,7 +720,86 @@ const Profile = () => {
                     )}
                   />
 
-                  <FormField
+                  <div className='flex flex-col gap-2.5 md:flex-row'>
+                    <FormField
+                      control={form.control}
+                      name='checkIn'
+                      render={({ field }) => (
+                        <FormItem className='w-full'>
+                          <FormLabel>Hora inicial</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger
+                                className={cn(
+                                  'font-normal',
+                                  !field.value && 'text-muted-foreground'
+                                )}
+                              >
+                                <SelectValue placeholder='Seleccionar...' />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {hours.map((option) => (
+                                <SelectItem
+                                  key={option.value}
+                                  value={option.value}
+                                >
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name='checkOut'
+                      render={({ field }) => (
+                        <FormItem className='w-full'>
+                          <FormLabel>Hora final</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger
+                                className={cn(
+                                  'font-normal',
+                                  !field.value && 'text-muted-foreground'
+                                )}
+                              >
+                                <SelectValue placeholder='Seleccionar...' />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value='7'>07:00</SelectItem>
+                              <SelectItem value='8'>08:00</SelectItem>
+                              <SelectItem value='9'>09:00</SelectItem>
+                              <SelectItem value='10'>10:00</SelectItem>
+                              <SelectItem value='11'>11:00</SelectItem>
+                              <SelectItem value='12'>12:00</SelectItem>
+                              <SelectItem value='13'>13:00</SelectItem>
+                              <SelectItem value='14'>14:00</SelectItem>
+                              <SelectItem value='15'>15:00</SelectItem>
+                              <SelectItem value='16'>16:00</SelectItem>
+                              <SelectItem value='17'>17:00</SelectItem>
+                              <SelectItem value='18'>18:00</SelectItem>
+                              <SelectItem value='19'>19:00</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* <FormField
                     control={medicInfoForm.control}
                     name='hours'
                     render={({ field }) => (
@@ -733,7 +831,7 @@ const Profile = () => {
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
+                  /> */}
 
                   <div className='pt-5 md:flex md:justify-center'>
                     <Button
