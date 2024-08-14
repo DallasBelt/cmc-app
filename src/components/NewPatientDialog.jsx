@@ -17,7 +17,7 @@ const NewPatientDialog = () => {
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button className='w-full lg:max-w-fit'>
+          <Button className='w-full md:max-w-fit'>
             <UserPlus size={24} className='mr-2' />
             Nuevo paciente
           </Button>

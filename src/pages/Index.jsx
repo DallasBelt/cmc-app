@@ -64,7 +64,7 @@ const Index = () => {
 
         <Card className={isAdmin ? 'md:w-1/3' : 'md:w-1/2'}>
           <CardHeader>
-            <CardTitle className='text-4xl'>patients</CardTitle>
+            <CardTitle className='text-4xl'>Pacientes</CardTitle>
           </CardHeader>
           <CardContent className='text-3xl'>
             <p>Total:</p>

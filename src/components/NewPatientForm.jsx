@@ -14,6 +14,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -38,20 +39,20 @@ import { CalendarDots, Plus } from '@phosphor-icons/react';
 
 import { PhoneInput } from '@/components/PhoneInput';
 
-import { patientSchema } from '@/utils/formSchema';
+import { userInfoSchema } from '@/utils/formSchema';
 
 const NewPatientForm = () => {
-  // Loading with React Spinners
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
-    resolver: zodResolver(patientSchema),
+    resolver: zodResolver(userInfoSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
       dniType: '',
       dni: '',
-      email: '',
+      occupation: '',
+      // email: '',
       dob: null,
       phone: '',
       address: '',
@@ -59,11 +60,52 @@ const NewPatientForm = () => {
   });
 
   const onSubmit = async (values) => {
-    const newPatient = {
-      ...values,
-      dob: format(values.dob, 'yyyy-MM-dd'),
-    };
-    console.log(newPatient);
+    try {
+      setIsSubmitting(true);
+
+      // Check auth
+      const token = sessionStorage.getItem('token');
+      if (!token) {
+        toast.error('Oops!', {
+          description: 'Error de autenticación.',
+        });
+        return;
+      }
+
+      // Post request
+      const req = await axios.post(
+        'http://localhost:3000/api/v1/patient',
+        {
+          ...values,
+          dob: format(values.dob, 'dd-MM-yyyy'),
+          medicId: sessionStorage.getItem('id'),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (req.status === 201) {
+        toast.success('¡Enhorabuena!', {
+          description: 'Paciente creado con éxito.',
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      if (error.response.status === 400) {
+        toast.error('Oops...', {
+          description: 'El paciente ya existe.',
+        });
+      } else {
+        toast.error('Oops...', {
+          description: 'Error al crear paciente.',
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -76,13 +118,9 @@ const NewPatientForm = () => {
               name='firstName'
               render={({ field }) => (
                 <FormItem className='w-full'>
+                  <FormLabel>Nombre</FormLabel>
                   <FormControl>
-                    <Input
-                      type='text'
-                      placeholder='Nombre'
-                      className='h-10 text-lg'
-                      {...field}
-                    />
+                    <Input type='text' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -94,13 +132,9 @@ const NewPatientForm = () => {
               name='lastName'
               render={({ field }) => (
                 <FormItem className='w-full'>
+                  <FormLabel>Apellido</FormLabel>
                   <FormControl>
-                    <Input
-                      type='text'
-                      placeholder='Apellido'
-                      className='h-10 text-lg'
-                      {...field}
-                    />
+                    <Input type='text' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -113,29 +147,25 @@ const NewPatientForm = () => {
             name='dniType'
             render={({ field }) => (
               <FormItem className='w-full'>
+                <FormLabel>Tipo de documento</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger
-                      className={`h-10 text-lg ${
-                        field.value ? 'text-black' : 'text-slate-500'
-                      }`}
+                      className={cn(
+                        'font-normal',
+                        !field.value && 'text-muted-foreground'
+                      )}
                     >
-                      <SelectValue placeholder='Tipo de documento' />
+                      <SelectValue placeholder='Seleccionar...' />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value='cedula' className='text-lg'>
-                      Cédula
-                    </SelectItem>
-                    <SelectItem value='ruc' className='text-lg'>
-                      RUC
-                    </SelectItem>
-                    <SelectItem value='passport' className='text-lg'>
-                      Pasaporte
-                    </SelectItem>
+                    <SelectItem value='cedula'>Cédula</SelectItem>
+                    <SelectItem value='ruc'>RUC</SelectItem>
+                    <SelectItem value='passport'>Pasaporte</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -148,13 +178,9 @@ const NewPatientForm = () => {
             name='dni'
             render={({ field }) => (
               <FormItem className='w-full'>
+                <FormLabel>Nº de documento</FormLabel>
                 <FormControl>
-                  <Input
-                    type='text'
-                    placeholder='Nº de documento'
-                    className='h-10 text-lg'
-                    {...field}
-                  />
+                  <Input type='text' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -163,41 +189,52 @@ const NewPatientForm = () => {
 
           <FormField
             control={form.control}
-            name='email'
+            name='occupation'
             render={({ field }) => (
               <FormItem className='w-full'>
+                <FormLabel>Ocupación</FormLabel>
                 <FormControl>
-                  <Input
-                    type='text'
-                    placeholder='Correo electrónico'
-                    className='h-10 text-lg'
-                    {...field}
-                  />
+                  <Input type='text' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
+          {/* <FormField
+            control={form.control}
+            name='email'
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormLabel>Correo electrónico</FormLabel>
+                <FormControl>
+                  <Input type='email' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
 
           <FormField
             control={form.control}
             name='dob'
             render={({ field }) => (
               <FormItem className='flex flex-col'>
+                <FormLabel className='mt-1'>Fecha de nacimiento</FormLabel>
                 <Popover modal={true}>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
                         variant={'outline'}
                         className={cn(
-                          'pl-3 text-left font-normal h-10 text-lg',
+                          'pl-3 text-left font-normal',
                           !field.value && 'text-muted-foreground'
                         )}
                       >
                         {field.value ? (
                           format(field.value, 'PPP')
                         ) : (
-                          <span>Fecha de nacimiento</span>
+                          <span>Seleccionar...</span>
                         )}
                         <CalendarDots
                           weight='bold'
@@ -233,8 +270,9 @@ const NewPatientForm = () => {
             name='phone'
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Nº Celular</FormLabel>
                 <FormControl>
-                  <PhoneInput placeholder='Celular' {...field} />
+                  <PhoneInput {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -246,13 +284,9 @@ const NewPatientForm = () => {
             name='address'
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Dirección</FormLabel>
                 <FormControl>
-                  <Input
-                    type='text'
-                    placeholder='Dirección'
-                    className='h-10 text-lg'
-                    {...field}
-                  />
+                  <Input type='text' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -263,9 +297,9 @@ const NewPatientForm = () => {
             <Button
               type='submit'
               disabled={isSubmitting}
-              className='w-full h-10 text-xl md:w-fit'
+              className='w-full md:w-fit'
             >
-              Crear
+              Crear nuevo paciente
               {isSubmitting && (
                 <span className='ms-2'>
                   <RotatingLines

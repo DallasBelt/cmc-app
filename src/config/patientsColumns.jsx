@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { differenceInYears, format } from 'date-fns';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -63,6 +64,10 @@ export const patientsColumns = [
     },
   },
   {
+    accessorKey: 'phone',
+    header: 'Nº Celular',
+  },
+  {
     accessorKey: 'dob',
     header: ({ column }) => {
       return (
@@ -76,7 +81,11 @@ export const patientsColumns = [
         </Button>
       );
     },
-    // cell: ({ row }) => (new Date - row.original.dob),
+    cell: ({ row }) => {
+      const birthDate = new Date(row.original.dob);
+      const age = differenceInYears(new Date(), birthDate);
+      return age;
+    },
   },
   {
     id: 'actions',

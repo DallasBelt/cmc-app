@@ -59,10 +59,19 @@ export const loginSchema = z.object({
 
 export const userInfoSchema = z
   .object({
-    dniType: z.string().min(1, { message: 'Tipo de documento requerido' }),
-    dni: z.string().min(1, { message: 'Nº de documento requerido' }),
     firstName: z.string().min(1, { message: 'Nombre requerido' }),
     lastName: z.string().min(1, { message: 'Apellido requerido' }),
+    dniType: z.string().min(1, { message: 'Tipo de documento requerido' }),
+    dni: z.string().min(1, { message: 'Nº de documento requerido' }),
+    occupation: z
+      .string()
+      .min(1, { message: 'Ocupación requerida' })
+      .optional(),
+    email: z
+      .string()
+      .min(1, { message: 'Correo electrónico requerido' })
+      .email('Correo electrónico no válido')
+      .optional(),
     dob: z
       .date()
       .nullable()
@@ -111,34 +120,23 @@ export const userInfoSchema = z
     }
   });
 
-// export const medicInfoSchema = z.object({
-//   registry: z.string().min(1, { message: 'Registro requerido' }),
-//   speciality: z
-//     .array(z.string())
-//     .refine((value) => value.some((item) => item), {
-//       message: 'Seleccione al menos una especialidad',
-//     }),
-//   days: z.array(z.string()).refine((value) => value.some((item) => item), {
-//     message: 'Seleccione al menos un día',
-//   }),
-//   hours: z.array(z.string()).length(2, 'Seleccione un rango de inicio y fin'),
-// });
-
 export const medicInfoSchema = z.object({
   registry: z.string().min(1, { message: 'Registro requerido' }),
   speciality: z
     .array(z.string())
     .nonempty('Seleccione al menos una especialidad'),
   days: z.array(z.string()).nonempty('Seleccione al menos un día'),
-  hours: z.array(z.string()).length(2, 'Seleccione un rango de inicio y fin'),
-  // .refine(
-  //   (value) => {
-  //     if (value.length !== 2) return false;
-  //     const [start, end] = value;
-  //     return new Date(start) < new Date(end);
-  //   },
-  //   { message: 'El rango de horas debe ser válido' }
-  // ),
+  hours: z
+    .array(z.string())
+    .length(2, 'Seleccione un rango de inicio y fin')
+    .refine(
+      (value) => {
+        if (value.length !== 2) return false;
+        const [start, end] = value;
+        return new Date(start) < new Date(end);
+      },
+      { message: 'El rango de horas debe ser válido' }
+    ),
 });
 
 export const patientSchema = z.object({

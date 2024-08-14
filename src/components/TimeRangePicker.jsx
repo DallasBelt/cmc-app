@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -6,25 +8,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
 
-// Función para generar intervalos de minutos en un rango personalizado, excluyendo fracciones de horas bloqueadas
+// Generate minute ranges in a custom range, excluding locked hour ranges
 const generateTimeOptions = (
   startHour,
   endHour,
   minuteStep,
-  blockedHours = []
+  blockedRanges = []
 ) => {
   const times = [];
   for (let i = startHour; i <= endHour; i++) {
     for (let j = 0; j < 60; j += minuteStep) {
-      if (i === endHour && j > 0) break; // No incluir intervalos más allá de la hora final
-      if (blockedHours.includes(i) && j > 0) continue; // Omitir fracciones de horas bloqueadas
+      // Skip any time past the endHour
+      if (i === endHour && j > 0) break;
+
+      // Check if the full hour (without minutes) is blocked and if it is not the first fraction
+      const isBlocked = blockedRanges.some(
+        ([start, end]) =>
+          (i > start && i < end) ||
+          (i === start && j > 0) ||
+          (i === end && j > 0)
+      );
+      if (isBlocked) continue; // Skip hours blocked fractions
+
       const hour = i.toString().padStart(2, '0');
       const minute = j.toString().padStart(2, '0');
       times.push(`${hour}:${minute}`);
     }
   }
+
   return times;
 };
 
@@ -32,23 +44,37 @@ const TimeRangePicker = ({
   startHour = 0,
   endHour = 23,
   minuteStep = 15,
-  blockedHours = [],
+  blockedRanges = [],
+  startHourValue = '',
+  endHourValue = '',
   onChange,
 }) => {
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startTime, setStartTime] = useState(startHourValue);
+  const [endTime, setEndTime] = useState(endHourValue);
 
-  // Generamos opciones de tiempo dentro del rango proporcionado, excluyendo fracciones de horas bloqueadas
+  // Generate time options within the range provided, excluding ranges of blocked hours
   const times = generateTimeOptions(
     startHour,
     endHour,
     minuteStep,
-    blockedHours
+    blockedRanges
   );
+
+  // Remove the last hour option from the start time picker if it's equal to endHour
+  const startTimes = times.filter((time) => {
+    const [hour] = time.split(':').map(Number);
+    return hour < endHour;
+  });
+
+  useEffect(() => {
+    // Update startTime and endTime when props change
+    setStartTime(startHourValue);
+    setEndTime(endHourValue);
+  }, [startHourValue, endHourValue]);
 
   const handleStartTimeChange = (value) => {
     setStartTime(value);
-    setEndTime(''); // Limpiar endTime si se selecciona una nueva hora de inicio
+    setEndTime(''); // Clear endTime if new start time is selected
     if (onChange) onChange([value, '']);
   };
 
@@ -57,19 +83,19 @@ const TimeRangePicker = ({
     if (onChange) onChange([startTime, value]);
   };
 
-  // Filtrar opciones de tiempo para el selector de hora de fin
+  // Filter time options for end time picker
   const availableEndTimes = times.filter((time) => time > startTime);
 
   return (
-    <div className='flex gap-2.5'>
-      <div className='w-1/2'>
+    <div className='flex flex-col gap-2.5 md:flex-row'>
+      <div className='w-full md:w-1/2'>
         <Label htmlFor='start-time'>Hora inicial</Label>
         <Select value={startTime} onValueChange={handleStartTimeChange}>
           <SelectTrigger id='start-time'>
             <SelectValue placeholder='Seleccionar...' />
           </SelectTrigger>
           <SelectContent>
-            {times.map((time) => (
+            {startTimes.map((time) => (
               <SelectItem key={time} value={time}>
                 {time}
               </SelectItem>
@@ -78,9 +104,13 @@ const TimeRangePicker = ({
         </Select>
       </div>
 
-      <div className='w-1/2'>
+      <div className='w-full md:w-1/2'>
         <Label htmlFor='end-time'>Hora final</Label>
-        <Select value={endTime} onValueChange={handleEndTimeChange}>
+        <Select
+          value={endTime}
+          onValueChange={handleEndTimeChange}
+          disabled={!startTime} // Disable until start time is selected
+        >
           <SelectTrigger id='end-time'>
             <SelectValue placeholder='Seleccionar...' />
           </SelectTrigger>

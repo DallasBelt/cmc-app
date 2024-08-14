@@ -123,14 +123,16 @@ const Profile = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [initialUserData, setInitialUserData] = useState(null);
-  const [initialMedicData, setInitialMedicData] = useState(null);
-  const [isDisabled, setIsDisabled] = useState(false);
+  const [initialUserValues, setInitialUserValues] = useState(null);
+  const [initialMedicValues, setInitialMedicValues] = useState(null);
+  const [dniDisabled, setDniDisabled] = useState(false);
+  const [registryDisabled, setRegistryDisabled] = useState(false);
   const [tabValue, setTabValue] = useState('userInfo');
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
+        // Check auth
         const token = sessionStorage.getItem('token');
         if (!token) {
           toast.error('Oops!', {
@@ -159,11 +161,11 @@ const Profile = () => {
               address: res?.data?.address || '',
             };
 
-            setInitialUserData(userData);
+            setInitialUserValues(userData);
             form.reset(userData); // Load data in the form fields
-            setIsDisabled(true);
+            setDniDisabled(true);
           }
-        } else {
+        } else if (tabValue === 'medicInfo') {
           const res = await axios.get(
             'http://localhost:3000/api/v1/medic-info',
             {
@@ -182,8 +184,9 @@ const Profile = () => {
                 : null,
             };
 
-            setInitialMedicData(medicData);
-            medicInfoForm.reset(medicData); // Load data in the form fields
+            setInitialMedicValues(medicData);
+            medicInfoForm.reset(medicData);
+            setRegistryDisabled(true);
           }
         }
       } catch (error) {
@@ -194,9 +197,8 @@ const Profile = () => {
     fetchUserInfo();
   }, [form, medicInfoForm, tabValue]);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (values) => {
     try {
-      // Show loading React Spinners
       setIsSubmitting(true);
 
       // Check auth
@@ -208,13 +210,13 @@ const Profile = () => {
         return;
       }
 
-      if (initialUserData) {
-        // If initialUserData exists, it's an update
+      if (initialUserValues) {
+        // Update
 
         // Compare if the values have changed
         const currentValues = form.getValues();
         const hasChanges =
-          JSON.stringify(currentValues) !== JSON.stringify(initialUserData);
+          JSON.stringify(currentValues) !== JSON.stringify(initialUserValues);
 
         if (!hasChanges) {
           toast.warning('Oops!', {
@@ -223,15 +225,9 @@ const Profile = () => {
           return;
         }
 
-        // Format the birthdate
-        data = {
-          ...data,
-          dob: data.dob ? format(data.dob, 'dd-MM-yyyy') : null,
-        };
-
         const res = await axios.patch(
           'http://localhost:3000/api/v1/user-info',
-          data,
+          { ...values, dob: format(values.dob, 'dd-MM-yyyy') },
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -243,13 +239,13 @@ const Profile = () => {
           });
 
           // Set new current values after editing
-          setInitialUserData(currentValues);
+          setInitialUserValues(currentValues);
         }
       } else {
-        // If no initialUserData, it's a new entry
+        // New entry
         const res = await axios.post(
           'http://localhost:3000/api/v1/user-info',
-          { ...data, dob: format(data.dob, 'dd-MM-yyyy') },
+          { ...values, dob: format(values.dob, 'dd-MM-yyyy') },
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -260,7 +256,7 @@ const Profile = () => {
             description: 'Información guardada con éxito.',
           });
 
-          setInitialUserData(data);
+          setInitialUserValues(values);
           setIsDisabled(true);
         }
       }
@@ -274,9 +270,8 @@ const Profile = () => {
     }
   };
 
-  const onMedicInfoFormSubmit = async (data) => {
+  const onSubmit2 = async (values) => {
     try {
-      // Show loading React Spinners
       setIsSubmitting(true);
 
       // Check auth
@@ -288,24 +283,57 @@ const Profile = () => {
         return;
       }
 
-      // Taking out the 'hours' property
-      const { hours, ...rest } = data;
+      if (!initialMedicValues) {
+        // New entry
 
-      // Format the hours
-      const medicData = {
-        ...rest,
-        checkIn: format(parseISO(data.hours?.[0]), 'dd-MM-yyyy HH:mm:ss') || '',
-        checkOut:
-          format(parseISO(data.hours?.[1]), 'dd-MM-yyyy HH:mm:ss') || '',
-      };
+        // Taking out the 'hours' property
+        const { hours, ...rest } = values;
 
-      if (initialMedicData) {
+        // Format the hours
+        const medicInfo = {
+          ...rest,
+          checkIn:
+            format(parseISO(values.hours?.[0]), 'dd-MM-yyyy HH:mm:ss') || '',
+          checkOut:
+            format(parseISO(values.hours?.[1]), 'dd-MM-yyyy HH:mm:ss') || '',
+        };
+
+        const res = await axios.post(
+          'http://localhost:3000/api/v1/medic-info',
+          medicInfo,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (res.status === 201) {
+          toast.success('¡Enhorabuena!', {
+            description: 'Información guardada con éxito.',
+          });
+
+          setInitialMedicValues(values);
+          setRegistryDisabled(true);
+        }
+      } else {
         // Update
+
+        // Taking out the 'hours' and 'registry properties
+        const { hours, registry, ...rest } = values;
+
+        // Format the hours
+        const medicInfo = {
+          ...rest,
+          checkIn:
+            format(parseISO(values.hours?.[0]), 'dd-MM-yyyy HH:mm:ss') || '',
+          checkOut:
+            format(parseISO(values.hours?.[1]), 'dd-MM-yyyy HH:mm:ss') || '',
+        };
 
         // Compare if the values have changed
         const currentValues = medicInfoForm.getValues();
+
         const hasChanges =
-          JSON.stringify(currentValues) !== JSON.stringify(initialMedicData);
+          JSON.stringify(currentValues) !== JSON.stringify(initialMedicValues);
 
         if (!hasChanges) {
           toast.warning('Oops!', {
@@ -316,7 +344,7 @@ const Profile = () => {
 
         const res = await axios.patch(
           'http://localhost:3000/api/v1/user-info',
-          medicData,
+          medicInfo,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -328,24 +356,7 @@ const Profile = () => {
           });
 
           // Set new current values after editing
-          setInitialMedicData(currentValues);
-        }
-      } else {
-        // New entry
-        const res = await axios.post(
-          'http://localhost:3000/api/v1/medic-info',
-          medicData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        if (res.status === 201) {
-          toast.success('¡Enhorabuena!', {
-            description: 'Información guardada con éxito.',
-          });
-
-          setInitialMedicData(data);
+          setInitialMedicValues(currentValues);
         }
       }
     } catch (error) {
@@ -416,23 +427,22 @@ const Profile = () => {
                         <Select
                           onValueChange={field.onChange}
                           value={field.value}
-                          disabled={isDisabled}
+                          disabled={dniDisabled}
                         >
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger
+                              className={cn(
+                                'font-normal',
+                                !field.value && 'text-muted-foreground'
+                              )}
+                            >
                               <SelectValue placeholder='Seleccionar...' />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value='cedula' className='text-lg'>
-                              Cédula
-                            </SelectItem>
-                            <SelectItem value='ruc' className='text-lg'>
-                              RUC
-                            </SelectItem>
-                            <SelectItem value='passport' className='text-lg'>
-                              Pasaporte
-                            </SelectItem>
+                            <SelectItem value='cedula'>Cédula</SelectItem>
+                            <SelectItem value='ruc'>RUC</SelectItem>
+                            <SelectItem value='passport'>Pasaporte</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -447,7 +457,11 @@ const Profile = () => {
                       <FormItem className='w-full'>
                         <FormLabel>Nº de documento</FormLabel>
                         <FormControl>
-                          <Input type='text' disabled={isDisabled} {...field} />
+                          <Input
+                            type='text'
+                            disabled={dniDisabled}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -541,7 +555,7 @@ const Profile = () => {
                       disabled={isSubmitting}
                       className='w-full md:w-fit'
                     >
-                      Guardar
+                      Guardar datos
                       {isSubmitting && (
                         <span className='ms-2'>
                           <RotatingLines
@@ -568,7 +582,7 @@ const Profile = () => {
             <CardContent className='p-5'>
               <Form {...medicInfoForm}>
                 <form
-                  onSubmit={medicInfoForm.handleSubmit(onMedicInfoFormSubmit)}
+                  onSubmit={medicInfoForm.handleSubmit(onSubmit2)}
                   className='space-y-2.5'
                 >
                   <FormField
@@ -576,10 +590,11 @@ const Profile = () => {
                     name='registry'
                     render={({ field }) => (
                       <FormItem>
+                        <FormLabel>Registro</FormLabel>
                         <FormControl>
                           <Input
                             type='text'
-                            placeholder='Registro'
+                            disabled={registryDisabled}
                             {...field}
                           />
                         </FormControl>
@@ -594,7 +609,7 @@ const Profile = () => {
                     render={() => (
                       <FormItem>
                         <FormLabel>Especialidad</FormLabel>
-                        <div className='px-2 lg:grid lg:grid-cols-3 lg:gap-2'>
+                        <div className='px-2 md:grid md:grid-cols-3 md:gap-2'>
                           {specialties.map((item) => (
                             <FormField
                               key={item.id}
@@ -643,7 +658,7 @@ const Profile = () => {
                     render={() => (
                       <FormItem>
                         <FormLabel>Días de trabajo</FormLabel>
-                        <div className='px-2 lg:grid lg:grid-cols-3 lg:gap-2'>
+                        <div className='px-2 md:grid md:grid-cols-3 md:gap-2'>
                           {days.map((item) => (
                             <FormField
                               key={item.id}
@@ -693,10 +708,12 @@ const Profile = () => {
                       <FormItem>
                         <FormControl>
                           <TimeRangePicker
+                            // startHourValue={}
+                            // endHourValue={}
                             startHour={8}
                             endHour={19}
-                            blockedHours={[13]}
-                            minuteStep={30}
+                            blockedRanges={[[13, 15]]}
+                            minuteStep={15}
                             onChange={(value) => {
                               const isoValues = value.map((v) => {
                                 // Convert each value to ISO format
@@ -724,7 +741,7 @@ const Profile = () => {
                       disabled={isSubmitting}
                       className='w-full md:w-fit'
                     >
-                      Guardar
+                      Guardar datos
                       {isSubmitting && (
                         <span className='ms-2'>
                           <RotatingLines

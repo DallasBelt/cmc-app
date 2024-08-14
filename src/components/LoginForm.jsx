@@ -32,7 +32,6 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  // Loading with React Spinners
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
@@ -45,22 +44,21 @@ const LoginForm = () => {
 
   const onSubmit = async (values) => {
     try {
-      // Show loading React Spinners
       setIsSubmitting(true);
 
       // Hide password field
       setShowPassword(false);
 
       // Send the request to the server
-      // https://cmc-api-42qy.onrender.com/api/v1/auth/login
       const response = await axios.post(
         'http://localhost:3000/api/v1/auth/login',
         values
       );
 
-      // Write 'token' and 'roles' to the sessionStorage
-      sessionStorage.setItem('token', response.data.token);
+      // Write 'id', 'roles' and 'token' to the sessionStorage
+      sessionStorage.setItem('id', response.data.id);
       sessionStorage.setItem('roles', response.data.roles);
+      sessionStorage.setItem('token', response.data.token);
 
       // Get the value of 'roles' from sessionStorage
       const roles = sessionStorage.getItem('roles');

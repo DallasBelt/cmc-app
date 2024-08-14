@@ -1,114 +1,54 @@
+import { RotatingLines } from 'react-loader-spinner';
+
 import { DataTable } from '@/components/DataTable';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import NewPatientDialog from '@/components/NewPatientDialog';
 import { patientsColumns } from '@/config/patientsColumns';
-
-const data = [
-  {
-    lastName: 'Gonzalez',
-    firstName: 'Juan',
-    dni: '1234567890',
-    dob: '34',
-  },
-  {
-    lastName: 'Martinez',
-    firstName: 'Ana',
-    dni: '0987654321001',
-    dob: '38',
-  },
-  {
-    lastName: 'Perez',
-    firstName: 'Maria',
-    dni: 'A1234567',
-    dob: '31',
-  },
-  {
-    lastName: 'Rodriguez',
-    firstName: 'Carlos',
-    dni: '1122334455',
-    dob: '36',
-  },
-  {
-    lastName: 'Lopez',
-    firstName: 'Sofia',
-    dni: '987654321001',
-    dob: '29',
-  },
-  {
-    lastName: 'Fernandez',
-    firstName: 'Luis',
-    dni: 'B7654321',
-    dob: '45',
-  },
-  {
-    lastName: 'Gomez',
-    firstName: 'Laura',
-    dni: '2233445566',
-    dob: '33',
-  },
-  {
-    lastName: 'Diaz',
-    firstName: 'Jose',
-    dni: '123456789001',
-    dob: '41',
-  },
-  {
-    lastName: 'Torres',
-    firstName: 'Marta',
-    dni: 'C9876543',
-    dob: '30',
-  },
-  {
-    lastName: 'Ruiz',
-    firstName: 'Miguel',
-    dni: '3344556677',
-    dob: '37',
-  },
-];
+import getTableData from '@/hooks/getTableData';
 
 const Patients = () => {
   const token = sessionStorage.getItem('token');
 
-  // const { data, loading } = useFetchData(
-  //   'http://localhost:3000/api/v1/patients',
-  //   token
-  // );
+  const { data, loading } = getTableData(
+    'http://localhost:3000/api/v1/patient',
+    token
+  );
 
-  // if (loading) {
-  //   return (
-  //     <div className='h-96 flex justify-center items-center'>
-  //       <RotatingLines
-  //         visible={true}
-  //         height='100'
-  //         width='100'
-  //         strokeColor='#2563eb'
-  //         strokeWidth={5}
-  //         animationDuration='0.75'
-  //         ariaLabel='rotating-lines-loading'
-  //       />
-  //     </div>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <div className='h-96 flex justify-center items-center'>
+        <RotatingLines
+          visible={true}
+          height='100'
+          width='100'
+          strokeColor='#2563eb'
+          strokeWidth={5}
+          animationDuration='0.75'
+          ariaLabel='rotating-lines-loading'
+        />
+      </div>
+    );
+  }
 
   return (
-    <div className='flex flex-col gap-8 lg:flex-row'>
-      <Card className='w-full h-fit'>
+    <div className='flex flex-col gap-8 md:flex-row'>
+      <Card className='w-full h-fit md:w-1/3'>
         <CardHeader>
           <CardTitle className='text-2xl lg:text-4xl'>Estadísticas</CardTitle>
         </CardHeader>
         <CardContent className='text-lg lg:text-3xl'>
-          <p>{data.length} Pacientes</p>
+          <p>
+            {data.length} {data.length > 1 ? 'Pacientes' : 'Paciente'}
+          </p>
           <p>Atendidos</p>
           <p>Por atender</p>
         </CardContent>
       </Card>
 
-      <div className='w-full'>
+      <div className='w-full md:w-2/3'>
         <div className='flex flex-col gap-5'>
-          <div>
-            <NewPatientDialog />
-          </div>
+          <NewPatientDialog />
           <DataTable columns={patientsColumns} data={data} />
         </div>
       </div>
