@@ -2,7 +2,14 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-import { addMinutes, format, parseISO, setDefaultOptions } from 'date-fns';
+import {
+  format,
+  getHours,
+  getMinutes,
+  parse,
+  parseISO,
+  setDefaultOptions,
+} from 'date-fns';
 import { es } from 'date-fns/locale';
 import { RotatingLines } from 'react-loader-spinner';
 import { toast } from 'sonner';
@@ -133,7 +140,17 @@ const Profile = () => {
   const [tabValue, setTabValue] = useState('userInfo');
 
   const getMinCheckOutTime = (checkIn) => {
-    return checkIn ? addMinutes(checkIn, 15) : null;
+    if (checkIn) {
+      return new Date(
+        0,
+        0,
+        0,
+        Number(format(checkIn, 'H')),
+        checkIn.getMinutes() + 15
+      );
+    }
+
+    return null;
   };
 
   useEffect(() => {
@@ -173,29 +190,29 @@ const Profile = () => {
             setDniDisabled(true);
           }
         } else if (tabValue === 'medicInfo') {
-          // const res = await axios.get(
-          //   'http://localhost:3000/api/v1/medic-info',
-          //   {
-          //     headers: { Authorization: `Bearer ${token}` },
-          //   }
-          // );
+          const res = await axios.get(
+            'http://localhost:3000/api/v1/medic-info',
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
 
-          // if (res.status === 200) {
-          //   const medicData = {
-          //     registry: res?.data?.registry || '',
-          //     speciality: res?.data?.speciality || [],
-          //     days: res?.data?.days || [],
-          //     checkIn: res?.data?.checkIn ? new Date(res?.data?.checkIn) : null,
-          //     checkOut: res?.data?.checkOut
-          //       ? new Date(res?.data?.checkOut)
-          //       : null,
-          //   };
+          console.log(res);
 
-          //   setInitialMedicValues(medicData);
-          //   form2.reset(medicData);
-          //   setRegistryDisabled(true);
-          // }
-          console.log('hello');
+          if (res.status === 200) {
+            const medicData = {
+              registry: res?.data?.registry || '',
+              speciality: res?.data?.speciality || [],
+              days: res?.data?.days || [],
+              checkIn: res?.data?.checkIn ? new Date(res?.data?.checkIn) : null,
+              checkOut: res?.data?.checkOut
+                ? new Date(res?.data?.checkOut)
+                : null,
+            };
+            setInitialMedicValues(medicData);
+            form2.reset(medicData);
+            setRegistryDisabled(true);
+          }
         }
       } catch (error) {
         console.error(error);
@@ -279,104 +296,105 @@ const Profile = () => {
   };
 
   const onSubmit2 = async (values) => {
-    // try {
-    //   setIsSubmitting(true);
+    try {
+      setIsSubmitting(true);
+      const checkOutHours = getHours(values.checkOut);
+      const checkOutMinutes = getMinutes(values.checkOut);
+      const now = new Date();
+      const checkOut = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        checkOutHours,
+        checkOutMinutes
+      );
 
-    //   // Check auth
-    //   const token = sessionStorage.getItem('token');
-    //   if (!token) {
-    //     toast.error('Oops!', {
-    //       description: 'Error de autenticación.',
-    //     });
-    //     return;
-    //   }
+      // Check auth
+      const token = sessionStorage.getItem('token');
+      if (!token) {
+        toast.error('Oops!', {
+          description: 'Error de autenticación.',
+        });
+        return;
+      }
 
-    //   if (!initialMedicValues) {
-    //     // New entry
+      if (!initialMedicValues) {
+        // New entry
 
-    //     // Taking out the 'hours' property
-    //     const { hours, ...rest } = values;
+        // Format the hours
+        const medicInfo = {
+          ...values,
+          checkIn: format(values.checkIn, 'dd-MM-yyyy HH:mm:ss') || '',
+          checkOut: format(checkOut, 'dd-MM-yyyy HH:mm:ss') || '',
+        };
 
-    //     // Format the hours
-    //     const medicInfo = {
-    //       ...rest,
-    //       checkIn:
-    //         format(parseISO(values.hours?.[0]), 'dd-MM-yyyy HH:mm:ss') || '',
-    //       checkOut:
-    //         format(parseISO(values.hours?.[1]), 'dd-MM-yyyy HH:mm:ss') || '',
-    //     };
+        const res = await axios.post(
+          'http://localhost:3000/api/v1/medic-info',
+          medicInfo,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-    //     const res = await axios.post(
-    //       'http://localhost:3000/api/v1/medic-info',
-    //       medicInfo,
-    //       {
-    //         headers: { Authorization: `Bearer ${token}` },
-    //       }
-    //     );
+        if (res.status === 201) {
+          toast.success('¡Enhorabuena!', {
+            description: 'Información guardada con éxito.',
+          });
 
-    //     if (res.status === 201) {
-    //       toast.success('¡Enhorabuena!', {
-    //         description: 'Información guardada con éxito.',
-    //       });
+          setInitialMedicValues(values);
+          setRegistryDisabled(true);
+        }
+      } else {
+        // Update
 
-    //       setInitialMedicValues(values);
-    //       setRegistryDisabled(true);
-    //     }
-    //   } else {
-    //     // Update
+        // Taking out the 'registry property
+        const { registry, ...rest } = values;
 
-    //     // Taking out the 'hours' and 'registry properties
-    //     const { hours, registry, ...rest } = values;
+        // Format the hours
+        const medicInfo = {
+          ...rest,
+          checkIn: format(values.checkIn, 'dd-MM-yyyy HH:mm:ss') || '',
+          checkOut: format(checkOut, 'dd-MM-yyyy HH:mm:ss') || '',
+        };
 
-    //     // Format the hours
-    //     const medicInfo = {
-    //       ...rest,
-    //       checkIn:
-    //         format(parseISO(values.hours?.[0]), 'dd-MM-yyyy HH:mm:ss') || '',
-    //       checkOut:
-    //         format(parseISO(values.hours?.[1]), 'dd-MM-yyyy HH:mm:ss') || '',
-    //     };
+        // Compare if the values have changed
+        const currentValues = form2.getValues();
 
-    //     // Compare if the values have changed
-    //     const currentValues = form2.getValues();
+        const hasChanges =
+          JSON.stringify(currentValues) !== JSON.stringify(initialMedicValues);
 
-    //     const hasChanges =
-    //       JSON.stringify(currentValues) !== JSON.stringify(initialMedicValues);
+        if (!hasChanges) {
+          toast.warning('Oops!', {
+            description: 'No se detectaron cambios.',
+          });
+          return;
+        }
 
-    //     if (!hasChanges) {
-    //       toast.warning('Oops!', {
-    //         description: 'No se detectaron cambios.',
-    //       });
-    //       return;
-    //     }
+        const res = await axios.patch(
+          'http://localhost:3000/api/v1/user-info',
+          medicInfo,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-    //     const res = await axios.patch(
-    //       'http://localhost:3000/api/v1/user-info',
-    //       medicInfo,
-    //       {
-    //         headers: { Authorization: `Bearer ${token}` },
-    //       }
-    //     );
+        if (res.status === 200) {
+          toast.success('¡Enhorabuena!', {
+            description: 'Información actualizada con éxito.',
+          });
 
-    //     if (res.status === 200) {
-    //       toast.success('¡Enhorabuena!', {
-    //         description: 'Información actualizada con éxito.',
-    //       });
-
-    //       // Set new current values after editing
-    //       setInitialMedicValues(currentValues);
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    //   toast.error('Oops...', {
-    //     description: 'Error al guardar la información.',
-    //   });
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
-
-    console.log(values);
+          // Set new current values after editing
+          setInitialMedicValues(currentValues);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Oops...', {
+        description: 'Error al guardar la información.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -727,7 +745,7 @@ const Profile = () => {
                                 <TimePicker
                                   label='Seleccionar...'
                                   minTime={new Date(0, 0, 0, 7)}
-                                  maxTime={new Date(0, 0, 0, 18)}
+                                  maxTime={new Date(0, 0, 0, 18, 45)}
                                   minutesStep={15}
                                   skipDisabled={true}
                                   {...field}
