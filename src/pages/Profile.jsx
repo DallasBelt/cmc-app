@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-import { format, parseISO, setDefaultOptions } from 'date-fns';
+import { addMinutes, format, parseISO, setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { RotatingLines } from 'react-loader-spinner';
 import { toast } from 'sonner';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 import { cn } from '@/lib/utils';
 
@@ -22,7 +25,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Popover,
   PopoverContent,
@@ -36,7 +38,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import TimeRangePicker from '@/components/TimeRangePicker';
 import { PhoneInput } from '@/components/PhoneInput';
 
 import { CalendarDots } from '@phosphor-icons/react';
@@ -99,24 +100,6 @@ const days = [
   },
 ];
 
-const generateHoursOptions = (startHour, endHour, interval) => {
-  const options = [];
-  for (let i = startHour; i <= endHour; i++) {
-    for (let j = 0; j < 60; j += interval) {
-      if (i === endHour && j > 0) break; // Break loop for last hour and if above interval
-      const hourString = i.toString().padStart(2, '0'); // Two digits for hours
-      const minuteString = j.toString().padStart(2, '0'); // Two digits for minutes
-      options.push({
-        value: `${hourString}:${minuteString}`,
-        label: `${hourString}:${minuteString}`,
-      });
-    }
-  }
-  return options;
-};
-
-const hours = generateHoursOptions(7, 19, 15);
-
 const Profile = () => {
   const form = useForm({
     resolver: zodResolver(userInfoSchema),
@@ -131,13 +114,14 @@ const Profile = () => {
     },
   });
 
-  const medicInfoForm = useForm({
+  const form2 = useForm({
     resolver: zodResolver(medicInfoSchema),
     defaultValues: {
       registry: '',
       speciality: [],
       days: [],
-      hours: [],
+      checkIn: null,
+      checkOut: null,
     },
   });
 
@@ -148,8 +132,12 @@ const Profile = () => {
   const [registryDisabled, setRegistryDisabled] = useState(false);
   const [tabValue, setTabValue] = useState('userInfo');
 
+  const getMinCheckOutTime = (checkIn) => {
+    return checkIn ? addMinutes(checkIn, 15) : null;
+  };
+
   useEffect(() => {
-    const fetchUserInfo = async () => {
+    const fetchInfo = async () => {
       try {
         // Check auth
         const token = sessionStorage.getItem('token');
@@ -185,36 +173,37 @@ const Profile = () => {
             setDniDisabled(true);
           }
         } else if (tabValue === 'medicInfo') {
-          const res = await axios.get(
-            'http://localhost:3000/api/v1/medic-info',
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
+          // const res = await axios.get(
+          //   'http://localhost:3000/api/v1/medic-info',
+          //   {
+          //     headers: { Authorization: `Bearer ${token}` },
+          //   }
+          // );
 
-          if (res.status === 200) {
-            const medicData = {
-              registry: res?.data?.registry || '',
-              speciality: res?.data?.speciality || [],
-              days: res?.data?.days || [],
-              checkIn: res?.data?.checkIn ? new Date(res?.data?.checkIn) : null,
-              checkOut: res?.data?.checkOut
-                ? new Date(res?.data?.checkOut)
-                : null,
-            };
+          // if (res.status === 200) {
+          //   const medicData = {
+          //     registry: res?.data?.registry || '',
+          //     speciality: res?.data?.speciality || [],
+          //     days: res?.data?.days || [],
+          //     checkIn: res?.data?.checkIn ? new Date(res?.data?.checkIn) : null,
+          //     checkOut: res?.data?.checkOut
+          //       ? new Date(res?.data?.checkOut)
+          //       : null,
+          //   };
 
-            setInitialMedicValues(medicData);
-            medicInfoForm.reset(medicData);
-            setRegistryDisabled(true);
-          }
+          //   setInitialMedicValues(medicData);
+          //   form2.reset(medicData);
+          //   setRegistryDisabled(true);
+          // }
+          console.log('hello');
         }
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchUserInfo();
-  }, [form, medicInfoForm, tabValue]);
+    fetchInfo();
+  }, [form, form2, tabValue]);
 
   const onSubmit = async (values) => {
     try {
@@ -276,7 +265,7 @@ const Profile = () => {
           });
 
           setInitialUserValues(values);
-          setIsDisabled(true);
+          setDniDisabled(true);
         }
       }
     } catch (error) {
@@ -290,102 +279,104 @@ const Profile = () => {
   };
 
   const onSubmit2 = async (values) => {
-    try {
-      setIsSubmitting(true);
+    // try {
+    //   setIsSubmitting(true);
 
-      // Check auth
-      const token = sessionStorage.getItem('token');
-      if (!token) {
-        toast.error('Oops!', {
-          description: 'Error de autenticación.',
-        });
-        return;
-      }
+    //   // Check auth
+    //   const token = sessionStorage.getItem('token');
+    //   if (!token) {
+    //     toast.error('Oops!', {
+    //       description: 'Error de autenticación.',
+    //     });
+    //     return;
+    //   }
 
-      if (!initialMedicValues) {
-        // New entry
+    //   if (!initialMedicValues) {
+    //     // New entry
 
-        // Taking out the 'hours' property
-        const { hours, ...rest } = values;
+    //     // Taking out the 'hours' property
+    //     const { hours, ...rest } = values;
 
-        // Format the hours
-        const medicInfo = {
-          ...rest,
-          checkIn:
-            format(parseISO(values.hours?.[0]), 'dd-MM-yyyy HH:mm:ss') || '',
-          checkOut:
-            format(parseISO(values.hours?.[1]), 'dd-MM-yyyy HH:mm:ss') || '',
-        };
+    //     // Format the hours
+    //     const medicInfo = {
+    //       ...rest,
+    //       checkIn:
+    //         format(parseISO(values.hours?.[0]), 'dd-MM-yyyy HH:mm:ss') || '',
+    //       checkOut:
+    //         format(parseISO(values.hours?.[1]), 'dd-MM-yyyy HH:mm:ss') || '',
+    //     };
 
-        const res = await axios.post(
-          'http://localhost:3000/api/v1/medic-info',
-          medicInfo,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+    //     const res = await axios.post(
+    //       'http://localhost:3000/api/v1/medic-info',
+    //       medicInfo,
+    //       {
+    //         headers: { Authorization: `Bearer ${token}` },
+    //       }
+    //     );
 
-        if (res.status === 201) {
-          toast.success('¡Enhorabuena!', {
-            description: 'Información guardada con éxito.',
-          });
+    //     if (res.status === 201) {
+    //       toast.success('¡Enhorabuena!', {
+    //         description: 'Información guardada con éxito.',
+    //       });
 
-          setInitialMedicValues(values);
-          setRegistryDisabled(true);
-        }
-      } else {
-        // Update
+    //       setInitialMedicValues(values);
+    //       setRegistryDisabled(true);
+    //     }
+    //   } else {
+    //     // Update
 
-        // Taking out the 'hours' and 'registry properties
-        const { hours, registry, ...rest } = values;
+    //     // Taking out the 'hours' and 'registry properties
+    //     const { hours, registry, ...rest } = values;
 
-        // Format the hours
-        const medicInfo = {
-          ...rest,
-          checkIn:
-            format(parseISO(values.hours?.[0]), 'dd-MM-yyyy HH:mm:ss') || '',
-          checkOut:
-            format(parseISO(values.hours?.[1]), 'dd-MM-yyyy HH:mm:ss') || '',
-        };
+    //     // Format the hours
+    //     const medicInfo = {
+    //       ...rest,
+    //       checkIn:
+    //         format(parseISO(values.hours?.[0]), 'dd-MM-yyyy HH:mm:ss') || '',
+    //       checkOut:
+    //         format(parseISO(values.hours?.[1]), 'dd-MM-yyyy HH:mm:ss') || '',
+    //     };
 
-        // Compare if the values have changed
-        const currentValues = medicInfoForm.getValues();
+    //     // Compare if the values have changed
+    //     const currentValues = form2.getValues();
 
-        const hasChanges =
-          JSON.stringify(currentValues) !== JSON.stringify(initialMedicValues);
+    //     const hasChanges =
+    //       JSON.stringify(currentValues) !== JSON.stringify(initialMedicValues);
 
-        if (!hasChanges) {
-          toast.warning('Oops!', {
-            description: 'No se detectaron cambios.',
-          });
-          return;
-        }
+    //     if (!hasChanges) {
+    //       toast.warning('Oops!', {
+    //         description: 'No se detectaron cambios.',
+    //       });
+    //       return;
+    //     }
 
-        const res = await axios.patch(
-          'http://localhost:3000/api/v1/user-info',
-          medicInfo,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+    //     const res = await axios.patch(
+    //       'http://localhost:3000/api/v1/user-info',
+    //       medicInfo,
+    //       {
+    //         headers: { Authorization: `Bearer ${token}` },
+    //       }
+    //     );
 
-        if (res.status === 200) {
-          toast.success('¡Enhorabuena!', {
-            description: 'Información actualizada con éxito.',
-          });
+    //     if (res.status === 200) {
+    //       toast.success('¡Enhorabuena!', {
+    //         description: 'Información actualizada con éxito.',
+    //       });
 
-          // Set new current values after editing
-          setInitialMedicValues(currentValues);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('Oops...', {
-        description: 'Error al guardar la información.',
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    //       // Set new current values after editing
+    //       setInitialMedicValues(currentValues);
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    //   toast.error('Oops...', {
+    //     description: 'Error al guardar la información.',
+    //   });
+    // } finally {
+    //   setIsSubmitting(false);
+    // }
+
+    console.log(values);
   };
 
   return (
@@ -599,13 +590,13 @@ const Profile = () => {
         <TabsContent value='medicInfo'>
           <Card>
             <CardContent className='p-5'>
-              <Form {...medicInfoForm}>
+              <Form {...form2}>
                 <form
-                  onSubmit={medicInfoForm.handleSubmit(onSubmit2)}
+                  onSubmit={form2.handleSubmit(onSubmit2)}
                   className='space-y-2.5'
                 >
                   <FormField
-                    control={medicInfoForm.control}
+                    control={form2.control}
                     name='registry'
                     render={({ field }) => (
                       <FormItem>
@@ -623,7 +614,7 @@ const Profile = () => {
                   />
 
                   <FormField
-                    control={medicInfoForm.control}
+                    control={form2.control}
                     name='speciality'
                     render={() => (
                       <FormItem>
@@ -632,7 +623,7 @@ const Profile = () => {
                           {specialties.map((item) => (
                             <FormField
                               key={item.id}
-                              control={medicInfoForm.control}
+                              control={form2.control}
                               name='speciality'
                               render={({ field }) => {
                                 return (
@@ -672,7 +663,7 @@ const Profile = () => {
                   />
 
                   <FormField
-                    control={medicInfoForm.control}
+                    control={form2.control}
                     name='days'
                     render={() => (
                       <FormItem>
@@ -681,7 +672,7 @@ const Profile = () => {
                           {days.map((item) => (
                             <FormField
                               key={item.id}
-                              control={medicInfoForm.control}
+                              control={form2.control}
                               name='days'
                               render={({ field }) => {
                                 return (
@@ -722,116 +713,75 @@ const Profile = () => {
 
                   <div className='flex flex-col gap-2.5 md:flex-row'>
                     <FormField
-                      control={form.control}
+                      control={form2.control}
                       name='checkIn'
                       render={({ field }) => (
-                        <FormItem className='w-full'>
+                        <FormItem>
                           <FormLabel>Hora inicial</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger
-                                className={cn(
-                                  'font-normal',
-                                  !field.value && 'text-muted-foreground'
-                                )}
+                          <FormControl>
+                            <div>
+                              <LocalizationProvider
+                                dateAdapter={AdapterDateFns}
+                                adapterLocale={es}
                               >
-                                <SelectValue placeholder='Seleccionar...' />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {hours.map((option) => (
-                                <SelectItem
-                                  key={option.value}
-                                  value={option.value}
-                                >
-                                  {option.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                                <TimePicker
+                                  label='Seleccionar...'
+                                  minTime={new Date(0, 0, 0, 7)}
+                                  maxTime={new Date(0, 0, 0, 18)}
+                                  minutesStep={15}
+                                  skipDisabled={true}
+                                  {...field}
+                                  value={field.value || null}
+                                  onChange={(newValue) =>
+                                    field.onChange(newValue)
+                                  }
+                                />
+                              </LocalizationProvider>
+                            </div>
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
 
                     <FormField
-                      control={form.control}
+                      control={form2.control}
                       name='checkOut'
                       render={({ field }) => (
-                        <FormItem className='w-full'>
+                        <FormItem>
                           <FormLabel>Hora final</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger
-                                className={cn(
-                                  'font-normal',
-                                  !field.value && 'text-muted-foreground'
-                                )}
+                          <FormControl>
+                            <div>
+                              <LocalizationProvider
+                                dateAdapter={AdapterDateFns}
+                                adapterLocale={es}
                               >
-                                <SelectValue placeholder='Seleccionar...' />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value='7'>07:00</SelectItem>
-                              <SelectItem value='8'>08:00</SelectItem>
-                              <SelectItem value='9'>09:00</SelectItem>
-                              <SelectItem value='10'>10:00</SelectItem>
-                              <SelectItem value='11'>11:00</SelectItem>
-                              <SelectItem value='12'>12:00</SelectItem>
-                              <SelectItem value='13'>13:00</SelectItem>
-                              <SelectItem value='14'>14:00</SelectItem>
-                              <SelectItem value='15'>15:00</SelectItem>
-                              <SelectItem value='16'>16:00</SelectItem>
-                              <SelectItem value='17'>17:00</SelectItem>
-                              <SelectItem value='18'>18:00</SelectItem>
-                              <SelectItem value='19'>19:00</SelectItem>
-                            </SelectContent>
-                          </Select>
+                                <TimePicker
+                                  label='Seleccionar...'
+                                  minTime={getMinCheckOutTime(
+                                    form2.watch('checkIn')
+                                  )}
+                                  maxTime={new Date(0, 0, 0, 19)}
+                                  minutesStep={15}
+                                  skipDisabled={true}
+                                  disableIgnoringDatePartForTimeValidation={
+                                    true
+                                  }
+                                  disabled={!form2.watch('checkIn')}
+                                  {...field}
+                                  value={field.value || null}
+                                  onChange={(newValue) =>
+                                    field.onChange(newValue)
+                                  }
+                                />
+                              </LocalizationProvider>
+                            </div>
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-
-                  {/* <FormField
-                    control={medicInfoForm.control}
-                    name='hours'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <TimeRangePicker
-                            // startHourValue={}
-                            // endHourValue={}
-                            startHour={8}
-                            endHour={19}
-                            blockedRanges={[[13, 15]]}
-                            minuteStep={15}
-                            onChange={(value) => {
-                              const isoValues = value.map((v) => {
-                                // Convert each value to ISO format
-                                if (v) {
-                                  const [hour, minute] = v.split(':');
-                                  const now = new Date();
-                                  now.setHours(hour, minute, 0, 0);
-                                  return now.toISOString();
-                                }
-                                return '';
-                              });
-
-                              field.onChange(isoValues);
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  /> */}
 
                   <div className='pt-5 md:flex md:justify-center'>
                     <Button

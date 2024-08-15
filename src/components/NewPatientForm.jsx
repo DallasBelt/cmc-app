@@ -52,7 +52,7 @@ const NewPatientForm = () => {
       dniType: '',
       dni: '',
       occupation: '',
-      // email: '',
+      email: '',
       dob: null,
       phone: '',
       address: '',
@@ -201,7 +201,7 @@ const NewPatientForm = () => {
             )}
           />
 
-          {/* <FormField
+          <FormField
             control={form.control}
             name='email'
             render={({ field }) => (
@@ -213,7 +213,7 @@ const NewPatientForm = () => {
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
+          />
 
           <FormField
             control={form.control}

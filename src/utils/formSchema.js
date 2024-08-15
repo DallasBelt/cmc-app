@@ -126,17 +126,8 @@ export const medicInfoSchema = z.object({
     .array(z.string())
     .nonempty('Seleccione al menos una especialidad'),
   days: z.array(z.string()).nonempty('Seleccione al menos un día'),
-  hours: z
-    .array(z.string())
-    .length(2, 'Seleccione un rango de inicio y fin')
-    .refine(
-      (value) => {
-        if (value.length !== 2) return false;
-        const [start, end] = value;
-        return new Date(start) < new Date(end);
-      },
-      { message: 'El rango de horas debe ser válido' }
-    ),
+  checkIn: z.instanceof(Date, { message: 'Hora de entrada no válida' }),
+  checkOut: z.instanceof(Date, { message: 'Hora de salida no válida' }),
 });
 
 export const patientSchema = z.object({
