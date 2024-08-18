@@ -1,9 +1,15 @@
 import { create } from 'zustand';
 
-// Store for the registration modal state
+// Registration modal store
 export const useRegistrationStore = create((set) => ({
-  modal: false,
-  setOpenModal: (value) => set({ modal: value }),
+  modalState: false,
+  setModalState: (state) => set({ modalState: state }),
+}));
+
+// New patient modal store
+export const useNewPatientModalStore = create((set) => ({
+  modalState: false,
+  setModalState: (state) => set({ modalState: state }),
 }));
 
 // Store for the toast

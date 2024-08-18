@@ -5,23 +5,28 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 
 import { UserPlus } from '@phosphor-icons/react';
 
 import NewPatientForm from './NewPatientForm';
+import { useNewPatientModalStore } from '@/store/store';
 
 const NewPatientDialog = () => {
+  const modalState = useNewPatientModalStore((state) => state.modalState);
+  const setModalState = useNewPatientModalStore((state) => state.setModalState);
+
   return (
     <>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className='w-full md:max-w-fit'>
-            <UserPlus size={24} className='mr-2' />
-            Nuevo paciente
-          </Button>
-        </DialogTrigger>
+      <Button
+        onClick={() => setModalState(true)}
+        className='w-full md:max-w-fit'
+      >
+        <UserPlus size={24} className='mr-2' />
+        Nuevo paciente
+      </Button>
+
+      <Dialog open={modalState} onOpenChange={setModalState}>
         <DialogContent
           className='max-w-md max-h-screen overflow-y-auto'
           onInteractOutside={(e) => {

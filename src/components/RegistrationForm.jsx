@@ -25,7 +25,7 @@ import { useRegistrationStore } from '@/store/store';
 const RegistrationForm = () => {
   // Retrieve the token
   const token = sessionStorage.getItem('token');
-  const setOpenModal = useRegistrationStore((state) => state.setOpenModal);
+  const setModalState = useRegistrationStore((state) => state.setModalState);
 
   // Hide/Show password button
   const [showPassword, setShowPassword] = useState(false);
@@ -83,14 +83,7 @@ const RegistrationForm = () => {
         }
 
         form.reset();
-        setOpenModal(false);
-        // {
-        //   !token
-        //     ? setTimeout(() => {
-        //         window.location.reload();
-        //       }, 2000)
-        //     : null;
-        // }
+        setModalState(false);
       } else {
         toast.error('Oops...', {
           description: 'Error interno del servidor.',

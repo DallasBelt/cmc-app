@@ -13,9 +13,6 @@ import {
 import { es } from 'date-fns/locale';
 import { RotatingLines } from 'react-loader-spinner';
 import { toast } from 'sonner';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 import { cn } from '@/lib/utils';
 
@@ -139,20 +136,6 @@ const Profile = () => {
   const [registryDisabled, setRegistryDisabled] = useState(false);
   const [tabValue, setTabValue] = useState('userInfo');
 
-  const getMinCheckOutTime = (checkIn) => {
-    if (checkIn) {
-      return new Date(
-        0,
-        0,
-        0,
-        Number(format(checkIn, 'H')),
-        checkIn.getMinutes() + 15
-      );
-    }
-
-    return null;
-  };
-
   useEffect(() => {
     const fetchInfo = async () => {
       try {
@@ -196,8 +179,6 @@ const Profile = () => {
               headers: { Authorization: `Bearer ${token}` },
             }
           );
-
-          console.log(res);
 
           if (res.status === 200) {
             const medicData = {
@@ -296,105 +277,106 @@ const Profile = () => {
   };
 
   const onSubmit2 = async (values) => {
-    try {
-      setIsSubmitting(true);
-      const checkOutHours = getHours(values.checkOut);
-      const checkOutMinutes = getMinutes(values.checkOut);
-      const now = new Date();
-      const checkOut = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        checkOutHours,
-        checkOutMinutes
-      );
+    console.log(values);
+    // try {
+    //   setIsSubmitting(true);
+    //   const checkOutHours = getHours(values.checkOut);
+    //   const checkOutMinutes = getMinutes(values.checkOut);
+    //   const now = new Date();
+    //   const checkOut = new Date(
+    //     now.getFullYear(),
+    //     now.getMonth(),
+    //     now.getDate(),
+    //     checkOutHours,
+    //     checkOutMinutes
+    //   );
 
-      // Check auth
-      const token = sessionStorage.getItem('token');
-      if (!token) {
-        toast.error('Oops!', {
-          description: 'Error de autenticación.',
-        });
-        return;
-      }
+    //   // Check auth
+    //   const token = sessionStorage.getItem('token');
+    //   if (!token) {
+    //     toast.error('Oops!', {
+    //       description: 'Error de autenticación.',
+    //     });
+    //     return;
+    //   }
 
-      if (!initialMedicValues) {
-        // New entry
+    //   if (!initialMedicValues) {
+    //     // New entry
 
-        // Format the hours
-        const medicInfo = {
-          ...values,
-          checkIn: format(values.checkIn, 'dd-MM-yyyy HH:mm:ss') || '',
-          checkOut: format(checkOut, 'dd-MM-yyyy HH:mm:ss') || '',
-        };
+    //     // Format the hours
+    //     const medicInfo = {
+    //       ...values,
+    //       checkIn: format(values.checkIn, 'dd-MM-yyyy HH:mm:ss') || '',
+    //       checkOut: format(checkOut, 'dd-MM-yyyy HH:mm:ss') || '',
+    //     };
 
-        const res = await axios.post(
-          'http://localhost:3000/api/v1/medic-info',
-          medicInfo,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+    //     const res = await axios.post(
+    //       'http://localhost:3000/api/v1/medic-info',
+    //       medicInfo,
+    //       {
+    //         headers: { Authorization: `Bearer ${token}` },
+    //       }
+    //     );
 
-        if (res.status === 201) {
-          toast.success('¡Enhorabuena!', {
-            description: 'Información guardada con éxito.',
-          });
+    //     if (res.status === 201) {
+    //       toast.success('¡Enhorabuena!', {
+    //         description: 'Información guardada con éxito.',
+    //       });
 
-          setInitialMedicValues(values);
-          setRegistryDisabled(true);
-        }
-      } else {
-        // Update
+    //       setInitialMedicValues(values);
+    //       setRegistryDisabled(true);
+    //     }
+    //   } else {
+    //     // Update
 
-        // Taking out the 'registry property
-        const { registry, ...rest } = values;
+    //     // Taking out the 'registry property
+    //     const { registry, ...rest } = values;
 
-        // Format the hours
-        const medicInfo = {
-          ...rest,
-          checkIn: format(values.checkIn, 'dd-MM-yyyy HH:mm:ss') || '',
-          checkOut: format(checkOut, 'dd-MM-yyyy HH:mm:ss') || '',
-        };
+    //     // Format the hours
+    //     const medicInfo = {
+    //       ...rest,
+    //       checkIn: format(values.checkIn, 'dd-MM-yyyy HH:mm:ss') || '',
+    //       checkOut: format(checkOut, 'dd-MM-yyyy HH:mm:ss') || '',
+    //     };
 
-        // Compare if the values have changed
-        const currentValues = form2.getValues();
+    //     // Compare if the values have changed
+    //     const currentValues = form2.getValues();
 
-        const hasChanges =
-          JSON.stringify(currentValues) !== JSON.stringify(initialMedicValues);
+    //     const hasChanges =
+    //       JSON.stringify(currentValues) !== JSON.stringify(initialMedicValues);
 
-        if (!hasChanges) {
-          toast.warning('Oops!', {
-            description: 'No se detectaron cambios.',
-          });
-          return;
-        }
+    //     if (!hasChanges) {
+    //       toast.warning('Oops!', {
+    //         description: 'No se detectaron cambios.',
+    //       });
+    //       return;
+    //     }
 
-        const res = await axios.patch(
-          'http://localhost:3000/api/v1/user-info',
-          medicInfo,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+    //     const res = await axios.patch(
+    //       'http://localhost:3000/api/v1/user-info',
+    //       medicInfo,
+    //       {
+    //         headers: { Authorization: `Bearer ${token}` },
+    //       }
+    //     );
 
-        if (res.status === 200) {
-          toast.success('¡Enhorabuena!', {
-            description: 'Información actualizada con éxito.',
-          });
+    //     if (res.status === 200) {
+    //       toast.success('¡Enhorabuena!', {
+    //         description: 'Información actualizada con éxito.',
+    //       });
 
-          // Set new current values after editing
-          setInitialMedicValues(currentValues);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('Oops...', {
-        description: 'Error al guardar la información.',
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    //       // Set new current values after editing
+    //       setInitialMedicValues(currentValues);
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    //   toast.error('Oops...', {
+    //     description: 'Error al guardar la información.',
+    //   });
+    // } finally {
+    //   setIsSubmitting(false);
+    // }
   };
 
   return (
@@ -734,29 +716,26 @@ const Profile = () => {
                       control={form2.control}
                       name='checkIn'
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Hora inicial</FormLabel>
-                          <FormControl>
-                            <div>
-                              <LocalizationProvider
-                                dateAdapter={AdapterDateFns}
-                                adapterLocale={es}
+                        <FormItem className='w-full'>
+                          <FormLabel>Inicio</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger
+                                className={cn(
+                                  'font-normal',
+                                  !field.value && 'text-muted-foreground'
+                                )}
                               >
-                                <TimePicker
-                                  label='Seleccionar...'
-                                  minTime={new Date(0, 0, 0, 7)}
-                                  maxTime={new Date(0, 0, 0, 18, 45)}
-                                  minutesStep={15}
-                                  skipDisabled={true}
-                                  {...field}
-                                  value={field.value || null}
-                                  onChange={(newValue) =>
-                                    field.onChange(newValue)
-                                  }
-                                />
-                              </LocalizationProvider>
-                            </div>
-                          </FormControl>
+                                <SelectValue placeholder='Seleccionar...' />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem></SelectItem>
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -766,35 +745,26 @@ const Profile = () => {
                       control={form2.control}
                       name='checkOut'
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Hora final</FormLabel>
-                          <FormControl>
-                            <div>
-                              <LocalizationProvider
-                                dateAdapter={AdapterDateFns}
-                                adapterLocale={es}
+                        <FormItem className='w-full'>
+                          <FormLabel>Fin</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger
+                                className={cn(
+                                  'font-normal',
+                                  !field.value && 'text-muted-foreground'
+                                )}
                               >
-                                <TimePicker
-                                  label='Seleccionar...'
-                                  minTime={getMinCheckOutTime(
-                                    form2.watch('checkIn')
-                                  )}
-                                  maxTime={new Date(0, 0, 0, 19)}
-                                  minutesStep={15}
-                                  skipDisabled={true}
-                                  disableIgnoringDatePartForTimeValidation={
-                                    true
-                                  }
-                                  disabled={!form2.watch('checkIn')}
-                                  {...field}
-                                  value={field.value || null}
-                                  onChange={(newValue) =>
-                                    field.onChange(newValue)
-                                  }
-                                />
-                              </LocalizationProvider>
-                            </div>
-                          </FormControl>
+                                <SelectValue placeholder='Seleccionar...' />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem></SelectItem>
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}

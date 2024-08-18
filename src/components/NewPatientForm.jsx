@@ -35,14 +35,17 @@ import { toast } from 'sonner';
 
 import { RotatingLines } from 'react-loader-spinner';
 
-import { CalendarDots, Plus } from '@phosphor-icons/react';
+import { CalendarDots } from '@phosphor-icons/react';
 
 import { PhoneInput } from '@/components/PhoneInput';
 
 import { userInfoSchema } from '@/utils/formSchema';
 
+import { useNewPatientModalStore } from '@/store/store';
+
 const NewPatientForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const setModalState = useNewPatientModalStore((state) => state.setModalState);
 
   const form = useForm({
     resolver: zodResolver(userInfoSchema),
@@ -73,7 +76,7 @@ const NewPatientForm = () => {
       }
 
       // Post request
-      const req = await axios.post(
+      const res = await axios.post(
         'http://localhost:3000/api/v1/patient',
         {
           ...values,
@@ -87,10 +90,13 @@ const NewPatientForm = () => {
         }
       );
 
-      if (req.status === 201) {
+      if (res.status === 201) {
         toast.success('¡Enhorabuena!', {
           description: 'Paciente creado con éxito.',
         });
+
+        form.reset();
+        setModalState(false);
       }
     } catch (error) {
       console.error(error);

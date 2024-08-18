@@ -17,8 +17,8 @@ const RegistrationDialog = () => {
   const token = sessionStorage.getItem('token');
 
   // Control modal global state
-  const modal = useRegistrationStore((state) => state.modal);
-  const setOpenModal = useRegistrationStore((state) => state.setOpenModal);
+  const modalState = useRegistrationStore((state) => state.modalState);
+  const setModalState = useRegistrationStore((state) => state.setModalState);
 
   return (
     <>
@@ -32,7 +32,7 @@ const RegistrationDialog = () => {
         {!token ? 'REGISTRARSE' : 'Nuevo'}
       </Button>
 
-      <Dialog open={modal} onOpenChange={setOpenModal}>
+      <Dialog open={modalState} onOpenChange={setModalState}>
         <DialogContent
           className='max-w-md max-h-screen overflow-y-auto select-none'
           onInteractOutside={(e) => {
