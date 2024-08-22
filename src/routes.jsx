@@ -70,26 +70,17 @@ const routes = [
       {
         path: 'profile',
         element: (
-          <RoleBasedRoute allowedRoles={['admin', 'medic', 'assistant']}>
+          <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
             <Profile />
           </RoleBasedRoute>
         ),
         errorElement: <div>Oops! Hubo un error.</div>,
       },
-      // {
-      //   path: '/complete-registration',
-      //   element: (
-      //     <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
-      //       <CompleteRegistration />
-      //     </RoleBasedRoute>
-      //   ),
-      //   errorElement: <div>Oops! Hubo un error.</div>,
-      // },
       {
         path: '/unauthorized',
         element: (
           <div className='min-h-80 flex justify-center items-center text-3xl'>
-            <p>🚫 No tiene permiso para acceder a esta página 🚫</p>
+            <p>🚫 No tiene permiso para acceder a esta página</p>
           </div>
         ),
       },

@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/chart';
 
 import { useToastStore } from '@/store/store';
+import { Scheduler } from '@/components/Scheduler';
 
 const chartConfig = {
   patients: {
@@ -36,6 +37,7 @@ const chartData = [
 const Index = () => {
   const { showToast, toastMessage, setToast } = useToastStore();
   const isAdmin = sessionStorage.getItem('roles').includes('admin');
+  const isAssistant = sessionStorage.getItem('roles').includes('assistant');
 
   useEffect(() => {
     if (showToast) {
@@ -106,6 +108,10 @@ const Index = () => {
             />
           </BarChart>
         </ChartContainer>
+      </div>
+
+      <div className={isAdmin ? 'hidden' : 'block'}>
+        <Scheduler />
       </div>
     </>
   );

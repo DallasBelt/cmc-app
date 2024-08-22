@@ -170,6 +170,7 @@ const UserInfoForm = () => {
       setIsSubmitting(false);
     }
   };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2.5'>
@@ -286,9 +287,8 @@ const UserInfoForm = () => {
                       date > new Date() || date < new Date('1900-01-01')
                     }
                     captionLayout='dropdown'
-                    toYear={2010}
-                    fromYear={1940}
-                    defaultMonth={new Date(1987, 7)}
+                    toYear={new Date().getFullYear() - 18}
+                    fromYear={new Date().getFullYear() - 70}
                     locale={es}
                     initialFocus
                   />

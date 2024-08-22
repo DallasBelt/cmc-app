@@ -23,7 +23,7 @@ const RegistrationDialog = () => {
   return (
     <>
       <Button
-        onClick={() => setOpenModal(true)}
+        onClick={() => setModalState(true)}
         className={
           !token ? 'bg-green-500 hover:bg-green-400 mx-auto h-12 text-xl' : ''
         }

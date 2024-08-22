@@ -12,9 +12,20 @@ export const useNewPatientModalStore = create((set) => ({
   setModalState: (state) => set({ modalState: state }),
 }));
 
-// Store for the toast
+// Toast store
 export const useToastStore = create((set) => ({
   showToast: false,
   toastMessage: '',
   setToast: (show, message) => set({ showToast: show, toastMessage: message }),
+}));
+
+// Edit mode store
+export const useEditModeStore = create((set) => ({
+  editMode: false,
+  setEditMode: (mode) => set({ editMode: mode }),
+}));
+
+export const usePatientIdStore = create((set) => ({
+  patientId: null,
+  setPatientId: (id) => set({ patientId: id }),
 }));

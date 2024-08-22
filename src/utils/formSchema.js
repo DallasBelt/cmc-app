@@ -63,10 +63,61 @@ export const userInfoSchema = z
     lastName: z.string().min(1, { message: 'Apellido requerido' }),
     dniType: z.string().min(1, { message: 'Tipo de documento requerido' }),
     dni: z.string().min(1, { message: 'Nº de documento requerido' }),
-    occupation: z
+    dob: z
+      .date()
+      .nullable()
+      .refine((val) => val !== null, {
+        message: 'Fecha de nacimiento requerida',
+      }),
+    phone: z
       .string()
-      .min(1, { message: 'Ocupación requerida' })
-      .optional(),
+      .min(1, { message: 'Número celular requerido' })
+      .refine((val) => isValidPhoneNumber(val), {
+        message: 'Número celular inválido',
+      }),
+    address: z.string().min(1, { message: 'Dirección requerida' }),
+  })
+  .superRefine((data, ctx) => {
+    if (data.dniType === 'cedula') {
+      if (!cedulaValidator(data.dni)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Nº de documento inválido para cédula',
+          path: ['dni'],
+        });
+      }
+    } else if (data.dniType === 'ruc') {
+      if (!rucValidator(data.dni)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Nº de documento inválido para RUC',
+          path: ['dni'],
+        });
+      }
+    } else if (data.dniType === 'passport') {
+      if (!passportValidator(data.dni)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Nº de documento inválido para pasaporte',
+          path: ['dni'],
+        });
+      }
+    } else {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Tipo de documento no soportado',
+        path: ['dniType'],
+      });
+    }
+  });
+
+export const newPatientSchema = z
+  .object({
+    firstName: z.string().min(1, { message: 'Nombre requerido' }),
+    lastName: z.string().min(1, { message: 'Apellido requerido' }),
+    dniType: z.string().min(1, { message: 'Tipo de documento requerido' }),
+    dni: z.string().min(1, { message: 'Nº de documento requerido' }),
+    occupation: z.string().min(1, { message: 'Ocupación requerida' }),
     email: z
       .string()
       .min(1, { message: 'Correo electrónico requerido' })
@@ -120,6 +171,29 @@ export const userInfoSchema = z
     }
   });
 
+export const editPatientSchema = z.object({
+  firstName: z.string().min(1, { message: 'Nombre requerido' }),
+  lastName: z.string().min(1, { message: 'Apellido requerido' }),
+  occupation: z.string().min(1, { message: 'Ocupación requerida' }),
+  email: z
+    .string()
+    .min(1, { message: 'Correo electrónico requerido' })
+    .email('Correo electrónico no válido'),
+  dob: z
+    .date()
+    .nullable()
+    .refine((val) => val !== null, {
+      message: 'Fecha de nacimiento requerida',
+    }),
+  phone: z
+    .string()
+    .min(1, { message: 'Número celular requerido' })
+    .refine((val) => isValidPhoneNumber(val), {
+      message: 'Número celular inválido',
+    }),
+  address: z.string().min(1, { message: 'Dirección requerida' }),
+});
+
 export const medicInfoSchema = z
   .object({
     registry: z.string().min(1, { message: 'Registro requerido' }),
@@ -141,27 +215,3 @@ export const medicInfoSchema = z
       path: ['checkOut'],
     }
   );
-
-export const patientSchema = z.object({
-  firstName: z.string().min(1, { message: 'Nombre requerido' }),
-  lastName: z.string().min(1, { message: 'Apellido requerido' }),
-  dniType: z.string().min(1, { message: 'Tipo de documento requerido' }),
-  dni: z.string().min(1, { message: 'Nº de documento requerido' }),
-  email: z
-    .string()
-    .min(1, { message: 'Correo electrónico requerido' })
-    .email({ message: 'Correo electrónico no válido' }),
-  dob: z
-    .date()
-    .nullable()
-    .refine((val) => val !== null, {
-      message: 'Fecha de nacimiento requerida',
-    }),
-  phone: z
-    .string()
-    .min(1, { message: 'Número celular requerido' })
-    .refine((val) => isValidPhoneNumber(val), {
-      message: 'Número celular inválido',
-    }),
-  address: z.string().min(1, { message: 'Dirección requerida' }),
-});

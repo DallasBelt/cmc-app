@@ -37,42 +37,40 @@ const Root = () => {
         visibleToasts={3}
       />
 
-      <div className='container mx-auto px-24'>
-        <nav className='sticky top-0 flex items-center justify-between gap-5 h-20 backdrop-filter backdrop-blur-lg bg-opacity-30'>
-          <Link to='/' className='hidden md:flex'>
-            <img src={navbarLogo} className='w-12' />
-          </Link>
+      <nav className='px-24 sticky top-0 z-50 flex items-center justify-between gap-5 h-20 backdrop-filter backdrop-blur-lg bg-opacity-30'>
+        <Link to='/' className='hidden md:flex'>
+          <img src={navbarLogo} className='w-12' />
+        </Link>
 
-          <div>
-            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-              <SheetTrigger className='flex md:hidden'>
-                <List size={24} weight='bold' />
-              </SheetTrigger>
-              <SheetContent side='left'>
-                <SheetHeader className='mb-5'>
-                  <SheetTitle>Menú</SheetTitle>
-                </SheetHeader>
-                <NavMenu onLinkClick={handleCloseSheet} />
-              </SheetContent>
-            </Sheet>
-          </div>
-
-          <div className='hidden md:flex md:mr-auto'>
-            <NavMenu />
-          </div>
-
-          <div className='flex gap-5'>
-            <ModeToggle />
-
-            <div className='hidden md:flex'>
-              <AvatarMenu />
-            </div>
-          </div>
-        </nav>
-
-        <div className='my-8'>
-          <Outlet />
+        <div>
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+            <SheetTrigger className='flex md:hidden'>
+              <List size={24} weight='bold' />
+            </SheetTrigger>
+            <SheetContent side='left'>
+              <SheetHeader className='mb-5'>
+                <SheetTitle>Menú</SheetTitle>
+              </SheetHeader>
+              <NavMenu onLinkClick={handleCloseSheet} />
+            </SheetContent>
+          </Sheet>
         </div>
+
+        <div className='hidden md:flex md:mr-auto'>
+          <NavMenu />
+        </div>
+
+        <div className='flex gap-5'>
+          <ModeToggle />
+
+          <div className='hidden md:flex'>
+            <AvatarMenu />
+          </div>
+        </div>
+      </nav>
+
+      <div className='container mx-auto px-24 my-8'>
+        <Outlet />
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
@@ -39,16 +39,23 @@ import { CalendarDots } from '@phosphor-icons/react';
 
 import { PhoneInput } from '@/components/PhoneInput';
 
-import { userInfoSchema } from '@/utils/formSchema';
+import { newPatientSchema, editPatientSchema } from '@/utils/formSchema';
 
 import { useNewPatientModalStore } from '@/store/store';
+import { useEditModeStore } from '@/store/store';
+import { usePatientIdStore } from '@/store/store';
 
 const NewPatientForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const setModalState = useNewPatientModalStore((state) => state.setModalState);
+  const editMode = useEditModeStore((state) => state.editMode);
+  const [initialPatientValues, setInitialPatientValues] = useState(null);
+  const patientId = usePatientIdStore((state) => state.patientId);
+
+  const schema = !editMode ? newPatientSchema : editPatientSchema;
 
   const form = useForm({
-    resolver: zodResolver(userInfoSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -61,6 +68,51 @@ const NewPatientForm = () => {
       address: '',
     },
   });
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      try {
+        if (!editMode) return;
+
+        // Check auth
+        const token = sessionStorage.getItem('token');
+        if (!token) {
+          toast.error('Oops!', {
+            description: 'Error de autenticación.',
+          });
+
+          return;
+        }
+
+        // Axios get request
+        const res = await axios.get(
+          `http://localhost:3000/api/v1/patient/${patientId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        // Create patientData object
+        if (res.status === 200) {
+          const patientData = {
+            firstName: res?.data?.firstName || '',
+            lastName: res?.data?.lastName || '',
+            occupation: res?.data?.occupation || '',
+            email: res?.data?.email || '',
+            dob: res?.data?.dob ? new Date(res?.data?.dob) : null,
+            phone: res?.data?.phone || '',
+            address: res?.data?.address || '',
+          };
+
+          setInitialPatientValues(patientData);
+          form.reset(patientData); // Load data in the form fields
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchInfo();
+  }, [form]);
 
   const onSubmit = async (values) => {
     try {
@@ -75,28 +127,65 @@ const NewPatientForm = () => {
         return;
       }
 
-      // Post request
-      const res = await axios.post(
-        'http://localhost:3000/api/v1/patient',
-        {
-          ...values,
-          dob: format(values.dob, 'dd-MM-yyyy'),
-          medicId: sessionStorage.getItem('id'),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+      if (!initialPatientValues) {
+        // New entry
+
+        // Post request to create a new patient
+        const res = await axios.post(
+          'http://localhost:3000/api/v1/patient',
+          {
+            ...values,
+            dob: format(values.dob, 'dd-MM-yyyy'),
+            medicId: sessionStorage.getItem('id'),
           },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (res.status === 201) {
+          toast.success('¡Enhorabuena!', {
+            description: 'Paciente creado con éxito.',
+          });
+
+          form.reset();
+          setModalState(false);
         }
-      );
+      } else {
+        // Get current form values
+        const currentValues = form.getValues();
 
-      if (res.status === 201) {
-        toast.success('¡Enhorabuena!', {
-          description: 'Paciente creado con éxito.',
-        });
+        // Exclude 'dni' and 'dniType' keys
+        const { dni, dniType, ...rest } = currentValues;
 
-        form.reset();
-        setModalState(false);
+        // Compare the values
+        const hasChanges =
+          JSON.stringify(rest) !== JSON.stringify(initialPatientValues);
+
+        if (!hasChanges) {
+          toast.warning('Oops!', {
+            description: 'No se detectaron cambios.',
+          });
+          return;
+        }
+
+        // Patch request to update patient info
+        const res = await axios.patch(
+          `http://localhost:3000/api/v1/patient/${patientId}`,
+          { ...rest, dob: format(values.dob, 'dd-MM-yyyy') },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (res.status === 200) {
+          toast.success('¡Enhorabuena!', {
+            description: 'Información actualizada con éxito.',
+          });
+
+          // Set new current values after editing
+          setInitialPatientValues(rest);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -117,7 +206,12 @@ const NewPatientForm = () => {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2.5'>
+        <form
+          onSubmit={form.handleSubmit(onSubmit, (errors) =>
+            console.log(errors)
+          )}
+          className='space-y-2.5'
+        >
           <div className='flex flex-col space-y-2.5 md:flex-row md:gap-2.5 md:space-y-0'>
             <FormField
               control={form.control}
@@ -148,50 +242,54 @@ const NewPatientForm = () => {
             />
           </div>
 
-          <FormField
-            control={form.control}
-            name='dniType'
-            render={({ field }) => (
-              <FormItem className='w-full'>
-                <FormLabel>Tipo de documento</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger
-                      className={cn(
-                        'font-normal',
-                        !field.value && 'text-muted-foreground'
-                      )}
-                    >
-                      <SelectValue placeholder='Seleccionar...' />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value='cedula'>Cédula</SelectItem>
-                    <SelectItem value='ruc'>RUC</SelectItem>
-                    <SelectItem value='passport'>Pasaporte</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className={editMode ? 'hidden' : 'flex'}>
+            <FormField
+              control={form.control}
+              name='dniType'
+              render={({ field }) => (
+                <FormItem className='w-full'>
+                  <FormLabel>Tipo de documento</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger
+                        className={cn(
+                          'font-normal',
+                          !field.value && 'text-muted-foreground'
+                        )}
+                      >
+                        <SelectValue placeholder='Seleccionar...' />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value='cedula'>Cédula</SelectItem>
+                      <SelectItem value='ruc'>RUC</SelectItem>
+                      <SelectItem value='passport'>Pasaporte</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-          <FormField
-            control={form.control}
-            name='dni'
-            render={({ field }) => (
-              <FormItem className='w-full'>
-                <FormLabel>Nº de documento</FormLabel>
-                <FormControl>
-                  <Input type='text' {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className={editMode ? 'hidden' : 'flex'}>
+            <FormField
+              control={form.control}
+              name='dni'
+              render={({ field }) => (
+                <FormItem className='w-full'>
+                  <FormLabel>Nº de documento</FormLabel>
+                  <FormControl>
+                    <Input type='text' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <FormField
             control={form.control}
@@ -258,9 +356,8 @@ const NewPatientForm = () => {
                         date > new Date() || date < new Date('1900-01-01')
                       }
                       captionLayout='dropdown'
-                      toYear={2010}
-                      fromYear={1940}
-                      defaultMonth={new Date(1987, 7)}
+                      toYear={new Date().getFullYear() - 18}
+                      fromYear={new Date().getFullYear() - 70}
                       locale={es}
                       initialFocus
                     />
@@ -305,7 +402,7 @@ const NewPatientForm = () => {
               disabled={isSubmitting}
               className='w-full md:w-fit'
             >
-              Crear nuevo paciente
+              {editMode ? 'Guardar' : 'Crear paciente'}
               {isSubmitting && (
                 <span className='ms-2'>
                   <RotatingLines

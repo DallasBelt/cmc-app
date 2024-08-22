@@ -1,19 +1,18 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { Gear, SignOut, User } from '@phosphor-icons/react';
+import { SignOut, User } from '@phosphor-icons/react';
 
 const AvatarMenu = () => {
   const navigate = useNavigate();
+  const isAdmin = sessionStorage.getItem('roles').includes('admin');
 
   const handleSignOut = () => {
     // Remove the token
@@ -32,11 +31,9 @@ const AvatarMenu = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
-        {/* <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel> */}
-        {/* <DropdownMenuSeparator /> */}
         <DropdownMenuItem
           onSelect={() => navigate('/profile')}
-          className='cursor-pointer'
+          className={isAdmin ? 'hidden' : 'cursor-pointer'}
         >
           <User size={24} className='me-1' />
           Perfil
