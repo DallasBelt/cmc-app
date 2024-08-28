@@ -29,3 +29,13 @@ export const usePatientIdStore = create((set) => ({
   patientId: null,
   setPatientId: (id) => set({ patientId: id }),
 }));
+
+export const useStartTimeStore = create((set) => ({
+  startTime: '',
+  setStartTime: (time) => set({ startTime: time }),
+}));
+
+export const useDateStore = create((set) => ({
+  date: '',
+  setDate: (date) => set({ date: date }),
+}));

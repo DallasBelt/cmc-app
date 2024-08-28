@@ -35,7 +35,9 @@ const chartData = [
 ];
 
 const Index = () => {
-  const { showToast, toastMessage, setToast } = useToastStore();
+  const showToast = useToastStore((state) => state.showToast);
+  const toastMessage = useToastStore((state) => state.toastMessage);
+  const setToast = useToastStore((state) => state.setToast);
   const isAdmin = sessionStorage.getItem('roles').includes('admin');
   const isAssistant = sessionStorage.getItem('roles').includes('assistant');
 
@@ -44,71 +46,79 @@ const Index = () => {
       toast.success(toastMessage);
       setToast(false, '');
     }
-  }, [showToast, toastMessage, setToast]);
+  }, [showToast]);
 
   return (
     <>
-      <div className='flex flex-col gap-5 md:flex-row'>
-        {isAdmin ? (
-          <Card className='md:w-1/3'>
+      {isAssistant ? (
+        ''
+      ) : (
+        <div className='flex flex-col gap-5 md:flex-row'>
+          {isAdmin ? (
+            <Card className='md:w-1/3'>
+              <CardHeader>
+                <CardTitle className='text-4xl'>Médicos</CardTitle>
+              </CardHeader>
+              <CardContent className='text-3xl'>
+                <p>Total:</p>
+                <p>Activos:</p>
+                <p>Especialidades:</p>
+              </CardContent>
+            </Card>
+          ) : (
+            ''
+          )}
+
+          <Card className={isAdmin ? 'md:w-1/3' : 'md:w-1/2'}>
             <CardHeader>
-              <CardTitle className='text-4xl'>Médicos</CardTitle>
+              <CardTitle className='text-4xl'>Pacientes</CardTitle>
             </CardHeader>
             <CardContent className='text-3xl'>
               <p>Total:</p>
-              <p>Activos:</p>
-              <p>Especialidades:</p>
+              <p>Atendidos:</p>
+              <p>Sin atender:</p>
             </CardContent>
           </Card>
-        ) : (
-          ''
-        )}
 
-        <Card className={isAdmin ? 'md:w-1/3' : 'md:w-1/2'}>
-          <CardHeader>
-            <CardTitle className='text-4xl'>Pacientes</CardTitle>
-          </CardHeader>
-          <CardContent className='text-3xl'>
-            <p>Total:</p>
-            <p>Atendidos:</p>
-            <p>Sin atender:</p>
-          </CardContent>
-        </Card>
+          <Card className={isAdmin ? 'md:w-1/3' : 'md:w-1/2'}>
+            <CardHeader>
+              <CardTitle className='text-4xl'>Citas</CardTitle>
+            </CardHeader>
+            <CardContent className='text-3xl'>
+              <p>Total:</p>
+              <p>Finalizadas:</p>
+              <p>Pendientes:</p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
-        <Card className={isAdmin ? 'md:w-1/3' : 'md:w-1/2'}>
-          <CardHeader>
-            <CardTitle className='text-4xl'>Citas</CardTitle>
-          </CardHeader>
-          <CardContent className='text-3xl'>
-            <p>Total:</p>
-            <p>Finalizadas:</p>
-            <p>Pendientes:</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className='md:w-2/4'>
-        <ChartContainer config={chartConfig} className='min-h-[200px] w-full'>
-          <BarChart accessibilityLayer data={chartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey='month'
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <ChartLegend content={<ChartLegendContent />} />
-            <Bar dataKey='patients' fill='var(--color-patients)' radius={4} />
-            <Bar
-              dataKey='appointments'
-              fill='var(--color-appointments)'
-              radius={4}
-            />
-          </BarChart>
-        </ChartContainer>
-      </div>
+      {isAssistant ? (
+        ''
+      ) : (
+        <div className='md:w-2/4'>
+          <ChartContainer config={chartConfig} className='min-h-[200px] w-full'>
+            <BarChart accessibilityLayer data={chartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey='month'
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <ChartLegend content={<ChartLegendContent />} />
+              <Bar dataKey='patients' fill='var(--color-patients)' radius={4} />
+              <Bar
+                dataKey='appointments'
+                fill='var(--color-appointments)'
+                radius={4}
+              />
+            </BarChart>
+          </ChartContainer>
+        </div>
+      )}
 
       <div className={isAdmin ? 'hidden' : 'block'}>
         <Scheduler />

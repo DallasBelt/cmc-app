@@ -110,6 +110,8 @@ export const patientsColumns = [
       const setPatientId = usePatientIdStore((state) => state.setPatientId);
       const [isSubmitting, setIsSubmitting] = useState(false);
 
+      const isAssistant = sessionStorage.getItem('roles').includes('assistant');
+
       const deletePatient = async () => {
         try {
           setIsSubmitting(true);
@@ -154,21 +156,25 @@ export const patientsColumns = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end' className='flex flex-col'>
               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-              <Dialog>
-                <DialogTrigger>
-                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                    <ClipboardText size={16} className='me-2' />
-                    Ver historial
-                  </DropdownMenuItem>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Historial clínico</DialogTitle>
-                    <DialogDescription>Description.</DialogDescription>
-                  </DialogHeader>
-                  {/* todo: historial clínico modal content */}
-                </DialogContent>
-              </Dialog>
+              {isAssistant ? (
+                ''
+              ) : (
+                <Dialog>
+                  <DialogTrigger>
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                      <ClipboardText size={16} className='me-2' />
+                      Ver historial
+                    </DropdownMenuItem>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Historial clínico</DialogTitle>
+                      <DialogDescription>Description.</DialogDescription>
+                    </DialogHeader>
+                    {/* todo: historial clínico modal content */}
+                  </DialogContent>
+                </Dialog>
+              )}
 
               <Dialog>
                 <DialogTrigger>

@@ -8,7 +8,6 @@ import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Error from './pages/Error';
 import ForgotPassword from './pages/ForgotPassword';
-// import CompleteRegistration from './pages/CompleteRegistration';
 
 import {
   PrivateRoute,
@@ -52,7 +51,7 @@ const routes = [
       {
         path: 'patients',
         element: (
-          <RoleBasedRoute allowedRoles={['admin', 'medic']}>
+          <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
             <Patients />
           </RoleBasedRoute>
         ),

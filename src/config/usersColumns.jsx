@@ -22,7 +22,12 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 import { toast } from 'sonner';
 
-import { ArrowsDownUp, DotsThree, FloppyDisk } from '@phosphor-icons/react';
+import {
+  ArrowsDownUp,
+  DotsThree,
+  UserCheck,
+  UserSwitch,
+} from '@phosphor-icons/react';
 
 const changeRole = async (email, role) => {
   try {
@@ -197,6 +202,7 @@ export const usersColumns = [
                     onSelect={(e) => e.preventDefault()}
                     className='cursor-pointer'
                   >
+                    <UserSwitch size={16} className='mr-2' />
                     Cambiar rol
                   </DropdownMenuItem>
                 </DialogTrigger>
@@ -230,7 +236,6 @@ export const usersColumns = [
                       className='w-fit'
                       onClick={() => changeRole(email, role)}
                     >
-                      <FloppyDisk size={24} className='mr-2' />
                       Guardar
                     </Button>
                   </div>
@@ -243,6 +248,7 @@ export const usersColumns = [
                     onSelect={(e) => e.preventDefault()}
                     className='cursor-pointer'
                   >
+                    <UserCheck size={16} className='mr-2' />
                     Cambiar estado
                   </DropdownMenuItem>
                 </DialogTrigger>
@@ -276,35 +282,8 @@ export const usersColumns = [
                       className='w-fit'
                       onClick={() => changeState(email)}
                     >
-                      <FloppyDisk size={24} className='mr-2' />
                       Guardar
                     </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-
-              <Dialog>
-                <DialogTrigger>
-                  <DropdownMenuItem
-                    onSelect={(e) => e.preventDefault()}
-                    className='cursor-pointer'
-                  >
-                    Ver detalles
-                  </DropdownMenuItem>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Detalles del usuario</DialogTitle>
-                    <DialogDescription>
-                      Seleccione un nuevo estado para el usuario.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div>
-                    <p>Identificacion: dni</p>
-                    <p>Nombres: fullName</p>
-                    <p>Edad: Date.now - birthDate</p>
-                    <p>Telefono: phone</p>
-                    <p>Direccion: address</p>
                   </div>
                 </DialogContent>
               </Dialog>
