@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-import { format, setDefaultOptions } from 'date-fns';
+import { format, set, setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { RotatingLines } from 'react-loader-spinner';
 import { toast } from 'sonner';
@@ -38,11 +39,20 @@ import { CalendarDots } from '@phosphor-icons/react';
 
 import { userInfoSchema } from '@/utils/formSchema';
 
+import { useTabStore } from '@/store/store';
+
 const UserInfoForm = () => {
   setDefaultOptions({ locale: es });
+  const location = useLocation();
+  const isCompleteInfo = location.pathname === '/complete-info';
+  const role = sessionStorage.getItem('roles');
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [initialUserValues, setInitialUserValues] = useState(null);
   const [fieldDisabled, setFieldDisabled] = useState(false);
+
+  const setTabValue = useTabStore((state) => state.setTabValue);
+  const setTabDisabled = useTabStore((state) => state.setTabDisabled);
 
   const form = useForm({
     resolver: zodResolver(userInfoSchema),
@@ -159,6 +169,11 @@ const UserInfoForm = () => {
 
           setInitialUserValues(values);
           setFieldDisabled(true);
+
+          if (isCompleteInfo) {
+            setTabValue(role === 'medic' ? 'medicInfo' : 'assistantInfo');
+            setTabDisabled(true);
+          }
         }
       }
     } catch (error) {

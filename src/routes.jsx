@@ -1,11 +1,12 @@
+import Login from './pages/Login';
+import CompleteInfo from './pages/CompleteInfo';
 import Root from './pages/Root';
 import Index from './pages/Index';
 import Users from './pages/Users';
-import Assistants from './pages/Assistants';
 import Patients from './pages/Patients';
 import Appointments from './pages/Appointments';
+import { Statistics } from './pages/Statistics';
 import Profile from './pages/Profile';
-import Login from './pages/Login';
 import Error from './pages/Error';
 import ForgotPassword from './pages/ForgotPassword';
 
@@ -13,6 +14,7 @@ import {
   PrivateRoute,
   PublicRoute,
   RoleBasedRoute,
+  CheckUserInfoRoute,
 } from './components/ProtectedRoutes';
 
 const routes = [
@@ -27,7 +29,11 @@ const routes = [
     children: [
       {
         index: true,
-        element: <Index />,
+        element: (
+          <CheckUserInfoRoute>
+            <Index />
+          </CheckUserInfoRoute>
+        ),
         errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
@@ -40,37 +46,54 @@ const routes = [
         errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
-        path: 'assistants',
-        element: (
-          <RoleBasedRoute allowedRoles={['admin', 'medic']}>
-            <Assistants />
-          </RoleBasedRoute>
-        ),
-        errorElement: <div>Oops! Hubo un error.</div>,
-      },
-      {
         path: 'patients',
         element: (
-          <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
-            <Patients />
-          </RoleBasedRoute>
+          <CheckUserInfoRoute>
+            <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
+              <Patients />
+            </RoleBasedRoute>
+          </CheckUserInfoRoute>
         ),
         errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
         path: 'appointments',
         element: (
-          <RoleBasedRoute allowedRoles={['medic']}>
-            <Appointments />
-          </RoleBasedRoute>
+          <CheckUserInfoRoute>
+            <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
+              <Appointments />
+            </RoleBasedRoute>
+          </CheckUserInfoRoute>
+        ),
+        errorElement: <div>Oops! Hubo un error.</div>,
+      },
+      {
+        path: 'stats',
+        element: (
+          <CheckUserInfoRoute>
+            <RoleBasedRoute allowedRoles={['admin', 'medic', 'assistant']}>
+              <Statistics />
+            </RoleBasedRoute>
+          </CheckUserInfoRoute>
         ),
         errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
         path: 'profile',
         element: (
+          <CheckUserInfoRoute>
+            <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
+              <Profile />
+            </RoleBasedRoute>
+          </CheckUserInfoRoute>
+        ),
+        errorElement: <div>Oops! Hubo un error.</div>,
+      },
+      {
+        path: 'complete-info',
+        element: (
           <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
-            <Profile />
+            <CompleteInfo />
           </RoleBasedRoute>
         ),
         errorElement: <div>Oops! Hubo un error.</div>,

@@ -101,6 +101,7 @@ const AppointmentForm = () => {
   // }, [form]);
 
   const onSubmit = async (values) => {
+    console.log(values);
     try {
       setIsSubmitting(true);
 
@@ -116,17 +117,15 @@ const AppointmentForm = () => {
       const appointment = {
         startTime: format(
           parse(values.startTime, 'HH:mm', new Date()),
-          'dd-MM-yyyy HH:mm'
+          'dd-MM-yyyy HH:mm:ss'
         ),
         endTime: format(
           parse(values.endTime, 'HH:mm', new Date()),
-          'dd-MM-yyyy HH:mm'
+          'dd-MM-yyyy HH:mm:ss'
         ),
         patientId: values.patient,
         medicId,
       };
-
-      console.log(appointment);
 
       const res = await axios.post(
         'http://localhost:3000/api/v1/appointment',

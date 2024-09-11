@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -12,11 +12,13 @@ import { SignOut, User } from '@phosphor-icons/react';
 
 const AvatarMenu = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isCompleteInfo = location.pathname === '/complete-info';
   const isAdmin = sessionStorage.getItem('roles').includes('admin');
 
   const handleSignOut = () => {
-    // Remove the token
-    sessionStorage.removeItem('token');
+    // Remove sessionStorage items
+    sessionStorage.clear();
 
     // Redirects to the login page
     navigate('/login');
@@ -33,7 +35,7 @@ const AvatarMenu = () => {
       <DropdownMenuContent align='end'>
         <DropdownMenuItem
           onSelect={() => navigate('/profile')}
-          className={isAdmin ? 'hidden' : 'cursor-pointer'}
+          className={isAdmin || isCompleteInfo ? 'hidden' : 'cursor-pointer'}
         >
           <User size={24} className='me-1' />
           Perfil

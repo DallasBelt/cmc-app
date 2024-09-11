@@ -39,3 +39,11 @@ export const useDateStore = create((set) => ({
   date: '',
   setDate: (date) => set({ date: date }),
 }));
+
+// Tab store
+export const useTabStore = create((set) => ({
+  tabValue: 'userInfo',
+  tabDisabled: false,
+  setTabValue: (value) => set({ tabValue: value }),
+  setTabDisabled: (value) => set({ tabDisabled: value }),
+}));

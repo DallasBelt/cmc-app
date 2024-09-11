@@ -65,8 +65,7 @@ const LoginForm = () => {
 
       // If the role is 'user' don't allow login
       if (roles.includes('user')) {
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('roles');
+        sessionStorage.clear();
         return toast.error('Oops...', {
           description: 'Esperando activación.',
         });

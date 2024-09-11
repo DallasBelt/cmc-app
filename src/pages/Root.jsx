@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
+import { Button } from '@/components/ui/button';
 import NavMenu from '@/components/NavMenu';
 import {
   Sheet,
@@ -11,7 +12,7 @@ import {
 } from '@/components/ui/sheet';
 import { Toaster } from '@/components/ui/sonner';
 
-import { List } from '@phosphor-icons/react';
+import { List, SignOut } from '@phosphor-icons/react';
 
 import AvatarMenu from '@/components/AvatarMenu';
 import navbarLogo from '@/assets/navbar-logo.svg';
@@ -21,9 +22,21 @@ import { ModeToggle } from '@/components/ModeToggle';
 const Root = () => {
   const { effectiveTheme } = useTheme();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isCompleteInfo = location.pathname === '/complete-info';
 
   const handleCloseSheet = () => {
     setIsSheetOpen(false);
+  };
+
+  const handleSignOut = () => {
+    // Remove sessionStorage items
+    sessionStorage.clear();
+
+    // Redirects to the login page
+    navigate('/login');
   };
 
   return (
@@ -38,11 +51,11 @@ const Root = () => {
       />
 
       <nav className='px-24 sticky top-0 z-50 flex items-center justify-between gap-5 h-20 backdrop-filter backdrop-blur-lg bg-opacity-30'>
-        <Link to='/' className='hidden md:flex'>
+        <Link to='/' className={isCompleteInfo ? 'flex' : 'hidden md:flex'}>
           <img src={navbarLogo} className='w-12' />
         </Link>
 
-        <div>
+        <div className={isCompleteInfo ? 'hidden' : 'flex'}>
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger className='flex md:hidden'>
               <List size={24} weight='bold' />
@@ -56,14 +69,22 @@ const Root = () => {
           </Sheet>
         </div>
 
-        <div className='hidden md:flex md:mr-auto'>
+        <div
+          className={isCompleteInfo ? 'hidden' : 'hidden md:flex md:mr-auto'}
+        >
           <NavMenu />
         </div>
 
-        <div className='flex gap-5'>
+        <div className={isCompleteInfo ? 'flex gap-1' : 'flex gap-5'}>
           <ModeToggle />
 
-          <div className='hidden md:flex'>
+          <div className={isCompleteInfo ? 'flex' : 'hidden'}>
+            <Button variant='ghost' size='icon' onClick={handleSignOut}>
+              <SignOut size={24} className='me-1' />
+            </Button>
+          </div>
+
+          <div className={isCompleteInfo ? 'hidden' : 'hidden md:flex'}>
             <AvatarMenu />
           </div>
         </div>

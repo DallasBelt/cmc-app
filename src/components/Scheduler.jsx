@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -7,7 +6,6 @@ import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import { format, setDefaultOptions, startOfToday } from 'date-fns';
 import { es } from 'date-fns/locale';
-import ReactSearchBox from 'react-search-box';
 
 import {
   Dialog,
@@ -64,6 +62,8 @@ export function Scheduler() {
   //   fetchData();
   // }, [dialogState]);
 
+  const dayCellClassNames = () => 'cursor-pointer';
+
   return (
     <div>
       <FullCalendar
@@ -99,6 +99,7 @@ export function Scheduler() {
         validRange={{
           start: startOfToday(),
         }}
+        dayCellClassNames={dayCellClassNames}
       />
 
       {dialogState && (
