@@ -348,7 +348,7 @@ const MedicInfoForm = () => {
             disabled={isSubmitting}
             className='w-full md:w-fit'
           >
-            Guardar datos
+            Guardar
             {isSubmitting && (
               <span className='ms-2'>
                 <RotatingLines

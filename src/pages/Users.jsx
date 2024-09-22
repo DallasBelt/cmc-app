@@ -1,6 +1,5 @@
 import { RotatingLines } from 'react-loader-spinner';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTable } from '@/components/DataTable';
 
 import { usersColumns } from '@/config/usersColumns';
@@ -32,22 +31,7 @@ const Users = () => {
 
   return (
     <div className=''>
-      <div className='flex justify-center gap-8 py-16'>
-        <Card className='w-1/3'>
-          <CardHeader>
-            <CardTitle className='text-4xl'>Estadísticas</CardTitle>
-          </CardHeader>
-          <CardContent className='text-3xl'>
-            <p>{data.length} Usuarios</p>
-            <p>{data.filter((user) => user.isActive).length} Activos</p>
-            <p>{data.filter((user) => !user.isActive).length} Inactivos</p>
-          </CardContent>
-        </Card>
-
-        <div className='w-2/3'>
-          <DataTable columns={usersColumns} data={data} />
-        </div>
-      </div>
+      <DataTable columns={usersColumns} data={data} />
     </div>
   );
 };

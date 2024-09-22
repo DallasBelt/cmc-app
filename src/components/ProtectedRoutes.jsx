@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import axios from 'axios';
 
 import { toast } from 'sonner';
 import { RotatingLines } from 'react-loader-spinner';
-
-import { useTabStore } from '@/store/store';
 import { set } from 'date-fns';
 
 // Allow navigation if there's an auth token; redirect to the login page otherwise
@@ -36,30 +33,28 @@ export const RoleBasedRoute = ({ children, allowedRoles }) => {
   return children;
 };
 
-// If there's no user info redirect to '/profile'
+// If there's no user info redirect to '/complete-info'
 export const CheckUserInfoRoute = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const token = sessionStorage.getItem('token');
   const role = sessionStorage.getItem('roles');
-  const setTabValue = useTabStore((state) => state.setTabValue);
-  const setTabDisabled = useTabStore((state) => state.setTabDisabled);
 
   useEffect(() => {
-    const checkUserInfo = async () => {
+    const fetchData = async () => {
       if (role === 'admin') {
         setLoading(false);
         return;
       }
 
       try {
-        await axios.get('http://localhost:3000/api/v1/user-info', {
+        const res = await fetch('http://localhost:3000/api/v1/user-info', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        await axios.get(
+        const res2 = await fetch(
           `http://localhost:3000/api/v1/${
             role === 'medic' ? 'medic' : 'assistant'
           }-info`,
@@ -70,13 +65,13 @@ export const CheckUserInfoRoute = ({ children }) => {
           }
         );
 
-        // Don't redirect if there's user info
-        setShouldRedirect(false);
+        if (!res.ok || !res2.ok) {
+          throw new Error('Error fetching user info');
+        }
       } catch (error) {
         console.error(error);
         // If no user info is found (404) redirect to '/complete-info'
         setShouldRedirect(true);
-        setTabValue(role === 'medic' ? 'medicInfo' : 'assistantInfo');
 
         // Show info toast
         toast.warning('Importante', {
@@ -87,12 +82,8 @@ export const CheckUserInfoRoute = ({ children }) => {
       }
     };
 
-    if (token) {
-      checkUserInfo();
-    } else {
-      setLoading(false);
-    }
-  }, [token, role]);
+    fetchData();
+  }, []);
 
   if (loading) {
     // Show React Spinners while loading
@@ -113,7 +104,7 @@ export const CheckUserInfoRoute = ({ children }) => {
 
   if (shouldRedirect) {
     return <Navigate to='/complete-info' replace />;
+  } else {
+    return children;
   }
-
-  return children;
 };

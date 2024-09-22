@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -8,7 +8,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   DropdownMenu,
@@ -20,14 +19,12 @@ import {
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-import { toast } from 'sonner';
-
 import {
-  ArrowsDownUp,
-  DotsThree,
-  UserCheck,
-  UserSwitch,
-} from '@phosphor-icons/react';
+  ArrowUpDown,
+  Ellipsis,
+  UserRoundCheck,
+  UserRoundCog,
+} from 'lucide-react';
 
 const changeRole = async (email, role) => {
   try {
@@ -37,24 +34,25 @@ const changeRole = async (email, role) => {
       toast.error('Oops!', {
         description: 'Error de autenticación.',
       });
-
       return;
     }
 
     // Send the request to the server
-    const res = await axios.patch(
-      'http://localhost:3000/api/v1/auth/change-role',
-      { email, role },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    const res = await fetch('http://localhost:3000/api/v1/auth/change-role', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ email, role }),
+    });
 
-    console.log(res);
-
-    // Give a toast message if failed
-    if (!res.status === 200) {
+    // Check if the request was successful
+    if (!res.ok) {
       toast.error('Oops...', {
         description: 'Error al cambiar el rol.',
       });
+      return;
     }
 
     // Give a toast message if succeeded
@@ -78,21 +76,25 @@ const changeState = async (email) => {
       toast.error('Oops!', {
         description: `Error de autenticación.`,
       });
+      return;
     }
 
     // Send the request to the server
-    // https://cmc-api-42qy.onrender.com/api/v1/auth/soft-delete
-    const res = await axios.patch(
-      'http://localhost:3000/api/v1/auth/soft-delete',
-      { email },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    const res = await fetch('http://localhost:3000/api/v1/auth/soft-delete', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ email }),
+    });
 
-    // Give a toast message if failed
-    if (!res.data.success) {
+    // Check if the request was successful and the response contains success
+    if (!res.ok) {
       toast.error('Oops...', {
         description: 'Error al cambiar el estado.',
       });
+      return;
     }
 
     // Give a toast message if succeeded
@@ -119,7 +121,7 @@ export const usersColumns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Correo electrónico
-          <ArrowsDownUp size={24} className='ml-2 h-4 w-4' />
+          <ArrowUpDown size={24} className='ml-2 h-4 w-4' />
         </Button>
       );
     },
@@ -137,7 +139,7 @@ export const usersColumns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Estado
-          <ArrowsDownUp size={24} className='ml-2 h-4 w-4' />
+          <ArrowUpDown size={24} className='ml-2 h-4 w-4' />
         </Button>
       );
     },
@@ -153,7 +155,7 @@ export const usersColumns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Rol
-          <ArrowsDownUp size={24} className='ml-2 h-4 w-4' />
+          <ArrowUpDown size={24} className='ml-2 h-4 w-4' />
         </Button>
       );
     },
@@ -182,6 +184,9 @@ export const usersColumns = [
       const [role, setRole] = useState('');
       const email = row.original.email;
 
+      const [changeRoleModal, setChangeRoleModal] = useState(false);
+      const [changeStateModal, setChangeStateModal] = useState(false);
+
       return (
         <>
           <DropdownMenu>
@@ -191,21 +196,23 @@ export const usersColumns = [
                 variant='ghost'
                 className='h-8 w-8 p-0'
               >
-                <DotsThree size={24} className='h-4 w-4' />
+                <Ellipsis size={24} className='h-4 w-4' />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end' className='flex flex-col'>
               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-              <Dialog>
-                <DialogTrigger>
-                  <DropdownMenuItem
-                    onSelect={(e) => e.preventDefault()}
-                    className='cursor-pointer'
-                  >
-                    <UserSwitch size={16} className='mr-2' />
-                    Cambiar rol
-                  </DropdownMenuItem>
-                </DialogTrigger>
+
+              <Dialog open={changeRoleModal} onOpenChange={setChangeRoleModal}>
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setChangeRoleModal(true);
+                  }}
+                  className='cursor-pointer'
+                >
+                  <UserRoundCog size={16} className='mr-2' />
+                  Cambiar rol
+                </DropdownMenuItem>
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Cambiar rol</DialogTitle>
@@ -234,7 +241,10 @@ export const usersColumns = [
                   <div className='flex justify-end'>
                     <Button
                       className='w-fit'
-                      onClick={() => changeRole(email, role)}
+                      onClick={() => {
+                        changeRole(email, role);
+                        setChangeRoleModal(false);
+                      }}
                     >
                       Guardar
                     </Button>
@@ -242,16 +252,20 @@ export const usersColumns = [
                 </DialogContent>
               </Dialog>
 
-              <Dialog>
-                <DialogTrigger>
-                  <DropdownMenuItem
-                    onSelect={(e) => e.preventDefault()}
-                    className='cursor-pointer'
-                  >
-                    <UserCheck size={16} className='mr-2' />
-                    Cambiar estado
-                  </DropdownMenuItem>
-                </DialogTrigger>
+              <Dialog
+                open={changeStateModal}
+                onOpenChange={setChangeStateModal}
+              >
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setChangeStateModal(true);
+                  }}
+                  className='cursor-pointer'
+                >
+                  <UserRoundCheck size={16} className='mr-2' />
+                  Cambiar estado
+                </DropdownMenuItem>
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Cambiar estado</DialogTitle>
@@ -280,7 +294,10 @@ export const usersColumns = [
                   <div className='flex justify-end'>
                     <Button
                       className='w-fit'
-                      onClick={() => changeState(email)}
+                      onClick={() => {
+                        changeState(email);
+                        setChangeStateModal(false);
+                      }}
                     >
                       Guardar
                     </Button>
