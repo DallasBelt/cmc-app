@@ -75,12 +75,19 @@ export function DataTable({ columns, data }) {
   return (
     <>
       <div className='flex flex-col gap-5'>
-        <Input
-          placeholder='Buscar...'
-          value={globalFilter}
-          onChange={handleGlobalFilterChange}
-          className='w-full lg:max-w-sm'
-        />
+        <div className='flex justify-between items-center'>
+          <Input
+            placeholder='Buscar...'
+            value={globalFilter}
+            onChange={handleGlobalFilterChange}
+            className='w-full lg:max-w-sm'
+          />
+
+          <div className='text-sm text-muted-foreground'>
+            {table.getFilteredRowModel().rows.length} registros
+          </div>
+        </div>
+
         <div className='rounded-md border'>
           <Table>
             <TableHeader>

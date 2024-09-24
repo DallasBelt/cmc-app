@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
 import { setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { RotatingLines } from 'react-loader-spinner';
@@ -32,6 +32,9 @@ import { medicInfoSchema } from '@/utils/formSchema';
 import { days, specialties } from '@/constants/medicInfoConstants';
 
 const MedicInfoForm = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isCompleteInfo = location.pathname === '/complete-info';
   setDefaultOptions({ locale: es });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [initialMedicValues, setInitialMedicValues] = useState(null);
@@ -60,22 +63,29 @@ const MedicInfoForm = () => {
           return;
         }
 
-        const res = await axios.get('http://localhost:3000/api/v1/medic-info', {
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await fetch('http://localhost:3000/api/v1/medic-info', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
-        if (res.status === 200) {
-          const medicData = {
-            registry: res?.data?.registry || '',
-            speciality: res?.data?.speciality || [],
-            days: res?.data?.days || [],
-            checkIn: res?.data?.checkIn || '',
-            checkOut: res?.data?.checkOut || '',
-          };
-          setInitialMedicValues(medicData);
-          form.reset(medicData);
-          setFieldDisabled(true);
+        if (!res.ok) {
+          throw new Error('Error en la solicitud');
         }
+
+        const data = await res.json();
+
+        const medicData = {
+          registry: data?.registry || '',
+          speciality: data?.speciality || [],
+          days: data?.days || [],
+          checkIn: data?.checkIn || '',
+          checkOut: data?.checkOut || '',
+        };
+
+        setInitialMedicValues(medicData);
+        form.reset(medicData);
+        setFieldDisabled(true);
       } catch (error) {
         console.error(error);
       }
@@ -99,26 +109,33 @@ const MedicInfoForm = () => {
 
       if (!initialMedicValues) {
         // New entry
-        const res = await axios.post(
-          'http://localhost:3000/api/v1/medic-info',
-          values,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const res = await fetch('http://localhost:3000/api/v1/medic-info', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(values),
+        });
 
-        if (res.status === 201) {
-          toast.success('¡Enhorabuena!', {
-            description: 'Información guardada con éxito.',
-          });
-
-          setInitialMedicValues(values);
-          setFieldDisabled(true);
+        if (!res.ok) {
+          const errorData = await res.json();
+          console.log(errorData);
+          throw new Error();
         }
+
+        if (isCompleteInfo) navigate('/');
+
+        toast.success('¡Enhorabuena!', {
+          description: 'Información guardada con éxito.',
+        });
+
+        setInitialMedicValues(values);
+        setFieldDisabled(true);
       } else {
         // Update
 
-        // Taking out the 'registry property
+        // Taking out the 'registry' property
         const { registry, ...rest } = values;
 
         // Compare if the values have changed
@@ -134,25 +151,27 @@ const MedicInfoForm = () => {
           return;
         }
 
-        const res = await axios.patch(
-          'http://localhost:3000/api/v1/user-info',
-          ...rest,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const res = await fetch('http://localhost:3000/api/v1/user-info', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(rest),
+        });
 
-        if (res.status === 200) {
-          toast.success('¡Enhorabuena!', {
-            description: 'Información actualizada con éxito.',
-          });
-
-          // Set new current values after editing
-          setInitialMedicValues(currentValues);
+        if (!res.ok) {
+          throw new Error('Error en la solicitud');
         }
+
+        toast.success('¡Enhorabuena!', {
+          description: 'Información actualizada con éxito.',
+        });
+
+        // Set new current values after editing
+        setInitialMedicValues(currentValues);
       }
     } catch (error) {
-      console.error(error);
       toast.error('Oops...', {
         description: 'Error al guardar la información.',
       });
@@ -290,7 +309,7 @@ const MedicInfoForm = () => {
                   </FormControl>
                   <SelectContent>
                     {Array.from({ length: 12 }).map((_, i) => {
-                      const hour = i + 8; // Comenzando desde las 08:00
+                      const hour = i + 8; // Start from 08:00
                       const formattedHour =
                         hour < 10 ? `0${hour}:00` : `${hour}:00`;
                       return (
@@ -325,7 +344,7 @@ const MedicInfoForm = () => {
                   </FormControl>
                   <SelectContent>
                     {Array.from({ length: 12 }).map((_, i) => {
-                      const hour = i + 8; // Comenzando desde las 08:00
+                      const hour = i + 8; // Start from 08:00
                       const formattedHour =
                         hour < 10 ? `0${hour}:00` : `${hour}:00`;
                       return (

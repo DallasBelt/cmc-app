@@ -1,13 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import {
-  CalendarDays,
-  ChartLine,
-  House,
-  LogOut,
-  Pill,
-  User2,
-  Users2,
-} from 'lucide-react';
+import { CalendarDays, House, LogOut, Pill, User2, Users2 } from 'lucide-react';
 
 import {
   NavigationMenu,
@@ -123,7 +115,7 @@ const NavMenu = ({ onLinkClick }) => {
             }
             onClick={onLinkClick}
           >
-            <ChartLine size={24} className='me-2 inline md:hidden' />
+            <CalendarDays size={24} className='me-2 inline md:hidden' />
             Estadísticas
           </NavLink>
         </NavigationMenuItem>
