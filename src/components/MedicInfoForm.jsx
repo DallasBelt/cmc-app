@@ -124,14 +124,18 @@ const MedicInfoForm = () => {
           throw new Error();
         }
 
-        if (isCompleteInfo) navigate('/');
-
         toast.success('¡Enhorabuena!', {
           description: 'Información guardada con éxito.',
         });
 
         setInitialMedicValues(values);
         setFieldDisabled(true);
+
+        if (isCompleteInfo) {
+          setTimeout(() => {
+            navigate('/');
+          }, 2000);
+        }
       } else {
         // Update
 

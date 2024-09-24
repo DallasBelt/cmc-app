@@ -31,36 +31,43 @@ export function Scheduler() {
     setDialogState(true);
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       // Check auth
-  //       const token = sessionStorage.getItem('token');
-  //       if (!token) {
-  //         toast.error('Oops!', {
-  //           description: 'Error de autenticación.',
-  //         });
-  //         return;
-  //       }
+  // Hook useAppointments
 
-  //       // Get request to find all patients
-  //       const res = await axios.get('http://localhost:3000/api/v1/patient', {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       });
+  const fetchEvents = async () => {
+    const token = sessionStorage.getItem('token');
+    const res = await fetch('http://localhost:3000/api/v1/appointment', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  //       if (res.status === 200) {
-  //         const formattedData = res.data.data.map((patient) => ({
-  //           key: patient.id,
-  //           value: `${patient.firstName} ${patient.lastName}`,
-  //         }));
-  //         setSearchData(formattedData);
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [dialogState]);
+    const data = await res.json();
+
+    return data.data;
+  };
+
+  const getData = async () => {
+    const data = await fetchEvents();
+    const finalData = [];
+    data?.map((e) => {
+      const temp = {
+        title: `${e.patient.firstName} ${e.patient.lastName}`,
+        start: `${e.startTime}`,
+        end: `${e.endTime}`,
+      };
+
+      finalData.push(temp);
+    });
+
+    setEvents(finalData);
+  };
+
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    getData();
+  }, [getData]);
 
   const dayCellClassNames = () => 'cursor-pointer';
 
@@ -77,18 +84,7 @@ export function Scheduler() {
           right: 'dayGridMonth,timeGridWeek,timeGridDay',
         }}
         weekends={true}
-        events={[
-          {
-            title: 'Diego Lascano',
-            start: '2024-08-29T10:00:00',
-            end: '2024-08-29T11:00:00',
-          },
-          {
-            title: 'Elvia Correa',
-            start: '2024-08-24T12:00:00',
-            end: '2024-08-24T12:30:00',
-          },
-        ]}
+        events={events}
         eventContent={renderEventContent}
         dateClick={handleDateClick}
         slotMinTime='07:00:00'

@@ -75,7 +75,7 @@ export function DataTable({ columns, data }) {
   return (
     <>
       <div className='flex flex-col gap-5'>
-        <div className='flex justify-between items-center'>
+        <div className='flex flex-col gap-2.5 md:flex-row md:justify-between md:items-center'>
           <Input
             placeholder='Buscar...'
             value={globalFilter}
@@ -84,7 +84,7 @@ export function DataTable({ columns, data }) {
           />
 
           <div className='text-sm text-muted-foreground'>
-            {table.getFilteredRowModel().rows.length} registros
+            {table.getFilteredRowModel().rows.length} registros en total
           </div>
         </div>
 

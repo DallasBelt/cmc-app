@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
-import { format, formatISO, parse, setDefaultOptions } from 'date-fns';
+import { format, parse, setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { RotatingLines } from 'react-loader-spinner';
 import { toast } from 'sonner';
@@ -31,7 +30,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { CalendarDots } from '@phosphor-icons/react';
+import { CalendarDays } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { newAppointmentSchema } from '@/utils/formSchema';
@@ -59,49 +58,7 @@ const AppointmentForm = () => {
     },
   });
 
-  // useEffect(() => {
-  //   const fetchInfo = async () => {
-  //     try {
-  //       // Check auth
-  //       const token = sessionStorage.getItem('token');
-  //       if (!token) {
-  //         toast.error('Oops!', {
-  //           description: 'Error de autenticación.',
-  //         });
-
-  //         return;
-  //       }
-
-  //       // Axios get request
-  //       const res = await axios.get('http://localhost:3000/api/v1/user-info', {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       });
-
-  //       // Create userData object
-  //       if (res.status === 200) {
-  //         const userData = {
-  //           firstName: res?.data?.firstName || '',
-  //           lastName: res?.data?.lastName || '',
-  //           dniType: res?.data?.dniType || '',
-  //           dni: res?.data?.dni || '',
-  //           dob: res?.data?.dob ? new Date(res?.data?.dob) : null,
-  //           phone: res?.data?.phone || '',
-  //           address: res?.data?.address || '',
-  //         };
-
-  //         setInitialUserValues(userData);
-  //         form.reset(userData); // Load data in the form fields
-  //         setFieldDisabled(true);
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-  //   fetchInfo();
-  // }, [form]);
-
   const onSubmit = async (values) => {
-    console.log(values);
     try {
       setIsSubmitting(true);
 
@@ -116,30 +73,62 @@ const AppointmentForm = () => {
 
       const appointment = {
         startTime: format(
-          parse(values.startTime, 'HH:mm', new Date()),
+          parse(
+            format(
+              parse(
+                new Date(values.date).toISOString().split('T')[0],
+                'yyyy-MM-dd',
+                new Date()
+              ),
+              'dd-MM-yyyy'
+            ) +
+              ' ' +
+              values.startTime,
+            'dd-MM-yyyy HH:mm',
+            new Date()
+          ),
           'dd-MM-yyyy HH:mm:ss'
         ),
+
         endTime: format(
-          parse(values.endTime, 'HH:mm', new Date()),
+          parse(
+            format(
+              parse(
+                new Date(values.date).toISOString().split('T')[0],
+                'yyyy-MM-dd',
+                new Date()
+              ),
+              'dd-MM-yyyy'
+            ) +
+              ' ' +
+              values.endTime,
+            'dd-MM-yyyy HH:mm',
+            new Date()
+          ),
           'dd-MM-yyyy HH:mm:ss'
         ),
         patientId: values.patient,
         medicId,
       };
 
-      const res = await axios.post(
-        'http://localhost:3000/api/v1/appointment',
-        appointment,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await fetch('http://localhost:3000/api/v1/appointment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(appointment),
+      });
 
-      if (res.status === 200) {
-        toast.success('¡Enhorabuena!', {
-          description: 'Cita creada con éxito.',
-        });
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.log(errorData);
+        throw new Error('Error creating appointment');
       }
+
+      toast.success('¡Enhorabuena!', {
+        description: 'Cita creada con éxito.',
+      });
     } catch (error) {
       console.error(error);
       toast.error('Oops...', {
@@ -191,10 +180,7 @@ const AppointmentForm = () => {
                         ) : (
                           <span>Seleccionar...</span>
                         )}
-                        <CalendarDots
-                          weight='bold'
-                          className='ml-auto h-4 w-4 opacity-50'
-                        />
+                        <CalendarDays className='ml-auto h-4 w-4 opacity-50' />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
