@@ -39,3 +39,9 @@ export const useDateStore = create((set) => ({
   date: '',
   setDate: (date) => set({ date: date }),
 }));
+
+// New appointment dialog store
+export const useNewAppointmentDialogStore = create((set) => ({
+  dialogState: false,
+  setDialogState: (state) => set({ dialogState: state }),
+}));

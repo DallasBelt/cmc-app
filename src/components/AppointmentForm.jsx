@@ -35,14 +35,19 @@ import { CalendarDays } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { newAppointmentSchema } from '@/utils/formSchema';
 import { useDateStore, useStartTimeStore } from '@/store/store';
+import { useNewAppointmentDialogStore } from '@/store/store';
 
 import SearchPatients from '@/components/SearchPatients';
 
 const AppointmentForm = () => {
-  const medicId = sessionStorage.getItem('id');
   setDefaultOptions({ locale: es });
+
+  const medicId = sessionStorage.getItem('id');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [patientId, setPatientId] = useState(null);
+  const setDialogState = useNewAppointmentDialogStore(
+    (state) => state.setDialogState
+  );
 
   const date = useDateStore((state) => state.date);
   const startTime = useStartTimeStore((state) => state.startTime);
@@ -73,37 +78,20 @@ const AppointmentForm = () => {
 
       const appointment = {
         startTime: format(
-          parse(
-            format(
-              parse(
-                new Date(values.date).toISOString().split('T')[0],
-                'yyyy-MM-dd',
-                new Date()
-              ),
-              'dd-MM-yyyy'
-            ) +
-              ' ' +
-              values.startTime,
-            'dd-MM-yyyy HH:mm',
-            new Date()
+          new Date(
+            values.date.setHours(
+              values.startTime.split(':')[0],
+              values.startTime.split(':')[1]
+            )
           ),
           'dd-MM-yyyy HH:mm:ss'
         ),
-
         endTime: format(
-          parse(
-            format(
-              parse(
-                new Date(values.date).toISOString().split('T')[0],
-                'yyyy-MM-dd',
-                new Date()
-              ),
-              'dd-MM-yyyy'
-            ) +
-              ' ' +
-              values.endTime,
-            'dd-MM-yyyy HH:mm',
-            new Date()
+          new Date(
+            values.date.setHours(
+              values.endTime.split(':')[0],
+              values.endTime.split(':')[1]
+            )
           ),
           'dd-MM-yyyy HH:mm:ss'
         ),
@@ -126,6 +114,7 @@ const AppointmentForm = () => {
         throw new Error('Error creating appointment');
       }
 
+      setDialogState(false);
       toast.success('¡Enhorabuena!', {
         description: 'Cita creada con éxito.',
       });

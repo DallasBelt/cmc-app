@@ -16,19 +16,30 @@ import {
 
 import AppointmentForm from '@/components/AppointmentForm';
 import { useStartTimeStore, useDateStore } from '@/store/store';
+import { useNewAppointmentDialogStore } from '@/store/store';
 
 export function Scheduler() {
   setDefaultOptions({ locale: es });
 
-  const [dialogState, setDialogState] = useState(false);
-
+  const dialogState = useNewAppointmentDialogStore(
+    (state) => state.dialogState
+  );
+  const setDialogState = useNewAppointmentDialogStore(
+    (state) => state.setDialogState
+  );
   const setStartTime = useStartTimeStore((state) => state.setStartTime);
   const setDate = useDateStore((state) => state.setDate);
 
+  // Clicking on a date in the calendar
   const handleDateClick = (arg) => {
     setDate(arg.date);
     setStartTime(format(arg.date, 'HH:mm'));
     setDialogState(true);
+  };
+
+  // Clicking on an event in the calendar
+  const handleEventClick = (info) => {
+    console.log('hey');
   };
 
   // Hook useAppointments
@@ -69,8 +80,6 @@ export function Scheduler() {
     getData();
   }, [getData]);
 
-  const dayCellClassNames = () => 'cursor-pointer';
-
   return (
     <div>
       <FullCalendar
@@ -84,18 +93,18 @@ export function Scheduler() {
           right: 'dayGridMonth,timeGridWeek,timeGridDay',
         }}
         weekends={true}
+        firstDay={1}
         events={events}
+        eventClick={handleEventClick}
         eventContent={renderEventContent}
-        dateClick={handleDateClick}
+        // dateClick={handleDateClick}
         slotMinTime='07:00:00'
         slotMaxTime='19:30:00'
         height='auto'
-        firstDay={1}
         hiddenDays={[0]}
         validRange={{
           start: startOfToday(),
         }}
-        dayCellClassNames={dayCellClassNames}
       />
 
       {dialogState && (
