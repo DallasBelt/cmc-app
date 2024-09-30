@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
 import { format, setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { RotatingLines } from 'react-loader-spinner';
@@ -75,27 +74,32 @@ const UserInfoForm = () => {
           return;
         }
 
-        // Axios get request
-        const res = await axios.get('http://localhost:3000/api/v1/user-info', {
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await fetch('http://localhost:3000/api/v1/user-info', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
-        // Create userData object
-        if (res.status === 200) {
-          const userData = {
-            firstName: res?.data?.firstName || '',
-            lastName: res?.data?.lastName || '',
-            dniType: res?.data?.dniType || '',
-            dni: res?.data?.dni || '',
-            dob: res?.data?.dob ? new Date(res?.data?.dob) : null,
-            phone: res?.data?.phone || '',
-            address: res?.data?.address || '',
-          };
-
-          setInitialUserValues(userData);
-          form.reset(userData); // Load data in the form fields
-          setFieldDisabled(true);
+        if (!res.ok) {
+          throw new Error('Error fetching user info');
         }
+
+        const data = await res.json();
+
+        // Create userData object
+        const userData = {
+          firstName: data?.firstName || '',
+          lastName: data?.lastName || '',
+          dniType: data?.dniType || '',
+          dni: data?.dni || '',
+          dob: data?.dob ? new Date(data?.dob) : null,
+          phone: data?.phone || '',
+          address: data?.address || '',
+        };
+
+        setInitialUserValues(userData);
+        form.reset(userData); // Load data in the form fields
+        setFieldDisabled(true);
       } catch (error) {
         console.error(error);
       }
@@ -131,45 +135,53 @@ const UserInfoForm = () => {
           return;
         }
 
-        const res = await axios.patch(
-          'http://localhost:3000/api/v1/user-info',
-          { ...values, dob: format(values.dob, 'dd-MM-yyyy') },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        // If data has changed, make the HTTP patch request
+        const res = await fetch('http://localhost:3000/api/v1/user-info', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            ...values,
+            dob: format(values.dob, 'dd-MM-yyyy'),
+          }),
+        });
 
-        if (res.status === 200) {
-          toast.success('¡Enhorabuena!', {
-            description: 'Información actualizada con éxito.',
-          });
-
-          // Set new current values after editing
-          setInitialUserValues(currentValues);
+        if (!res.ok) {
+          throw new Error('Error fetching user info');
         }
+
+        toast.success('¡Enhorabuena!', {
+          description: 'Información actualizada con éxito.',
+        });
+
+        // Set new current values after editing
+        setInitialUserValues(currentValues);
       } else {
         // New entry
-        const res = await axios.post(
-          'http://localhost:3000/api/v1/user-info',
-          { ...values, dob: format(values.dob, 'dd-MM-yyyy') },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const res = await fetch('http://localhost:3000/api/v1/user-info', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            ...values,
+            dob: format(values.dob, 'dd-MM-yyyy'),
+          }),
+        });
 
-        if (res.status === 201) {
-          toast.success('¡Enhorabuena!', {
-            description: 'Información guardada con éxito.',
-          });
-
-          setInitialUserValues(values);
-          setFieldDisabled(true);
-
-          if (isCompleteInfo) {
-            setTabValue(role === 'medic' ? 'medicInfo' : 'assistantInfo');
-            setTabDisabled(true);
-          }
+        if (!res.ok) {
+          throw new Error('Error fetching user info');
         }
+
+        toast.success('¡Enhorabuena!', {
+          description: 'Información guardada con éxito.',
+        });
+
+        setInitialUserValues(values);
+        setFieldDisabled(true);
       }
     } catch (error) {
       console.error(error);

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-export const getPatients = async () => {
+export const fetchData = async () => {
   try {
     // HTTP request
-    const response = await fetch('http://localhost:3000/api/v1/patient', {
+    const res = await fetch('http://localhost:3000/api/v1/patient', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -12,12 +12,12 @@ export const getPatients = async () => {
     });
 
     // Check for HTTP response errors
-    if (!response.ok) {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    if (!res.ok) {
+      throw new Error(`Error ${res.status}: ${res.statusText}`);
     }
 
     // Convert to JSON
-    const data = await response.json();
+    const data = await res.json();
     return data;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -30,11 +30,11 @@ export const usePatients = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getPatients().then((data) => {
+    fetchData().then((data) => {
       setPatients(data.data);
       setLoading(false);
     });
-  }, [getPatients]);
+  }, [fetchData]);
 
   return { patients, loading };
 };

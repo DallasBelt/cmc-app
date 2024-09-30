@@ -6,7 +6,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import { format, setDefaultOptions, startOfToday } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { toast } from 'sonner';
 
+import { useTheme } from '@/components/theme-provider';
 import {
   Dialog,
   DialogContent,
@@ -20,6 +22,7 @@ import { useNewAppointmentDialogStore } from '@/store/store';
 
 export function Scheduler() {
   setDefaultOptions({ locale: es });
+  const { effectiveTheme } = useTheme();
 
   const dialogState = useNewAppointmentDialogStore(
     (state) => state.dialogState
@@ -27,8 +30,11 @@ export function Scheduler() {
   const setDialogState = useNewAppointmentDialogStore(
     (state) => state.setDialogState
   );
+
   const setStartTime = useStartTimeStore((state) => state.setStartTime);
   const setDate = useDateStore((state) => state.setDate);
+
+  const [events, setEvents] = useState([]);
 
   // Clicking on a date in the calendar
   const handleDateClick = (arg) => {
@@ -42,25 +48,44 @@ export function Scheduler() {
     console.log('hey');
   };
 
-  // Hook useAppointments
+  // Fetch appointments from the database
+  const fetchData = async () => {
+    try {
+      // Check auth
+      const token = sessionStorage.getItem('token');
+      if (!token) {
+        console.error('Authentication error');
+        toast.error('Oops!', {
+          description: 'Error de autenticación.',
+        });
+        return;
+      }
 
-  const fetchEvents = async () => {
-    const token = sessionStorage.getItem('token');
-    const res = await fetch('http://localhost:3000/api/v1/appointment', {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      // API call
+      const res = await fetch('http://localhost:3000/api/v1/appointment', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const data = await res.json();
+      if (!res.ok) {
+        console.error('Request error:', res.statusText);
+        return;
+      }
 
-    return data.data;
+      const data = await res.json();
+      return data.data;
+    } catch (error) {
+      toast.error('Oops...', {
+        description: 'Error en la solicitud.',
+      });
+    }
   };
 
   const getData = async () => {
-    const data = await fetchEvents();
-    const finalData = [];
+    const data = await fetchData();
+    const appointments = [];
     data?.map((e) => {
       const temp = {
         title: `${e.patient.firstName} ${e.patient.lastName}`,
@@ -68,20 +93,23 @@ export function Scheduler() {
         end: `${e.endTime}`,
       };
 
-      finalData.push(temp);
+      appointments.push(temp);
     });
 
-    setEvents(finalData);
+    return appointments;
   };
 
-  const [events, setEvents] = useState([]);
-
   useEffect(() => {
-    getData();
-  }, [getData]);
+    const fetchEvents = async () => {
+      const appointments = await getData();
+      setEvents(appointments);
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
-    <div>
+    <div className={effectiveTheme === 'dark' ? 'dark' : ''}>
       <FullCalendar
         locale={esLocale}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -97,7 +125,8 @@ export function Scheduler() {
         events={events}
         eventClick={handleEventClick}
         eventContent={renderEventContent}
-        // dateClick={handleDateClick}
+        eventClassNames={() => 'cursor-pointer'}
+        dateClick={handleDateClick}
         slotMinTime='07:00:00'
         slotMaxTime='19:30:00'
         height='auto'

@@ -67,3 +67,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .dark .fc-col-header-cell,
+  .dark .fc-timegrid-axis {
+    background-color: #020817;
+    color: #ffffff;
+  }
+}

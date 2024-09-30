@@ -1,7 +1,6 @@
 import { RotatingLines } from 'react-loader-spinner';
 
 import { DataTable } from '@/components/DataTable';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import NewPatientDialog from '@/components/NewPatientDialog';
 import { patientsColumns } from '@/config/patientsColumns';
@@ -10,7 +9,7 @@ import { usePatients } from '@/hooks/usePatients';
 const Patients = () => {
   const { patients, loading } = usePatients();
 
-  // Filters only the authenticated medic's patients
+  // Show only the patients of the authenticated medic
   const data = patients
     ? patients.filter(
         (patient) => patient.medic.id === sessionStorage.getItem('id')

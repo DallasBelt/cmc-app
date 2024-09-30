@@ -3,7 +3,6 @@ import { Navigate } from 'react-router-dom';
 
 import { toast } from 'sonner';
 import { RotatingLines } from 'react-loader-spinner';
-import { set } from 'date-fns';
 
 // Allow navigation if there's an auth token; redirect to the login page otherwise
 export const PrivateRoute = ({ children }) => {
