@@ -8,6 +8,8 @@ import { format, setDefaultOptions, startOfToday } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { toast } from 'sonner';
 
+import { Pencil, X } from 'lucide-react';
+
 import { useTheme } from '@/components/theme-provider';
 import {
   Dialog,
@@ -15,20 +17,37 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
 
 import AppointmentForm from '@/components/AppointmentForm';
 import { useStartTimeStore, useDateStore } from '@/store/store';
-import { useNewAppointmentDialogStore } from '@/store/store';
+import {
+  useEventDropdownStore,
+  useNewAppointmentDialogStore,
+} from '@/store/store';
 
 export function Scheduler() {
   setDefaultOptions({ locale: es });
   const { effectiveTheme } = useTheme();
+
+  const token = sessionStorage.getItem('token');
+  const role = sessionStorage.getItem('roles');
 
   const dialogState = useNewAppointmentDialogStore(
     (state) => state.dialogState
   );
   const setDialogState = useNewAppointmentDialogStore(
     (state) => state.setDialogState
+  );
+
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const dropdownState = useEventDropdownStore((state) => state.dropdownState);
+  const setDropdownState = useEventDropdownStore(
+    (state) => state.setDropdownState
   );
 
   const setStartTime = useStartTimeStore((state) => state.setStartTime);
@@ -38,21 +57,73 @@ export function Scheduler() {
 
   // Clicking on a date in the calendar
   const handleDateClick = (arg) => {
-    setDate(arg.date);
-    setStartTime(format(arg.date, 'HH:mm'));
-    setDialogState(true);
+    if (role === 'medic') {
+      setDate(arg.date);
+      setStartTime(format(arg.date, 'HH:mm'));
+      setDialogState(true);
+    } else {
+      return;
+    }
   };
 
   // Clicking on an event in the calendar
-  const handleEventClick = (info) => {
-    console.log('hey');
+  const handleEventClick = async (info) => {
+    // if (isAssistant) {
+
+    // }
+    setDropdownState(true);
+    setMenuPosition({ top: info.jsEvent.clientY, left: info.jsEvent.clientX });
+    const appointment = {
+      patient: info.event.title,
+      date: info.event.start,
+      startTime: info.event.start,
+      endTime: info.event.end,
+    };
+    // try {
+    //   // Check auth
+    //   if (!token) {
+    //     console.error('Authentication error');
+    //     toast.error('Oops!', {
+    //       description: 'Error de autenticación.',
+    //     });
+    //     return;
+    //   }
+
+    //   // API call
+    //   const res = await fetch(
+    //     `http://localhost:3000/api/v1/appointment/${info.event.id}`,
+    //     {
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //     }
+    //   );
+
+    //   if (!res.ok) {
+    //     console.error('Request error:', res.statusText);
+    //     return;
+    //   }
+
+    //   const data = await res.json();
+    //   // const appointment = {
+    //   //   patient: `${e.patient.firstName} ${e.patient.lastName}`,
+    //   //   date: data.date,
+    //   //   startTime: data.startTime,
+    //   //   endTime: data.endTime,
+    //   // }
+    //   // return data;
+    // } catch (error) {
+    //   toast.error('Oops...', {
+    //     description: 'Error en la solicitud.',
+    //   });
+    // }
   };
 
   // Fetch appointments from the database
   const fetchData = async () => {
     try {
       // Check auth
-      const token = sessionStorage.getItem('token');
       if (!token) {
         console.error('Authentication error');
         toast.error('Oops!', {
@@ -88,6 +159,7 @@ export function Scheduler() {
     const appointments = [];
     data?.map((e) => {
       const temp = {
+        id: e.id,
         title: `${e.patient.firstName} ${e.patient.lastName}`,
         start: `${e.startTime}`,
         end: `${e.endTime}`,
@@ -106,7 +178,7 @@ export function Scheduler() {
     };
 
     fetchEvents();
-  }, []);
+  }, [dialogState]);
 
   return (
     <div className={effectiveTheme === 'dark' ? 'dark' : ''}>
@@ -151,6 +223,27 @@ export function Scheduler() {
             <AppointmentForm />
           </DialogContent>
         </Dialog>
+      )}
+
+      {dropdownState && (
+        <DropdownMenu open={dropdownState} onOpenChange={setDropdownState}>
+          <DropdownMenuContent
+            style={{
+              position: 'absolute',
+              top: menuPosition.top,
+              left: menuPosition.left,
+            }}
+          >
+            <DropdownMenuItem className='cursor-pointer'>
+              <Pencil size={16} className='me-2' />
+              Editar
+            </DropdownMenuItem>
+            <DropdownMenuItem className='cursor-pointer'>
+              <X size={16} className='me-2' />
+              Cancelar
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
     </div>
   );

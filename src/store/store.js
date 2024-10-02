@@ -45,3 +45,9 @@ export const useNewAppointmentDialogStore = create((set) => ({
   dialogState: false,
   setDialogState: (state) => set({ dialogState: state }),
 }));
+
+// Event dropdown store
+export const useEventDropdownStore = create((set) => ({
+  dropdownState: false,
+  setDropdownState: (state) => set({ dropdownState: state }),
+}));
