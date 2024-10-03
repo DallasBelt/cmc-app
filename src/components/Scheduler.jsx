@@ -1,16 +1,30 @@
 import { useEffect, useState } from 'react';
+
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
+
 import { format, setDefaultOptions, startOfToday } from 'date-fns';
 import { es } from 'date-fns/locale';
+
 import { toast } from 'sonner';
 
-import { Pencil, X } from 'lucide-react';
+import { Pencil, Trash, X } from 'lucide-react';
 
-import { useTheme } from '@/components/theme-provider';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -23,7 +37,10 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 
+import { useTheme } from '@/components/theme-provider';
 import AppointmentForm from '@/components/AppointmentForm';
+
+// Zustand states
 import { useStartTimeStore, useDateStore } from '@/store/store';
 import {
   useEventDropdownStore,
@@ -31,8 +48,8 @@ import {
 } from '@/store/store';
 
 export function Scheduler() {
-  setDefaultOptions({ locale: es });
-  const { effectiveTheme } = useTheme();
+  setDefaultOptions({ locale: es }); // FullCalendar language
+  const { effectiveTheme } = useTheme(); // App theme
 
   const token = sessionStorage.getItem('token');
   const role = sessionStorage.getItem('roles');
@@ -54,6 +71,8 @@ export function Scheduler() {
   const setDate = useDateStore((state) => state.setDate);
 
   const [events, setEvents] = useState([]);
+  const [appointmentId, setAppointmentId] = useState(null);
+  const [appointmentStatus, setAppointmentStatus] = useState({});
 
   // Clicking on a date in the calendar
   const handleDateClick = (arg) => {
@@ -79,45 +98,50 @@ export function Scheduler() {
       startTime: info.event.start,
       endTime: info.event.end,
     };
-    // try {
-    //   // Check auth
-    //   if (!token) {
-    //     console.error('Authentication error');
-    //     toast.error('Oops!', {
-    //       description: 'Error de autenticación.',
-    //     });
-    //     return;
-    //   }
+    setAppointmentId(info.event.id);
+    setAppointmentStatus(info.event.extendedProps.status);
+  };
 
-    //   // API call
-    //   const res = await fetch(
-    //     `http://localhost:3000/api/v1/appointment/${info.event.id}`,
-    //     {
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     }
-    //   );
+  const handleCancelAppointment = async () => {
+    try {
+      // Check auth
+      if (!token) {
+        console.error('Authentication error');
+        toast.error('Oops!', {
+          description: 'Error de autenticación.',
+        });
+        return;
+      }
 
-    //   if (!res.ok) {
-    //     console.error('Request error:', res.statusText);
-    //     return;
-    //   }
+      // API call
+      const res = await fetch(
+        `http://localhost:3000/api/v1/appointment/${appointmentId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ status: 'canceled' }),
+        }
+      );
 
-    //   const data = await res.json();
-    //   // const appointment = {
-    //   //   patient: `${e.patient.firstName} ${e.patient.lastName}`,
-    //   //   date: data.date,
-    //   //   startTime: data.startTime,
-    //   //   endTime: data.endTime,
-    //   // }
-    //   // return data;
-    // } catch (error) {
-    //   toast.error('Oops...', {
-    //     description: 'Error en la solicitud.',
-    //   });
-    // }
+      if (!res.ok) {
+        console.error('Request error:', res.statusText);
+        return;
+      }
+
+      setAppointmentStatus('canceled');
+
+      toast.success('¡Enhorabuena!', {
+        description: 'La cita ha sido cancelada.',
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error('Oops...', {
+        description: 'Error en la solicitud.',
+      });
+    }
   };
 
   // Fetch appointments from the database
@@ -161,8 +185,11 @@ export function Scheduler() {
       const temp = {
         id: e.id,
         title: `${e.patient.firstName} ${e.patient.lastName}`,
-        start: `${e.startTime}`,
-        end: `${e.endTime}`,
+        start: e.startTime,
+        end: e.endTime,
+        extendedProps: {
+          status: e.status,
+        },
       };
 
       appointments.push(temp);
@@ -228,20 +255,128 @@ export function Scheduler() {
       {dropdownState && (
         <DropdownMenu open={dropdownState} onOpenChange={setDropdownState}>
           <DropdownMenuContent
+            align='end'
+            className='flex flex-col'
             style={{
               position: 'absolute',
               top: menuPosition.top,
               left: menuPosition.left,
             }}
           >
-            <DropdownMenuItem className='cursor-pointer'>
+            <DropdownMenuItem
+              className='cursor-pointer'
+              onSelect={(e) => {
+                e.preventDefault();
+                setDialogState(true);
+              }}
+            >
               <Pencil size={16} className='me-2' />
               Editar
             </DropdownMenuItem>
-            <DropdownMenuItem className='cursor-pointer'>
-              <X size={16} className='me-2' />
-              Cancelar
-            </DropdownMenuItem>
+
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <DropdownMenuItem
+                  className={'cursor-pointer'}
+                  disabled={appointmentStatus === 'canceled'}
+                  onSelect={(e) => {
+                    e.preventDefault();
+                  }}
+                >
+                  <X size={16} className='me-2' />
+                  Cancelar
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+              <AlertDialogContent
+                className='max-w-xl max-h-[80%] overflow-y-auto'
+                onInteractOutside={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <AlertDialogHeader>
+                  <AlertDialogTitle>¿Está seguro?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esto cancelará la cita.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>No, volver</AlertDialogCancel>
+                  <AlertDialogAction
+                    asChild
+                    className='bg-red-600 text-white hover:bg-red-500'
+                  >
+                    <Button onClick={() => handleCancelAppointment()}>
+                      Sí, cancelar
+                      {/* {isSubmitting && (
+                          <span className='ms-2'>
+                            <RotatingLines
+                              visible={true}
+                              height='20'
+                              width='20'
+                              strokeColor='#FFF'
+                              strokeWidth={5}
+                              animationDuration='0.75'
+                              ariaLabel='rotating-lines-loading'
+                            />
+                          </span>
+                        )} */}
+                    </Button>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <DropdownMenuItem
+                  className='cursor-pointer'
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    handleCancelAppointment();
+                  }}
+                >
+                  <Trash size={16} className='me-2' />
+                  Eliminar
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+              <AlertDialogContent
+                className='max-w-xl max-h-[80%] overflow-y-auto'
+                onInteractOutside={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <AlertDialogHeader>
+                  <AlertDialogTitle>¿Está seguro?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esta acción no se puede deshacer.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>No, volver</AlertDialogCancel>
+                  <AlertDialogAction
+                    asChild
+                    className='bg-red-600 text-white hover:bg-red-500'
+                  >
+                    <Button onClick={() => console.log('deleted')}>
+                      Sí, borrar
+                      {/* {isSubmitting && (
+                          <span className='ms-2'>
+                            <RotatingLines
+                              visible={true}
+                              height='20'
+                              width='20'
+                              strokeColor='#FFF'
+                              strokeWidth={5}
+                              animationDuration='0.75'
+                              ariaLabel='rotating-lines-loading'
+                            />
+                          </span>
+                        )} */}
+                    </Button>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </DropdownMenuContent>
         </DropdownMenu>
       )}
