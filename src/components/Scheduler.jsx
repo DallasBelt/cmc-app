@@ -11,7 +11,7 @@ import { es } from 'date-fns/locale';
 
 import { toast } from 'sonner';
 
-import { Pencil, Trash, X } from 'lucide-react';
+import { CalendarCheck2, Pencil, Trash, X } from 'lucide-react';
 
 import {
   AlertDialog,
@@ -61,7 +61,7 @@ export function Scheduler() {
     (state) => state.setDialogState
   );
 
-  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const dropdownState = useEventDropdownStore((state) => state.dropdownState);
   const setDropdownState = useEventDropdownStore(
     (state) => state.setDropdownState
@@ -91,7 +91,10 @@ export function Scheduler() {
 
     // }
     setDropdownState(true);
-    setMenuPosition({ top: info.jsEvent.clientY, left: info.jsEvent.clientX });
+    setDropdownPosition({
+      top: info.jsEvent.clientY,
+      left: info.jsEvent.clientX,
+    });
     const appointment = {
       patient: info.event.title,
       date: info.event.start,
@@ -132,9 +135,51 @@ export function Scheduler() {
       }
 
       setAppointmentStatus('canceled');
+      setDropdownState(false);
 
       toast.success('¡Enhorabuena!', {
         description: 'La cita ha sido cancelada.',
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error('Oops...', {
+        description: 'Error en la solicitud.',
+      });
+    }
+  };
+
+  const handleDeleteAppointment = async () => {
+    try {
+      // Check auth
+      if (!token) {
+        console.error('Authentication error');
+        toast.error('Oops!', {
+          description: 'Error de autenticación.',
+        });
+        return;
+      }
+
+      // API call
+      const res = await fetch(
+        `http://localhost:3000/api/v1/appointment/${appointmentId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        console.error('Request error:', res.statusText);
+        return;
+      }
+
+      setDropdownState(false);
+
+      toast.success('¡Enhorabuena!', {
+        description: 'La cita ha sido eliminada.',
       });
     } catch (error) {
       console.error(error);
@@ -205,7 +250,7 @@ export function Scheduler() {
     };
 
     fetchEvents();
-  }, [dialogState]);
+  }, [dialogState, events]);
 
   return (
     <div className={effectiveTheme === 'dark' ? 'dark' : ''}>
@@ -224,7 +269,18 @@ export function Scheduler() {
         events={events}
         eventClick={handleEventClick}
         eventContent={renderEventContent}
-        eventClassNames={() => 'cursor-pointer'}
+        eventClassNames={(eventInfo) => {
+          // Check the status of the event
+          if (eventInfo.event.extendedProps.status === 'canceled') {
+            return [
+              'bg-red-600',
+              'text-white',
+              'cursor-pointer',
+              'line-through',
+            ];
+          }
+          return ['cursor-pointer'];
+        }}
         dateClick={handleDateClick}
         slotMinTime='07:00:00'
         slotMaxTime='19:30:00'
@@ -259,12 +315,14 @@ export function Scheduler() {
             className='flex flex-col'
             style={{
               position: 'absolute',
-              top: menuPosition.top,
-              left: menuPosition.left,
+              top: dropdownPosition.top,
+              left: dropdownPosition.left,
             }}
           >
             <DropdownMenuItem
-              className='cursor-pointer'
+              className={
+                appointmentStatus === 'canceled' ? 'hidden' : 'cursor-pointer'
+              }
               onSelect={(e) => {
                 e.preventDefault();
                 setDialogState(true);
@@ -278,13 +336,16 @@ export function Scheduler() {
               <AlertDialogTrigger>
                 <DropdownMenuItem
                   className={'cursor-pointer'}
-                  disabled={appointmentStatus === 'canceled'}
                   onSelect={(e) => {
                     e.preventDefault();
                   }}
                 >
-                  <X size={16} className='me-2' />
-                  Cancelar
+                  {appointmentStatus === 'canceled' ? (
+                    <CalendarCheck2 size={16} className='me-2' />
+                  ) : (
+                    <X size={16} className='me-2' />
+                  )}
+                  {appointmentStatus === 'canceled' ? 'Reagendar' : 'Cancelar'}
                 </DropdownMenuItem>
               </AlertDialogTrigger>
               <AlertDialogContent
@@ -332,7 +393,6 @@ export function Scheduler() {
                   className='cursor-pointer'
                   onSelect={(e) => {
                     e.preventDefault();
-                    handleCancelAppointment();
                   }}
                 >
                   <Trash size={16} className='me-2' />
@@ -357,7 +417,7 @@ export function Scheduler() {
                     asChild
                     className='bg-red-600 text-white hover:bg-red-500'
                   >
-                    <Button onClick={() => console.log('deleted')}>
+                    <Button onClick={() => handleDeleteAppointment()}>
                       Sí, borrar
                       {/* {isSubmitting && (
                           <span className='ms-2'>
