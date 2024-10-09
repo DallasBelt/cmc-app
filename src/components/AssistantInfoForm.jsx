@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
 import { setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { RotatingLines } from 'react-loader-spinner';
@@ -19,7 +19,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -28,16 +27,25 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { medicInfoSchema } from '@/utils/formSchema';
+import SearchInput from '@/components/SearchInput';
+import { assistantInfoSchema } from '@/utils/formSchema';
 import { days } from '@/constants/medicInfoConstants';
 
 const AssistantInfoForm = () => {
   setDefaultOptions({ locale: es });
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isCompleteInfo = location.pathname === '/complete-info';
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [initialAssistantValues, setInitialAssistantValues] = useState(null);
+  const [fieldDisabled, setFieldDisabled] = useState(false);
 
   const form = useForm({
-    resolver: zodResolver(medicInfoSchema),
+    resolver: zodResolver(assistantInfoSchema),
     defaultValues: {
+      medic: '',
       days: [],
       checkIn: '',
       checkOut: '',
@@ -45,7 +53,7 @@ const AssistantInfoForm = () => {
   });
 
   useEffect(() => {
-    const fetchMedicInfo = async () => {
+    const fetchAssistantInfo = async () => {
       try {
         // Check auth
         const token = sessionStorage.getItem('token');
@@ -56,105 +64,129 @@ const AssistantInfoForm = () => {
           return;
         }
 
-        const res = await axios.get('http://localhost:3000/api/v1/medic-info', {
-          headers: { Authorization: `Bearer ${token}` },
+        // API call
+        const res = await fetch('http://localhost:3000/api/v1/assistant-info', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
         });
 
-        if (res.status === 200) {
-          const medicData = {
-            registry: res?.data?.registry || '',
-            speciality: res?.data?.speciality || [],
-            days: res?.data?.days || [],
-            checkIn: res?.data?.checkIn || '',
-            checkOut: res?.data?.checkOut || '',
-          };
-          setInitialMedicValues(medicData);
-          form.reset(medicData);
-          setFieldDisabled(true);
+        if (!res.ok) {
+          console.error('Request error:', res.statusText);
+          return;
         }
+
+        const data = await res.json();
+
+        const assistantData = {
+          registry: data?.registry || '',
+          speciality: data?.speciality || [],
+          days: data?.days || [],
+          checkIn: data?.checkIn || '',
+          checkOut: data?.checkOut || '',
+          };
+
+        setInitialMedicValues(assistantData);
+        form.reset(assistantData);
+          setFieldDisabled(true);
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchMedicInfo();
+    fetchAssistantInfo();
   }, [form]);
 
   const onSubmit = async (values) => {
-    try {
-      setIsSubmitting(true);
+    console.log(values);
+    // try {
+    //   setIsSubmitting(true);
 
-      // Check auth
-      const token = sessionStorage.getItem('token');
-      if (!token) {
-        toast.error('Oops!', {
-          description: 'Error de autenticación.',
-        });
-        return;
-      }
+    //   // Check auth
+    //   const token = sessionStorage.getItem('token');
+    //   if (!token) {
+    //     toast.error('Oops!', {
+    //       description: 'Error de autenticación.',
+    //     });
+    //     return;
+    //   }
 
-      if (!initialMedicValues) {
-        // New entry
-        const res = await axios.post(
-          'http://localhost:3000/api/v1/medic-info',
-          values,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+    //   if (!initialAssistantValues) {
+    //     // New entry
+    //     const res = await fetch('http://localhost:3000/api/v1/assistant-info', {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //       body: JSON.stringify(values),
+    //     });
 
-        if (res.status === 201) {
-          toast.success('¡Enhorabuena!', {
-            description: 'Información guardada con éxito.',
-          });
+    //     if (!res.ok) {
+    //       const errorData = await res.json();
+    //       console.log(errorData);
+    //       throw new Error('Error creating assistant info');
+    //     }
 
-          setInitialMedicValues(values);
-          setFieldDisabled(true);
-        }
-      } else {
-        // Update
+    //     toast.success('¡Enhorabuena!', {
+    //       description: 'Información guardada con éxito.',
+    //     });
 
-        // Taking out the 'registry property
-        const { registry, ...rest } = values;
+    //     setInitialAssistantValues(values);
+    //     setFieldDisabled(true);
+    //   } else {
+    //     // Update
 
-        // Compare if the values have changed
-        const currentValues = form.getValues();
+    //     // Taking out the 'registry property
+    //     const { registry, ...rest } = values;
 
-        const hasChanges =
-          JSON.stringify(currentValues) !== JSON.stringify(initialMedicValues);
+    //     // Compare if the values have changed
+    //     const currentValues = form.getValues();
 
-        if (!hasChanges) {
-          toast.warning('Oops!', {
-            description: 'No se detectaron cambios.',
-          });
-          return;
-        }
+    //     const hasChanges =
+    //       JSON.stringify(currentValues) !==
+    //       JSON.stringify(initialAssistantValues);
 
-        const res = await axios.patch(
-          'http://localhost:3000/api/v1/user-info',
-          ...rest,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+    //     if (!hasChanges) {
+    //       toast.warning('Oops!', {
+    //         description: 'No se detectaron cambios.',
+    //       });
+    //       return;
+    //     }
 
-        if (res.status === 200) {
-          toast.success('¡Enhorabuena!', {
-            description: 'Información actualizada con éxito.',
-          });
+    //     const res = await fetch('http://localhost:3000/api/v1/assistant-info', {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //       body: JSON.stringify(rest),
+    //     });
 
-          // Set new current values after editing
-          setInitialMedicValues(currentValues);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('Oops...', {
-        description: 'Error al guardar la información.',
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    //     if (!res.ok) {
+    //       const errorData = await res.json();
+    //       console.log(errorData);
+    //       throw new Error('Error updating assistant info');
+    //     }
+
+    //     if (res.status === 200) {
+    //       toast.success('¡Enhorabuena!', {
+    //         description: 'Información actualizada con éxito.',
+    //       });
+
+    //       // Set new current values after editing
+    //       setInitialAssistantValues(currentValues);
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    //   toast.error('Oops...', {
+    //     description: 'Error al guardar la información.',
+    //   });
+    // } finally {
+    //   setIsSubmitting(false);
+    // }
   };
 
   return (

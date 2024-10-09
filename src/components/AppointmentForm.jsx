@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format, parse, setDefaultOptions } from 'date-fns';
+import { format, setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { RotatingLines } from 'react-loader-spinner';
 import { toast } from 'sonner';
@@ -16,7 +16,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,

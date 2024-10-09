@@ -32,10 +32,12 @@ import { medicInfoSchema } from '@/utils/formSchema';
 import { days, specialties } from '@/constants/medicInfoConstants';
 
 const MedicInfoForm = () => {
+  setDefaultOptions({ locale: es });
+
   const navigate = useNavigate();
   const location = useLocation();
+
   const isCompleteInfo = location.pathname === '/complete-info';
-  setDefaultOptions({ locale: es });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [initialMedicValues, setInitialMedicValues] = useState(null);
   const [fieldDisabled, setFieldDisabled] = useState(false);
