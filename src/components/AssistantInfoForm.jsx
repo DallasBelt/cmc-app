@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import {
   Form,
   FormControl,
@@ -27,9 +28,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import SearchInput from '@/components/SearchInput';
-import { assistantInfoSchema } from '@/utils/formSchema';
-import { days } from '@/constants/medicInfoConstants';
+import { assistantInfoSchema } from '@/utils/assistantSchema';
+import { days } from '@/constants/days';
 
 const AssistantInfoForm = () => {
   setDefaultOptions({ locale: es });
@@ -85,11 +85,11 @@ const AssistantInfoForm = () => {
           days: data?.days || [],
           checkIn: data?.checkIn || '',
           checkOut: data?.checkOut || '',
-          };
+        };
 
-        setInitialMedicValues(assistantData);
+        setInitialAssistantValues(assistantData);
         form.reset(assistantData);
-          setFieldDisabled(true);
+        setFieldDisabled(true);
       } catch (error) {
         console.error(error);
       }
@@ -135,6 +135,12 @@ const AssistantInfoForm = () => {
 
     //     setInitialAssistantValues(values);
     //     setFieldDisabled(true);
+
+    //     if (isCompleteInfo) {
+    //       setTimeout(() => {
+    //         navigate('/');
+    //       }, 2000);
+    //     }
     //   } else {
     //     // Update
 

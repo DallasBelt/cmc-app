@@ -39,7 +39,7 @@ import { CalendarDots } from '@phosphor-icons/react';
 
 import { PhoneInput } from '@/components/PhoneInput';
 
-import { newPatientSchema, editPatientSchema } from '@/utils/formSchema';
+import { newPatientSchema, editPatientSchema } from '@/utils/patientSchema';
 
 import { useNewPatientModalStore } from '@/store/store';
 import { useEditModeStore } from '@/store/store';

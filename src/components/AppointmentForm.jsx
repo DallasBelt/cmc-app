@@ -32,7 +32,7 @@ import {
 import { CalendarDays } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import { newAppointmentSchema } from '@/utils/formSchema';
+import { newAppointmentSchema } from '@/utils/appointmentSchema';
 import { useDateStore, useStartTimeStore } from '@/store/store';
 import { useNewAppointmentDialogStore } from '@/store/store';
 

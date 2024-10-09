@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { toast } from 'sonner';
 
 import { useTheme } from '@/components/theme-provider';
@@ -19,11 +18,20 @@ const fetchPatients = async () => {
       return [];
     }
 
-    const res = await axios.get('http://localhost:3000/api/v1/patient', {
-      headers: { Authorization: `Bearer ${token}` },
+    const res = await fetch('http://localhost:3000/api/v1/patient', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
 
-    return res.data.data;
+    if (!res.ok) {
+      throw new Error('Error reading data');
+    }
+
+    const data = await res.json();
+
+    return data.data;
   } catch (error) {
     console.error(error);
     return [];

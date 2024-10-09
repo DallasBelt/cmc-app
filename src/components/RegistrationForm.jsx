@@ -19,7 +19,7 @@ import { RotatingLines } from 'react-loader-spinner';
 
 import { Eye, EyeSlash, UserPlus } from '@phosphor-icons/react';
 
-import { registrationSchema } from '@/utils/formSchema';
+import { registrationSchema } from '@/utils/registrationSchema';
 import { useRegistrationStore } from '@/store/store';
 
 const RegistrationForm = () => {

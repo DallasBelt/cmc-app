@@ -28,8 +28,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { medicInfoSchema } from '@/utils/formSchema';
-import { days, specialties } from '@/constants/medicInfoConstants';
+import { medicInfoSchema } from '@/utils/medicSchema';
+import { days } from '@/constants/days';
+import { specialties } from '@/constants/specialties';
 
 const MedicInfoForm = () => {
   setDefaultOptions({ locale: es });

@@ -20,7 +20,7 @@ import { RotatingLines } from 'react-loader-spinner';
 
 import { Eye, EyeSlash } from '@phosphor-icons/react';
 
-import { loginSchema } from '@/utils/formSchema';
+import { loginSchema } from '@/utils/loginSchema';
 import { useToastStore } from '@/store/store';
 
 const LoginForm = () => {
