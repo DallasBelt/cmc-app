@@ -105,7 +105,7 @@ export function Scheduler() {
     setAppointmentStatus(info.event.extendedProps.status);
   };
 
-  const handleCancelAppointment = async () => {
+  const handleAppointmentStatus = async () => {
     try {
       // Check auth
       if (!token) {
@@ -116,6 +116,9 @@ export function Scheduler() {
         return;
       }
 
+      const newAppointmentStatus =
+        appointmentStatus === 'pending' ? 'canceled' : 'pending';
+
       // API call
       const res = await fetch(
         `http://localhost:3000/api/v1/appointment/${appointmentId}`,
@@ -125,7 +128,7 @@ export function Scheduler() {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ status: 'canceled' }),
+          body: JSON.stringify({ status: newAppointmentStatus }),
         }
       );
 
@@ -134,11 +137,13 @@ export function Scheduler() {
         return;
       }
 
-      setAppointmentStatus('canceled');
+      setAppointmentStatus(newAppointmentStatus);
       setDropdownState(false);
 
       toast.success('¡Enhorabuena!', {
-        description: 'La cita ha sido cancelada.',
+        description: `La cita ha sido ${
+          newAppointmentStatus === 'canceled' ? 'cancelada' : 'reagendada'
+        }.`,
       });
     } catch (error) {
       console.error(error);
@@ -225,6 +230,7 @@ export function Scheduler() {
 
   const getData = async () => {
     const data = await fetchData();
+    console.log(data);
     const appointments = [];
     data?.map((e) => {
       const temp = {
@@ -250,7 +256,7 @@ export function Scheduler() {
     };
 
     fetchEvents();
-  }, [dialogState, events]);
+  }, [appointmentStatus]);
 
   return (
     <div className={effectiveTheme === 'dark' ? 'dark' : ''}>
@@ -272,12 +278,7 @@ export function Scheduler() {
         eventClassNames={(eventInfo) => {
           // Check the status of the event
           if (eventInfo.event.extendedProps.status === 'canceled') {
-            return [
-              'bg-red-600',
-              'text-white',
-              'cursor-pointer',
-              'line-through',
-            ];
+            return ['bg-red-600', 'cursor-pointer'];
           }
           return ['cursor-pointer'];
         }}
@@ -355,9 +356,16 @@ export function Scheduler() {
                 }}
               >
                 <AlertDialogHeader>
-                  <AlertDialogTitle>¿Está seguro?</AlertDialogTitle>
+                  <AlertDialogTitle>
+                    {' '}
+                    {appointmentStatus === 'canceled'
+                      ? '¿Reagendar cita?'
+                      : '¿Cancelar cita?'}
+                  </AlertDialogTitle>
                   <AlertDialogDescription>
-                    Esto cancelará la cita.
+                    {appointmentStatus === 'canceled'
+                      ? 'Esto reagendará la cita.'
+                      : 'Esto cancelará la cita.'}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -366,8 +374,10 @@ export function Scheduler() {
                     asChild
                     className='bg-red-600 text-white hover:bg-red-500'
                   >
-                    <Button onClick={() => handleCancelAppointment()}>
-                      Sí, cancelar
+                    <Button onClick={() => handleAppointmentStatus()}>
+                      {appointmentStatus === 'canceled'
+                        ? 'Sí, reagendar'
+                        : 'Sí, cancelar'}
                       {/* {isSubmitting && (
                           <span className='ms-2'>
                             <RotatingLines

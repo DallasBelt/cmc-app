@@ -8,16 +8,22 @@ export const newAppointmentSchema = z
       .refine((val) => val !== null, {
         message: 'Fecha de cita requerida',
       }),
-    startTime: z.string().min(1, { message: 'Hora incial no válida' }),
+    startTime: z.string().min(1, { message: 'Hora inicial no válida' }),
     endTime: z.string().min(1, { message: 'Hora final no válida' }),
     patient: z.string().uuid({ message: 'Paciente no válido' }),
-    // reason: z.string().min(1, { message: 'Motivo de la cita requerido' }),
   })
   .refine(
     (data) => {
-      const startTimeHour = parseInt(data.startTime.split(':')[0]);
-      const endTimeHour = parseInt(data.endTime.split(':')[0]);
-      return endTimeHour > startTimeHour;
+      const [startHour, startMinute] = data.startTime.split(':').map(Number);
+      const [endHour, endMinute] = data.endTime.split(':').map(Number);
+
+      // First compare the hours. If they're the same, compare the minutes
+      if (endHour > startHour) {
+        return true;
+      } else if (endHour === startHour) {
+        return endMinute > startMinute;
+      }
+      return false;
     },
     {
       message: 'La hora final debe ser mayor que la hora inicial',
