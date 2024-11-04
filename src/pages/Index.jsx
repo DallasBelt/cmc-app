@@ -1,15 +1,5 @@
 import { useEffect } from 'react';
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import { toast } from 'sonner';
-
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart';
 
 import { useToastStore } from '@/store/store';
 import { Scheduler } from '@/components/Scheduler';
