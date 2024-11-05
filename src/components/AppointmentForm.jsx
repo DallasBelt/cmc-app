@@ -5,6 +5,7 @@ import { format, setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { RotatingLines } from 'react-loader-spinner';
 import { toast } from 'sonner';
+import { CalendarDays } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -29,33 +30,30 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { CalendarDays } from 'lucide-react';
+import SearchPatients from '@/components/SearchPatients';
 
 import { cn } from '@/lib/utils';
 import { newAppointmentSchema } from '@/utils/appointmentSchema';
-import { useDateStore, useStartTimeStore } from '@/store/store';
-import { useNewAppointmentDialogStore } from '@/store/store';
 
-import SearchPatients from '@/components/SearchPatients';
+import { useAppointmentStore } from '@/store/useAppointmentStore';
 
 const AppointmentForm = () => {
   setDefaultOptions({ locale: es });
 
   const medicId = sessionStorage.getItem('id');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [patientId, setPatientId] = useState(null);
-  const setDialogState = useNewAppointmentDialogStore(
-    (state) => state.setDialogState
-  );
 
-  const date = useDateStore((state) => state.date);
-  const startTime = useStartTimeStore((state) => state.startTime);
+  const setDialogOpen = useAppointmentStore((state) => state.setDialogOpen);
+  const appointmentDate = useAppointmentStore((state) => state.appointmentDate);
+  const appointmentStartTime = useAppointmentStore(
+    (state) => state.appointmentStartTime
+  );
 
   const form = useForm({
     resolver: zodResolver(newAppointmentSchema),
     defaultValues: {
-      date: date,
-      startTime: startTime === '00:00' ? '' : startTime,
+      date: appointmentDate,
+      startTime: appointmentStartTime === '00:00' ? '' : appointmentStartTime,
       endTime: '',
       // reason: '',
       patient: '',
@@ -113,7 +111,7 @@ const AppointmentForm = () => {
         throw new Error('Error creating appointment');
       }
 
-      setDialogState(false);
+      setDialogOpen(false);
       toast.success('¡Enhorabuena!', {
         description: 'Cita creada con éxito.',
       });

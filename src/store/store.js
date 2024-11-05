@@ -29,25 +29,3 @@ export const usePatientIdStore = create((set) => ({
   patientId: null,
   setPatientId: (id) => set({ patientId: id }),
 }));
-
-export const useStartTimeStore = create((set) => ({
-  startTime: '',
-  setStartTime: (time) => set({ startTime: time }),
-}));
-
-export const useDateStore = create((set) => ({
-  date: '',
-  setDate: (date) => set({ date: date }),
-}));
-
-// New appointment dialog store
-export const useNewAppointmentDialogStore = create((set) => ({
-  dialogState: false,
-  setDialogState: (state) => set({ dialogState: state }),
-}));
-
-// Event dropdown store
-export const useEventDropdownStore = create((set) => ({
-  dropdownState: false,
-  setDropdownState: (state) => set({ dropdownState: state }),
-}));

@@ -1,11 +1,18 @@
 import { useEffect, useState } from 'react';
-import { format } from 'date-fns';
 import { toast } from 'sonner';
+
+import { useAppointmentStore } from '@/store/useAppointmentStore';
 
 export const useAppointments = (role, token) => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const setAppointmentStatus = useAppointmentStore(
+    (state) => state.setAppointmentStatus
+  );
+
+  const setDropdownOpen = useAppointmentStore((state) => state.setDropdownOpen);
 
   // Fetch appointments from the database
   const fetchData = async () => {
@@ -38,7 +45,7 @@ export const useAppointments = (role, token) => {
     }
   };
 
-  // Format the response to match FullCalendar structure
+  // Format the data to match FullCalendar's structure
   const formatData = async () => {
     const data = await fetchData();
     const formattedData =
@@ -71,42 +78,10 @@ export const useAppointments = (role, token) => {
     fetchEvents();
   }, []);
 
-  const handleDateClick = (arg) => {
-    if (role === 'medic') {
-      setDate(arg.date);
-      setStartTime(format(arg.date, 'HH:mm'));
-      setDialogState(true);
-    } else {
-      return;
-    }
-  };
-
-  const handleEventClick = async (info) => {
-    // if (isAssistant) {
-
-    // }
-    setDropdownState(true);
-    setDropdownPosition({
-      top: info.jsEvent.clientY,
-      left: info.jsEvent.clientX,
-    });
-    // const appointment = {
-    //   patient: info.event.title,
-    //   date: info.event.start,
-    //   startTime: info.event.start,
-    //   endTime: info.event.end,
-    // };
-    setAppointmentId(info.event.id);
-    setAppointmentStatus(info.event.extendedProps.status);
-  };
-
   const handleChangeAppointmentStatus = async (
     appointmentId,
-    appointmentStatus,
-    setAppointmentStatus,
-    setDropdownState
+    appointmentStatus
   ) => {
-    console.log(appointmentId);
     try {
       // Check auth
       if (!token) {
@@ -138,7 +113,7 @@ export const useAppointments = (role, token) => {
       }
 
       setAppointmentStatus(newAppointmentStatus);
-      setDropdownState(false);
+      setDropdownOpen(false);
 
       toast.success('¡Enhorabuena!', {
         description: `La cita ha sido ${
@@ -146,7 +121,7 @@ export const useAppointments = (role, token) => {
         }.`,
       });
     } catch (error) {
-      setDropdownState(false);
+      setDropdownOpen(false);
       toast.error('Oops...', {
         description: 'Error en la solicitud.',
       });
@@ -180,7 +155,7 @@ export const useAppointments = (role, token) => {
         throw new Error(`Request error: ${res.statusText}`);
       }
 
-      setDropdownState(false);
+      setDropdownOpen(false);
 
       toast.success('¡Enhorabuena!', {
         description: 'La cita ha sido eliminada.',
@@ -197,8 +172,6 @@ export const useAppointments = (role, token) => {
     appointments,
     loading,
     error,
-    handleDateClick,
-    handleEventClick,
     handleChangeAppointmentStatus,
     handleDeleteAppointment,
   };
