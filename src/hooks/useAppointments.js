@@ -128,7 +128,7 @@ export const useAppointments = (role, token) => {
     }
   };
 
-  const handleDeleteAppointment = async (appointmentId, setDropdownState) => {
+  const handleDeleteAppointment = async (appointmentId) => {
     try {
       // Check auth
       if (!token) {

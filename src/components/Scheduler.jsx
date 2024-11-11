@@ -27,41 +27,23 @@ export function Scheduler() {
 
   const { appointments, loading, error } = useAppointments(role, token);
 
-  // const setDialogOpen = useAppointmentStore((state) => state.setDialogOpen);
-  // const setDropdownOpen = useAppointmentStore((state) => state.setDropdownOpen);
-  // const setDropdownPosition = useAppointmentStore(
-  //   (state) => state.setDropdownPosition
-  // );
-  // const setAppointmentDate = useAppointmentStore(
-  //   (state) => state.setAppointmentDate
-  // );
-  // const setAppointmentStartTime = useAppointmentStore(
-  //   (state) => state.setAppointmentStartTime
-  // );
-  // const setAppointmentId = useAppointmentStore(
-  //   (state) => state.setAppointmentId
-  // );
-  // const setAppointmentStatus = useAppointmentStore(
-  //   (state) => state.setAppointmentStatus
-  // );
-
-  const {
-    setAppointmentDate,
-    setAppointmentId,
-    setAppointmentStartTime,
-    setAppointmentStatus,
-    setDialogOpen,
-    setDropdownOpen,
-    setDropdownPosition,
-  } = useAppointmentStore((state) => ({
-    setAppointmentDate: state.setAppointmentDate,
-    setAppointmentId: state.setAppointmentId,
-    setAppointmentStartTime: state.setAppointmentStartTime,
-    setAppointmentStatus: state.setAppointmentStatus,
-    setDialogOpen: state.setDialogOpen,
-    setDropdownOpen: state.setDropdownOpen,
-    setDropdownPosition: state.setDropdownPosition,
-  }));
+  const setDialogOpen = useAppointmentStore((state) => state.setDialogOpen);
+  const setDropdownOpen = useAppointmentStore((state) => state.setDropdownOpen);
+  const setDropdownPosition = useAppointmentStore(
+    (state) => state.setDropdownPosition
+  );
+  const setAppointmentDate = useAppointmentStore(
+    (state) => state.setAppointmentDate
+  );
+  const setAppointmentStartTime = useAppointmentStore(
+    (state) => state.setAppointmentStartTime
+  );
+  const setAppointmentId = useAppointmentStore(
+    (state) => state.setAppointmentId
+  );
+  const setAppointmentStatus = useAppointmentStore(
+    (state) => state.setAppointmentStatus
+  );
 
   const handleDateClick = (arg) => {
     if (role === 'medic') {

@@ -10,10 +10,16 @@ export const useAppointmentStore = create((set) => ({
   appointmentStartTime: '',
   setAppointmentStartTime: (startTime) =>
     set({ appointmentStartTime: startTime }),
-  setAppointmentStatus: (status) => set({ appointmentStatus: status }),
   appointmentStatus: '',
+  setAppointmentStatus: (status) => set({ appointmentStatus: status }),
   dropdownOpen: false,
   setDropdownOpen: (state) => set({ dropdownOpen: state }),
   dropdownPosition: { top: 0, left: 0 },
   setDropdownPosition: (position) => set({ dropdownPosition: position }),
+  editDialogOpen: false,
+  setEditDialogOpen: (state) => set({ editDialogOpen: state }),
+  changeStatusDialogOpen: false,
+  setChangeStatusDialogOpen: (state) => set({ changeStatusDialogOpen: state }),
+  deleteDialogOpen: false,
+  setDeleteDialogOpen: (state) => set({ deleteDialogOpen: state }),
 }));
