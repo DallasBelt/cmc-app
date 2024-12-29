@@ -3,6 +3,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
+import { useQuery } from '@tanstack/react-query';
 
 import { format, setDefaultOptions, startOfToday } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -11,7 +12,7 @@ import { toast } from 'sonner';
 import { RotatingLines } from 'react-loader-spinner';
 
 import { useTheme } from '@/components/theme-provider';
-import { useAppointments } from '@/hooks/useAppointments';
+import { getAppointments } from '@/api/fetchAppointments';
 
 import { AppointmentDialog } from './AppointmentDialog';
 import { AppointmentDropdown } from './AppointmentDropdown';
@@ -25,7 +26,14 @@ export function Scheduler() {
   const token = sessionStorage.getItem('token');
   const role = sessionStorage.getItem('roles');
 
-  const { appointments, loading, error } = useAppointments(role, token);
+  const {
+    data: appointments,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ['appointments'],
+    queryFn: () => getAppointments(),
+  });
 
   const setDialogOpen = useAppointmentStore((state) => state.setDialogOpen);
   const setDropdownOpen = useAppointmentStore((state) => state.setDropdownOpen);

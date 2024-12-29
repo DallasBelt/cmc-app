@@ -1,3 +1,5 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,14 +12,11 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
-import { useAppointments } from '@/hooks/useAppointments';
+import { updateAppointments } from '@/api/fetchAppointments';
 import { useAppointmentStore } from '@/store/useAppointmentStore';
 
 export const ChangeAppointmentStatusDialog = () => {
-  const token = sessionStorage.getItem('token');
-  const role = sessionStorage.getItem('roles');
-
-  const { handleChangeAppointmentStatus } = useAppointments(role, token);
+  const queryClient = useQueryClient();
 
   const { changeStatusDialogOpen } = useAppointmentStore((state) => ({
     changeStatusDialogOpen: state.changeStatusDialogOpen,
@@ -30,6 +29,13 @@ export const ChangeAppointmentStatusDialog = () => {
   const appointmentStatus = useAppointmentStore(
     (state) => state.appointmentStatus
   );
+
+  const mutation = useMutation({
+    mutationFn: (id, status) => updateAppointments(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['appointments'] });
+    },
+  });
 
   return (
     <AlertDialog
@@ -57,9 +63,9 @@ export const ChangeAppointmentStatusDialog = () => {
             className='bg-red-600 text-white hover:bg-red-500'
           >
             <Button
-              onClick={() =>
-                handleChangeAppointmentStatus(appointmentId, appointmentStatus)
-              }
+              onClick={() => {
+                mutation.mutate(appointmentId, appointmentStatus);
+              }}
             >
               {appointmentStatus === 'canceled'
                 ? 'Sí, reagendar'

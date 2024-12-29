@@ -10,14 +10,14 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
-import { useAppointments } from '@/hooks/useAppointments';
+import { deleteAppointments } from '@/api/fetchAppointments';
 import { useAppointmentStore } from '@/store/useAppointmentStore';
 
 export const DeleteAppointmentDialog = () => {
   const token = sessionStorage.getItem('token');
   const role = sessionStorage.getItem('roles');
 
-  const { handleDeleteAppointment } = useAppointments(role, token);
+  const { handleDeleteAppointment } = deleteAppointments(role, token);
 
   const { deleteDialogOpen } = useAppointmentStore((state) => ({
     deleteDialogOpen: state.deleteDialogOpen,
