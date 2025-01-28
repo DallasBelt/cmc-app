@@ -12,30 +12,22 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
-import { updateAppointments } from '@/api/fetchAppointments';
-import { useAppointmentStore } from '@/store/useAppointmentStore';
+import { appointmentStore } from '@/store/appointmentStore';
 
 export const ChangeAppointmentStatusDialog = () => {
   const queryClient = useQueryClient();
 
-  const { changeStatusDialogOpen } = useAppointmentStore((state) => ({
+  const { changeStatusDialogOpen } = appointmentStore((state) => ({
     changeStatusDialogOpen: state.changeStatusDialogOpen,
   }));
-  const { setChangeStatusDialogOpen } = useAppointmentStore((state) => ({
+  const { setChangeStatusDialogOpen } = appointmentStore((state) => ({
     setChangeStatusDialogOpen: state.setChangeStatusDialogOpen,
   }));
 
-  const appointmentId = useAppointmentStore((state) => state.appointmentId);
-  const appointmentStatus = useAppointmentStore(
+  const appointmentId = appointmentStore((state) => state.appointmentId);
+  const appointmentStatus = appointmentStore(
     (state) => state.appointmentStatus
   );
-
-  const mutation = useMutation({
-    mutationFn: (id, status) => updateAppointments(id, status),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointments'] });
-    },
-  });
 
   return (
     <AlertDialog

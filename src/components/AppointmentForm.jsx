@@ -35,7 +35,8 @@ import SearchPatients from '@/components/SearchPatients';
 import { cn } from '@/lib/utils';
 import { newAppointmentSchema } from '@/utils/appointmentSchema';
 
-import { useAppointmentStore } from '@/store/useAppointmentStore';
+import { appointmentStore } from '@/store/appointmentStore';
+import useAppointments from '@/hooks/useAppointments';
 
 const AppointmentForm = () => {
   setDefaultOptions({ locale: es });
@@ -43,11 +44,13 @@ const AppointmentForm = () => {
   const medicId = sessionStorage.getItem('id');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const setDialogOpen = useAppointmentStore((state) => state.setDialogOpen);
-  const appointmentDate = useAppointmentStore((state) => state.appointmentDate);
-  const appointmentStartTime = useAppointmentStore(
+  const setDialogOpen = appointmentStore((state) => state.setDialogOpen);
+  const appointmentDate = appointmentStore((state) => state.appointmentDate);
+  const appointmentStartTime = appointmentStore(
     (state) => state.appointmentStartTime
   );
+
+  const { appointmentsQuery } = useAppointments();
 
   const form = useForm({
     resolver: zodResolver(newAppointmentSchema),
@@ -112,6 +115,7 @@ const AppointmentForm = () => {
       }
 
       setDialogOpen(false);
+      appointmentsQuery.refetch();
       toast.success('¡Enhorabuena!', {
         description: 'Cita creada con éxito.',
       });

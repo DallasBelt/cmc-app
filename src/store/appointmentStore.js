@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export const useAppointmentStore = create((set) => ({
+export const appointmentStore = create((set) => ({
   dialogOpen: false,
   setDialogOpen: (state) => set({ dialogOpen: state }),
   appointmentId: null,

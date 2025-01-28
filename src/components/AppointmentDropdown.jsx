@@ -10,28 +10,26 @@ import { EditAppointmentDialog } from '@/components/EditAppointmentDialog';
 import { ChangeAppointmentStatusDialog } from '@/components/ChangeAppointmentStatusDialog';
 import { DeleteAppointmentDialog } from '@/components/DeleteAppointmentDialog';
 
-import { useAppointmentStore } from '@/store/useAppointmentStore';
+import { appointmentStore } from '@/store/appointmentStore';
 
 export const AppointmentDropdown = () => {
-  const dropdownOpen = useAppointmentStore((state) => state.dropdownOpen);
-  const setDropdownOpen = useAppointmentStore((state) => state.setDropdownOpen);
-  const dropdownPosition = useAppointmentStore(
-    (state) => state.dropdownPosition
-  );
+  const dropdownOpen = appointmentStore((state) => state.dropdownOpen);
+  const setDropdownOpen = appointmentStore((state) => state.setDropdownOpen);
+  const dropdownPosition = appointmentStore((state) => state.dropdownPosition);
 
-  const appointmentStatus = useAppointmentStore(
+  const appointmentStatus = appointmentStore(
     (state) => state.appointmentStatus
   );
 
-  const setEditDialogOpen = useAppointmentStore(
+  const setEditDialogOpen = appointmentStore(
     (state) => state.setEditDialogOpen
   );
 
-  const setChangeStatusDialogOpen = useAppointmentStore(
+  const setChangeStatusDialogOpen = appointmentStore(
     (state) => state.setChangeStatusDialogOpen
   );
 
-  const setDeleteDialogOpen = useAppointmentStore(
+  const setDeleteDialogOpen = appointmentStore(
     (state) => state.setDeleteDialogOpen
   );
 

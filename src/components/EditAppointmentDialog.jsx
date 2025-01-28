@@ -9,13 +9,13 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-import { useAppointmentStore } from '@/store/useAppointmentStore';
+import { appointmentStore } from '@/store/appointmentStore';
 
 export const EditAppointmentDialog = () => {
-  const { editDialogOpen } = useAppointmentStore((state) => ({
+  const { editDialogOpen } = appointmentStore((state) => ({
     editDialogOpen: state.editDialogOpen,
   }));
-  const { setEditDialogOpen } = useAppointmentStore((state) => ({
+  const { setEditDialogOpen } = appointmentStore((state) => ({
     setEditDialogOpen: state.setEditDialogOpen,
   }));
 

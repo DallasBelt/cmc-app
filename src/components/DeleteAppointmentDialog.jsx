@@ -1,3 +1,5 @@
+import { Loader2 } from 'lucide-react';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,19 +12,18 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
-import { deleteAppointments } from '@/api/fetchAppointments';
-import { useAppointmentStore } from '@/store/useAppointmentStore';
+import useAppointments from '@/hooks/useAppointments';
+import { appointmentStore } from '@/store/appointmentStore';
 
 export const DeleteAppointmentDialog = () => {
-  const token = sessionStorage.getItem('token');
-  const role = sessionStorage.getItem('roles');
+  const { deleteAppointmentMutation } = useAppointments();
 
-  const { handleDeleteAppointment } = deleteAppointments(role, token);
+  const appointmentId = appointmentStore((state) => state.appointmentId);
 
-  const { deleteDialogOpen } = useAppointmentStore((state) => ({
+  const { deleteDialogOpen } = appointmentStore((state) => ({
     deleteDialogOpen: state.deleteDialogOpen,
   }));
-  const { setDeleteDialogOpen } = useAppointmentStore((state) => ({
+  const { setDeleteDialogOpen } = appointmentStore((state) => ({
     setDeleteDialogOpen: state.setDeleteDialogOpen,
   }));
 
@@ -44,21 +45,14 @@ export const DeleteAppointmentDialog = () => {
             asChild
             className='bg-red-600 text-white hover:bg-red-500'
           >
-            <Button onClick={() => handleDeleteAppointment(appointmentId)}>
+            <Button
+              onClick={() => deleteAppointmentMutation.mutate(appointmentId)}
+              disabled={deleteAppointmentMutation.isPending}
+            >
+              {deleteAppointmentMutation.isPending && (
+                <Loader2 className='me-2 animate-spin' />
+              )}
               Sí, borrar
-              {/* {isSubmitting && (
-                <span className='ms-2'>
-                  <RotatingLines
-                    visible={true}
-                    height='20'
-                    width='20'
-                    strokeColor='#FFF'
-                    strokeWidth={5}
-                    animationDuration='0.75'
-                    ariaLabel='rotating-lines-loading'
-                  />
-                </span>
-              )} */}
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>

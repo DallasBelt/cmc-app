@@ -7,11 +7,11 @@ import {
 
 import AppointmentForm from '@/components/AppointmentForm';
 
-import { useAppointmentStore } from '@/store/useAppointmentStore';
+import { appointmentStore } from '@/store/appointmentStore';
 
 export const AppointmentDialog = () => {
-  const dialogOpen = useAppointmentStore((state) => state.dialogOpen);
-  const setDialogOpen = useAppointmentStore((state) => state.setDialogOpen);
+  const dialogOpen = appointmentStore((state) => state.dialogOpen);
+  const setDialogOpen = appointmentStore((state) => state.setDialogOpen);
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

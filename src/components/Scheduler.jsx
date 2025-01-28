@@ -3,56 +3,46 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
-import { useQuery } from '@tanstack/react-query';
 
 import { format, setDefaultOptions, startOfToday } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { toast } from 'sonner';
-import { RotatingLines } from 'react-loader-spinner';
 
 import { useTheme } from '@/components/theme-provider';
-import { getAppointments } from '@/api/fetchAppointments';
 
 import { AppointmentDialog } from './AppointmentDialog';
 import { AppointmentDropdown } from './AppointmentDropdown';
 
-import { useAppointmentStore } from '@/store/useAppointmentStore';
+import { appointmentStore } from '@/store/appointmentStore';
+import useAppointments from '@/hooks/useAppointments';
 
 export function Scheduler() {
   setDefaultOptions({ locale: es }); // FullCalendar language
   const { effectiveTheme } = useTheme(); // App theme
 
-  const token = sessionStorage.getItem('token');
   const role = sessionStorage.getItem('roles');
 
-  const {
-    data: appointments,
-    isLoading: loading,
-    error,
-  } = useQuery({
-    queryKey: ['appointments'],
-    queryFn: () => getAppointments(),
-  });
+  const { appointmentsQuery } = useAppointments();
 
-  const setDialogOpen = useAppointmentStore((state) => state.setDialogOpen);
-  const setDropdownOpen = useAppointmentStore((state) => state.setDropdownOpen);
-  const setDropdownPosition = useAppointmentStore(
+  // Zustand states
+  const setDialogOpen = appointmentStore((state) => state.setDialogOpen);
+  const setDropdownOpen = appointmentStore((state) => state.setDropdownOpen);
+  const setDropdownPosition = appointmentStore(
     (state) => state.setDropdownPosition
   );
-  const setAppointmentDate = useAppointmentStore(
+  const setAppointmentDate = appointmentStore(
     (state) => state.setAppointmentDate
   );
-  const setAppointmentStartTime = useAppointmentStore(
+  const setAppointmentStartTime = appointmentStore(
     (state) => state.setAppointmentStartTime
   );
-  const setAppointmentId = useAppointmentStore(
-    (state) => state.setAppointmentId
-  );
-  const setAppointmentStatus = useAppointmentStore(
+  const setAppointmentId = appointmentStore((state) => state.setAppointmentId);
+  const setAppointmentStatus = appointmentStore(
     (state) => state.setAppointmentStatus
   );
 
+  // When clicking on a date
   const handleDateClick = (arg) => {
     if (role === 'medic') {
       setAppointmentDate(arg.date);
@@ -63,6 +53,7 @@ export function Scheduler() {
     }
   };
 
+  // When clicling on an appointment
   const handleEventClick = async (info) => {
     // if (isAssistant) {
 
@@ -82,28 +73,6 @@ export function Scheduler() {
     setAppointmentStatus(info.event.extendedProps.status);
   };
 
-  if (loading) {
-    return (
-      <span className='ms-2'>
-        <RotatingLines
-          visible={true}
-          height='20'
-          width='20'
-          strokeColor='#FFF'
-          strokeWidth={5}
-          animationDuration='0.75'
-          ariaLabel='rotating-lines-loading'
-        />
-      </span>
-    );
-  }
-
-  if (error) {
-    return toast.error('Oops...', {
-      description: 'Error en la solicitud.',
-    });
-  }
-
   return (
     <div className={effectiveTheme === 'dark' ? 'dark' : ''}>
       <FullCalendar
@@ -118,7 +87,7 @@ export function Scheduler() {
         }}
         weekends={true}
         firstDay={1}
-        events={appointments}
+        events={appointmentsQuery.data}
         eventClick={handleEventClick}
         eventContent={renderEventContent}
         eventClassNames={(eventInfo) => {
@@ -137,6 +106,11 @@ export function Scheduler() {
           start: startOfToday(),
         }}
       />
+
+      {appointmentsQuery.error &&
+        toast.error('Oops...', {
+          description: 'Error en la solicitud.',
+        })}
 
       <AppointmentDialog />
 
