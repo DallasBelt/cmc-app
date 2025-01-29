@@ -1,10 +1,13 @@
 import { toast } from 'sonner';
 
+const token = sessionStorage.getItem('token');
+
 export const getAppointments = async () => {
   try {
     const res = await fetch('http://localhost:3000/api/v1/appointment', {
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -32,45 +35,3 @@ export const getAppointments = async () => {
     });
   }
 };
-
-// export const updateAppointments = async (appointmentId, appointmentStatus) => {
-//   const setAppointmentStatus = appointmentStore(
-//     (state) => state.setAppointmentStatus
-//   );
-
-//   const setDropdownOpen = appointmentStore((state) => state.setDropdownOpen);
-
-//   try {
-//     const newAppointmentStatus =
-//       appointmentStatus === 'pending' ? 'canceled' : 'pending';
-
-//     const res = await fetch(
-//       `http://localhost:3000/api/v1/appointment/${appointmentId}`,
-//       {
-//         method: 'PATCH',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ status: newAppointmentStatus }),
-//       }
-//     );
-
-//     if (!res.ok) {
-//       throw new Error(`Request error: ${res.statusText}`);
-//     }
-//     console.log(status);
-//     setAppointmentStatus(newAppointmentStatus);
-//     setDropdownOpen(false);
-
-//     toast.success('¡Enhorabuena!', {
-//       description: `La cita ha sido ${
-//         newAppointmentStatus === 'canceled' ? 'cancelada' : 'reagendada'
-//       }.`,
-//     });
-//   } catch (error) {
-//     setDropdownOpen(false);
-//     toast.error('Oops...', {
-//       description: 'Error en la solicitud.',
-//     });
-//   }
-// };

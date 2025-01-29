@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Loader2 } from 'lucide-react';
 
 import {
   AlertDialog,
@@ -12,10 +12,11 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
+import useAppointments from '@/hooks/useAppointments';
 import { appointmentStore } from '@/store/appointmentStore';
 
 export const ChangeAppointmentStatusDialog = () => {
-  const queryClient = useQueryClient();
+  const { changeAppointmentStatusMutation } = useAppointments();
 
   const { changeStatusDialogOpen } = appointmentStore((state) => ({
     changeStatusDialogOpen: state.changeStatusDialogOpen,
@@ -56,25 +57,19 @@ export const ChangeAppointmentStatusDialog = () => {
           >
             <Button
               onClick={() => {
-                mutation.mutate(appointmentId, appointmentStatus);
+                changeAppointmentStatusMutation.mutate({
+                  appointmentId,
+                  appointmentStatus,
+                });
               }}
+              disabled={changeAppointmentStatusMutation.isPending}
             >
+              {changeAppointmentStatusMutation.isPending && (
+                <Loader2 className='me-2 animate-spin' />
+              )}
               {appointmentStatus === 'canceled'
                 ? 'Sí, reagendar'
                 : 'Sí, cancelar'}
-              {/* {isSubmitting && (
-                    <span className='ms-2'>
-                      <RotatingLines
-                        visible={true}
-                        height='20'
-                        width='20'
-                        strokeColor='#FFF'
-                        strokeWidth={5}
-                        animationDuration='0.75'
-                        ariaLabel='rotating-lines-loading'
-                      />
-                    </span>
-                  )} */}
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>

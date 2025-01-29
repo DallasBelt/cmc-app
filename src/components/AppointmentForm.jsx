@@ -116,14 +116,10 @@ const AppointmentForm = () => {
 
       setDialogOpen(false);
       appointmentsQuery.refetch();
-      toast.success('¡Enhorabuena!', {
-        description: 'Cita creada con éxito.',
-      });
+      toast.success('¡Cita creada con éxito!');
     } catch (error) {
       console.error(error);
-      toast.error('Oops...', {
-        description: 'Error al crear la cita.',
-      });
+      toast.error('Error al crear la cita.');
     } finally {
       setIsSubmitting(false);
     }
