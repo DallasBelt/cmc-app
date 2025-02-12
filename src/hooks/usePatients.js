@@ -1,40 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
-export const fetchData = async () => {
-  try {
-    // HTTP request
-    const res = await fetch('http://localhost:3000/api/v1/patient', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-      },
-    });
+import { useNewPatientModalStore } from '@/store/store';
 
-    // Check for HTTP response errors
-    if (!res.ok) {
-      throw new Error(`Error ${res.status}: ${res.statusText}`);
-    }
-
-    // Convert to JSON
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    return [];
-  }
-};
+import { createPatient, getPatients } from '@/api/patient';
 
 export const usePatients = () => {
-  const [patients, setPatients] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    fetchData().then((data) => {
-      setPatients(data.data);
-      setLoading(false);
-    });
-  }, [fetchData]);
+  const setModalState = useNewPatientModalStore((state) => state.setModalState);
 
-  return { patients, loading };
+  const createPatientMutation = useMutation({
+    mutationFn: createPatient,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['patients']);
+      toast.success('¡Paciente creado exitósamente!');
+      setModalState(false);
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error('Error al crear paciente.');
+    },
+  });
+
+  const patientsQuery = useQuery({
+    queryKey: ['patients'],
+    queryFn: getPatients,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+
+  return { createPatientMutation, patientsQuery };
 };

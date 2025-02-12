@@ -1,58 +1,24 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { toast } from 'sonner';
 
 import { useTheme } from '@/components/theme-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MagnifyingGlass, X } from '@phosphor-icons/react';
 
-const fetchPatients = async () => {
-  try {
-    // Check auth
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-      toast.error('Oops!', {
-        description: 'Error de autenticación.',
-      });
-      return [];
-    }
-
-    const res = await fetch('http://localhost:3000/api/v1/patient', {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!res.ok) {
-      throw new Error('Error reading data');
-    }
-
-    const data = await res.json();
-
-    return data.data;
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
-};
+import { usePatients } from '@/hooks/usePatients';
 
 const SearchPatients = ({ onSelectPatient }) => {
   const { effectiveTheme } = useTheme();
   const [inputValue, setInputValue] = useState('');
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const {
-    data = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ['patients'],
-    queryFn: fetchPatients,
-  });
+  const { patientsQuery } = usePatients();
 
-  const filteredPatients = data.filter((patient) => {
+  const patientList = Array.isArray(patientsQuery.data?.data)
+    ? patientsQuery.data.data
+    : [];
+
+  const filteredPatients = patientList.filter((patient) => {
     const searchValue = inputValue.toLowerCase();
     return (
       patient.firstName.toLowerCase().includes(searchValue) ||
@@ -109,8 +75,10 @@ const SearchPatients = ({ onSelectPatient }) => {
               : 'bg-white text-black'
           }`}
         >
-          {isLoading && <p className='p-2'>Cargando...</p>}
-          {error && <p className='p-2'>Error al cargar pacientes</p>}
+          {patientsQuery.isPending && <p className='p-2'>Cargando...</p>}
+          {patientsQuery.error && (
+            <p className='p-2'>Error al cargar pacientes</p>
+          )}
           {filteredPatients.length ? (
             <ul className='list-none p-1'>
               {filteredPatients.map((patient) => (

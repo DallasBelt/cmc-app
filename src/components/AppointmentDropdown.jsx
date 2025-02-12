@@ -6,24 +6,23 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 
-import { EditAppointmentDialog } from '@/components/EditAppointmentDialog';
+import { AppointmentDialog } from '@/components/AppointmentDialog';
 import { ChangeAppointmentStatusDialog } from '@/components/ChangeAppointmentStatusDialog';
 import { DeleteAppointmentDialog } from '@/components/DeleteAppointmentDialog';
 
 import { appointmentStore } from '@/store/appointmentStore';
 
 export const AppointmentDropdown = () => {
+  const appointmentStatus = appointmentStore(
+    (state) => state.appointmentStatus
+  );
+  const setEditMode = appointmentStore((state) => state.setEditMode);
+
   const dropdownOpen = appointmentStore((state) => state.dropdownOpen);
   const setDropdownOpen = appointmentStore((state) => state.setDropdownOpen);
   const dropdownPosition = appointmentStore((state) => state.dropdownPosition);
 
-  const appointmentStatus = appointmentStore(
-    (state) => state.appointmentStatus
-  );
-
-  const setEditDialogOpen = appointmentStore(
-    (state) => state.setEditDialogOpen
-  );
+  const setDialogOpen = appointmentStore((state) => state.setDialogOpen);
 
   const setChangeStatusDialogOpen = appointmentStore(
     (state) => state.setChangeStatusDialogOpen
@@ -51,7 +50,8 @@ export const AppointmentDropdown = () => {
               appointmentStatus === 'canceled' ? 'hidden' : 'cursor-pointer'
             }
             onSelect={() => {
-              setEditDialogOpen(true);
+              setDialogOpen(true);
+              setEditMode(true);
             }}
           >
             <Pencil size={16} className='me-2' />
@@ -86,7 +86,7 @@ export const AppointmentDropdown = () => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <EditAppointmentDialog />
+      <AppointmentDialog />
       <ChangeAppointmentStatusDialog />
       <DeleteAppointmentDialog />
     </>

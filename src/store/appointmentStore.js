@@ -16,10 +16,10 @@ export const appointmentStore = create((set) => ({
   setDropdownOpen: (state) => set({ dropdownOpen: state }),
   dropdownPosition: { top: 0, left: 0 },
   setDropdownPosition: (position) => set({ dropdownPosition: position }),
-  editDialogOpen: false,
-  setEditDialogOpen: (state) => set({ editDialogOpen: state }),
   changeStatusDialogOpen: false,
   setChangeStatusDialogOpen: (state) => set({ changeStatusDialogOpen: state }),
   deleteDialogOpen: false,
   setDeleteDialogOpen: (state) => set({ deleteDialogOpen: state }),
+  editMode: false,
+  setEditMode: (state) => set({ editMode: state }),
 }));

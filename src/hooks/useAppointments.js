@@ -2,9 +2,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { toast } from 'sonner';
 
-import { getAppointments } from '@/api/getAppointments';
-import { deleteAppointment } from '@/api/deleteAppointment';
-import { changeAppointmentStatus } from '@/api/changeAppointmentStatus';
+import {
+  createAppointment,
+  getAppointments,
+  updateAppointment,
+  changeAppointmentStatus,
+  deleteAppointment,
+} from '@/api/appointment';
 
 import { appointmentStore } from '@/store/appointmentStore';
 
@@ -16,9 +20,24 @@ const useAppointments = () => {
     (state) => state.setAppointmentStatus
   );
 
+  const setDialogOpen = appointmentStore((state) => state.setDialogOpen);
+
+  const createAppointmentMutation = useMutation({
+    mutationFn: createAppointment,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['appointments']);
+      toast.success('¡Cita creada exitósamente!');
+      setDialogOpen(false);
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error('Error al crear cita.');
+    },
+  });
+
   const appointmentsQuery = useQuery({
     queryKey: ['appointments'],
-    queryFn: () => getAppointments(),
+    queryFn: getAppointments,
   });
 
   const deleteAppointmentMutation = useMutation({
@@ -52,10 +71,25 @@ const useAppointments = () => {
     },
   });
 
+  // const updateAppointmentMutation = useMutation({
+  //   mutationFn: updateAppointment,
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(['appointments']);
+  //     setDropdownOpen(false);
+  //     toast.info('La cita ha sido actualizada.');
+  //   },
+  //   onError: (error) => {
+  //     console.error(error);
+  //     toast.error('Error en la solicitud.');
+  //   },
+  // });
+
   return {
+    createAppointmentMutation,
     appointmentsQuery,
     deleteAppointmentMutation,
     changeAppointmentStatusMutation,
+    // updateAppointmentMutation,
   };
 };
 

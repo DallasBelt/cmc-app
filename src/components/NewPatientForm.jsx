@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
 
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -31,28 +29,25 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { toast } from 'sonner';
-
-import { RotatingLines } from 'react-loader-spinner';
-
-import { CalendarDots } from '@phosphor-icons/react';
+import { CalendarDays, Loader2 } from 'lucide-react';
 
 import { PhoneInput } from '@/components/PhoneInput';
 
 import { newPatientSchema, editPatientSchema } from '@/utils/patientSchema';
 
-import { useNewPatientModalStore } from '@/store/store';
 import { useEditModeStore } from '@/store/store';
-import { usePatientIdStore } from '@/store/store';
+// import { usePatientIdStore } from '@/store/store';
+
+import { usePatients } from '@/hooks/usePatients';
 
 const NewPatientForm = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const setModalState = useNewPatientModalStore((state) => state.setModalState);
   const editMode = useEditModeStore((state) => state.editMode);
-  const [initialPatientValues, setInitialPatientValues] = useState(null);
-  const patientId = usePatientIdStore((state) => state.patientId);
+  // const [initialPatientValues, setInitialPatientValues] = useState(null);
+  // const patientId = usePatientIdStore((state) => state.patientId);
 
   const schema = !editMode ? newPatientSchema : editPatientSchema;
+
+  const { createPatientMutation } = usePatients();
 
   const form = useForm({
     resolver: zodResolver(schema),
@@ -69,138 +64,100 @@ const NewPatientForm = () => {
     },
   });
 
-  useEffect(() => {
-    const fetchInfo = async () => {
-      try {
-        if (!editMode) return;
-
-        // Check auth
-        const token = sessionStorage.getItem('token');
-        if (!token) {
-          toast.error('Oops!', {
-            description: 'Error de autenticación.',
-          });
-
-          return;
-        }
-
-        // Axios get request
-        const res = await axios.get(
-          `http://localhost:3000/api/v1/patient/${patientId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        // Create patientData object
-        if (res.status === 200) {
-          const patientData = {
-            firstName: res?.data?.firstName || '',
-            lastName: res?.data?.lastName || '',
-            occupation: res?.data?.occupation || '',
-            email: res?.data?.email || '',
-            dob: res?.data?.dob ? new Date(res?.data?.dob) : null,
-            phone: res?.data?.phone || '',
-            address: res?.data?.address || '',
-          };
-
-          setInitialPatientValues(patientData);
-          form.reset(patientData); // Load data in the form fields
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchInfo();
-  }, [form]);
-
   const onSubmit = async (values) => {
-    try {
-      setIsSubmitting(true);
+    const patient = {
+      ...values,
+      dob: format(values.dob, 'dd-MM-yyyy'),
+      medicId: sessionStorage.getItem('id'),
+    };
 
-      // Check auth
-      const token = sessionStorage.getItem('token');
-      if (!token) {
-        toast.error('Oops!', {
-          description: 'Error de autenticación.',
-        });
-        return;
-      }
+    createPatientMutation.mutate(patient);
+    // try {
+    //   setIsSubmitting(true);
 
-      if (!initialPatientValues) {
-        // New entry
+    //   // Check auth
+    //   const token = sessionStorage.getItem('token');
+    //   if (!token) {
+    //     toast.error('Oops!', {
+    //       description: 'Error de autenticación.',
+    //     });
+    //     return;
+    //   }
 
-        // Post request to create a new patient
-        const res = await axios.post(
-          'http://localhost:3000/api/v1/patient',
-          {
-            ...values,
-            dob: format(values.dob, 'dd-MM-yyyy'),
-            medicId: sessionStorage.getItem('id'),
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+    //   if (!initialPatientValues) {
+    //     // New entry
 
-        if (res.status === 201) {
-          toast.success('¡Enhorabuena!', {
-            description: 'Paciente creado con éxito.',
-          });
+    //     // Post request to create a new patient
+    //     const res = await axios.post(
+    //       'http://localhost:3000/api/v1/patient',
+    //       {
+    //         ...values,
+    //         dob: format(values.dob, 'dd-MM-yyyy'),
+    //         medicId: sessionStorage.getItem('id'),
+    //       },
+    //       {
+    //         headers: { Authorization: `Bearer ${token}` },
+    //       }
+    //     );
 
-          form.reset();
-          setModalState(false);
-        }
-      } else {
-        // Get current form values
-        const currentValues = form.getValues();
+    //     if (res.status === 201) {
+    //       toast.success('¡Enhorabuena!', {
+    //         description: 'Paciente creado con éxito.',
+    //       });
 
-        // Exclude 'dni' and 'dniType' keys
-        const { dni, dniType, ...rest } = currentValues;
+    //       form.reset();
+    //       setModalState(false);
+    //     }
+    //   } else {
+    //     // Get current form values
+    //     const currentValues = form.getValues();
 
-        // Compare the values
-        const hasChanges =
-          JSON.stringify(rest) !== JSON.stringify(initialPatientValues);
+    //     // Exclude 'dni' and 'dniType' keys
+    //     const { dni, dniType, ...rest } = currentValues;
 
-        if (!hasChanges) {
-          toast.warning('Oops!', {
-            description: 'No se detectaron cambios.',
-          });
-          return;
-        }
+    //     // Compare the values
+    //     const hasChanges =
+    //       JSON.stringify(rest) !== JSON.stringify(initialPatientValues);
 
-        // Patch request to update patient info
-        const res = await axios.patch(
-          `http://localhost:3000/api/v1/patient/${patientId}`,
-          { ...rest, dob: format(values.dob, 'dd-MM-yyyy') },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+    //     if (!hasChanges) {
+    //       toast.warning('Oops!', {
+    //         description: 'No se detectaron cambios.',
+    //       });
+    //       return;
+    //     }
 
-        if (res.status === 200) {
-          toast.success('¡Enhorabuena!', {
-            description: 'Información actualizada con éxito.',
-          });
+    //     // Patch request to update patient info
+    //     const res = await axios.patch(
+    //       `http://localhost:3000/api/v1/patient/${patientId}`,
+    //       { ...rest, dob: format(values.dob, 'dd-MM-yyyy') },
+    //       {
+    //         headers: { Authorization: `Bearer ${token}` },
+    //       }
+    //     );
 
-          // Set new current values after editing
-          setInitialPatientValues(rest);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      if (error.response.status === 400) {
-        toast.error('Oops...', {
-          description: 'El paciente ya existe.',
-        });
-      } else {
-        toast.error('Oops...', {
-          description: 'Error al crear paciente.',
-        });
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
+    //     if (res.status === 200) {
+    //       toast.success('¡Enhorabuena!', {
+    //         description: 'Información actualizada con éxito.',
+    //       });
+
+    //       // Set new current values after editing
+    //       setInitialPatientValues(rest);
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    //   if (error.response.status === 400) {
+    //     toast.error('Oops...', {
+    //       description: 'El paciente ya existe.',
+    //     });
+    //   } else {
+    //     toast.error('Oops...', {
+    //       description: 'Error al crear paciente.',
+    //     });
+    //   }
+    // } finally {
+    //   setIsSubmitting(false);
+    // }
   };
 
   return (
@@ -340,7 +297,7 @@ const NewPatientForm = () => {
                         ) : (
                           <span>Seleccionar...</span>
                         )}
-                        <CalendarDots
+                        <CalendarDays
                           weight='bold'
                           className='ml-auto h-4 w-4 opacity-50'
                         />
@@ -407,22 +364,12 @@ const NewPatientForm = () => {
           <div className='pt-5 md:flex md:justify-center'>
             <Button
               type='submit'
-              disabled={isSubmitting}
+              disabled={createPatientMutation.isPending}
               className='w-full md:w-fit'
             >
-              {editMode ? 'Guardar' : 'Crear paciente'}
-              {isSubmitting && (
-                <span className='ms-2'>
-                  <RotatingLines
-                    visible={true}
-                    height='20'
-                    width='20'
-                    strokeColor='#FFF'
-                    strokeWidth={5}
-                    animationDuration='0.75'
-                    ariaLabel='rotating-lines-loading'
-                  />
-                </span>
+              {editMode ? 'Guardar cambios' : 'Crear paciente'}
+              {createPatientMutation.isPending && (
+                <Loader2 className='me-2 animate-spin' />
               )}
             </Button>
           </div>

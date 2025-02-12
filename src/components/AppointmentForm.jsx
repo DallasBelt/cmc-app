@@ -1,11 +1,8 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format, setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { RotatingLines } from 'react-loader-spinner';
-import { toast } from 'sonner';
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -42,15 +39,14 @@ const AppointmentForm = () => {
   setDefaultOptions({ locale: es });
 
   const medicId = sessionStorage.getItem('id');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const setDialogOpen = appointmentStore((state) => state.setDialogOpen);
   const appointmentDate = appointmentStore((state) => state.appointmentDate);
   const appointmentStartTime = appointmentStore(
     (state) => state.appointmentStartTime
   );
+  const editMode = appointmentStore((state) => state.editMode);
 
-  const { appointmentsQuery } = useAppointments();
+  const { createAppointmentMutation } = useAppointments();
 
   const form = useForm({
     resolver: zodResolver(newAppointmentSchema),
@@ -64,65 +60,30 @@ const AppointmentForm = () => {
   });
 
   const onSubmit = async (values) => {
-    try {
-      setIsSubmitting(true);
-
-      // Check auth
-      const token = sessionStorage.getItem('token');
-      if (!token) {
-        toast.error('Oops!', {
-          description: 'Error de autenticación.',
-        });
-        return;
-      }
-
-      const appointment = {
-        startTime: format(
-          new Date(
-            values.date.setHours(
-              values.startTime.split(':')[0],
-              values.startTime.split(':')[1]
-            )
-          ),
-          'dd-MM-yyyy HH:mm:ss'
+    const appointment = {
+      startTime: format(
+        new Date(
+          values.date.setHours(
+            values.startTime.split(':')[0],
+            values.startTime.split(':')[1]
+          )
         ),
-        endTime: format(
-          new Date(
-            values.date.setHours(
-              values.endTime.split(':')[0],
-              values.endTime.split(':')[1]
-            )
-          ),
-          'dd-MM-yyyy HH:mm:ss'
+        'dd-MM-yyyy HH:mm:ss'
+      ),
+      endTime: format(
+        new Date(
+          values.date.setHours(
+            values.endTime.split(':')[0],
+            values.endTime.split(':')[1]
+          )
         ),
-        patientId: values.patient,
-        medicId,
-      };
+        'dd-MM-yyyy HH:mm:ss'
+      ),
+      patientId: values.patient,
+      medicId,
+    };
 
-      const res = await fetch('http://localhost:3000/api/v1/appointment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(appointment),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        console.log(errorData);
-        throw new Error('Error creating appointment');
-      }
-
-      setDialogOpen(false);
-      appointmentsQuery.refetch();
-      toast.success('¡Cita creada con éxito!');
-    } catch (error) {
-      console.error(error);
-      toast.error('Error al crear la cita.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    createAppointmentMutation.mutate(appointment);
   };
 
   return (
@@ -297,22 +258,12 @@ const AppointmentForm = () => {
           <div className='pt-5 md:flex md:justify-center'>
             <Button
               type='submit'
-              disabled={isSubmitting}
+              disabled={createAppointmentMutation.isPending}
               className='w-full md:w-fit'
             >
-              Crear cita
-              {isSubmitting && (
-                <span className='ms-2'>
-                  <RotatingLines
-                    visible={true}
-                    height='20'
-                    width='20'
-                    strokeColor='#FFF'
-                    strokeWidth={5}
-                    animationDuration='0.75'
-                    ariaLabel='rotating-lines-loading'
-                  />
-                </span>
+              {editMode ? 'Guardar cambios' : 'Crear cita'}
+              {createAppointmentMutation.isPending && (
+                <Loader2 className='me-2 animate-spin' />
               )}
             </Button>
           </div>
