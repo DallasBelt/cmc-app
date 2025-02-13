@@ -1,10 +1,12 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+import { CalendarDays, Loader2 } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -29,23 +31,19 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { CalendarDays, Loader2 } from 'lucide-react';
-
 import { PhoneInput } from '@/components/PhoneInput';
 
 import { newPatientSchema, editPatientSchema } from '@/utils/patientSchema';
 
-import { useEditModeStore } from '@/store/store';
-// import { usePatientIdStore } from '@/store/store';
-
 import { usePatients } from '@/hooks/usePatients';
+import { usePatientStore } from '@/store';
 
-const NewPatientForm = () => {
-  const editMode = useEditModeStore((state) => state.editMode);
+export const CreatePatientForm = () => {
+  const editPatient = usePatientStore((state) => state.editPatient);
   // const [initialPatientValues, setInitialPatientValues] = useState(null);
   // const patientId = usePatientIdStore((state) => state.patientId);
 
-  const schema = !editMode ? newPatientSchema : editPatientSchema;
+  const schema = !editPatient ? newPatientSchema : editPatientSchema;
 
   const { createPatientMutation } = usePatients();
 
@@ -199,7 +197,7 @@ const NewPatientForm = () => {
             />
           </div>
 
-          <div className={editMode ? 'hidden' : 'flex'}>
+          <div className={editPatient ? 'hidden' : 'flex'}>
             <FormField
               control={form.control}
               name='dniType'
@@ -232,7 +230,7 @@ const NewPatientForm = () => {
             />
           </div>
 
-          <div className={editMode ? 'hidden' : 'flex'}>
+          <div className={editPatient ? 'hidden' : 'flex'}>
             <FormField
               control={form.control}
               name='dni'
@@ -367,7 +365,7 @@ const NewPatientForm = () => {
               disabled={createPatientMutation.isPending}
               className='w-full md:w-fit'
             >
-              {editMode ? 'Guardar cambios' : 'Crear paciente'}
+              {editPatient ? 'Guardar cambios' : 'Crear paciente'}
               {createPatientMutation.isPending && (
                 <Loader2 className='me-2 animate-spin' />
               )}
@@ -378,5 +376,3 @@ const NewPatientForm = () => {
     </>
   );
 };
-
-export default NewPatientForm;

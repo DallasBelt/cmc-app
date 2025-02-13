@@ -31,7 +31,7 @@ import {
 import { assistantInfoSchema } from '@/utils/assistantSchema';
 import { days } from '@/constants/days';
 
-const AssistantInfoForm = () => {
+export const AssistantInfoForm = () => {
   setDefaultOptions({ locale: es });
 
   const navigate = useNavigate();
@@ -356,5 +356,3 @@ const AssistantInfoForm = () => {
     </Form>
   );
 };
-
-export default AssistantInfoForm;

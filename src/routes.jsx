@@ -1,23 +1,25 @@
-import Login from './pages/Login';
-import CompleteInfo from './pages/CompleteInfo';
-import Root from './pages/Root';
-import Index from './pages/Index';
-import Users from './pages/Users';
-import Patients from './pages/Patients';
-import Appointments from './pages/Appointments';
-import { Statistics } from './pages/Statistics';
-import Profile from './pages/Profile';
-import Error from './pages/Error';
-import ForgotPassword from './pages/ForgotPassword';
+import {
+  Appointments,
+  CompleteInfo,
+  Error,
+  ForgotPassword,
+  Index,
+  Login,
+  Patients,
+  Profile,
+  Root,
+  Statistics,
+  Users,
+} from '@/pages';
 
 import {
   PrivateRoute,
   PublicRoute,
   RoleBasedRoute,
   CheckUserInfoRoute,
-} from './components/ProtectedRoutes';
+} from '@/components/ProtectedRoutes';
 
-const routes = [
+export const routes = [
   {
     path: '/',
     element: (
@@ -129,5 +131,3 @@ const routes = [
     element: <Error />,
   },
 ];
-
-export default routes;

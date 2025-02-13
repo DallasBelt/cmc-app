@@ -1,3 +1,5 @@
+import { toast } from 'sonner';
+
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -7,15 +9,10 @@ import esLocale from '@fullcalendar/core/locales/es';
 import { format, setDefaultOptions, startOfToday } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import { toast } from 'sonner';
-
+import { AppointmentDialog, AppointmentDropdown } from '@/components';
+import { useAppointments } from '@/hooks';
+import { useAppointmentStore } from '@/store';
 import { useTheme } from '@/components/theme-provider';
-
-import { AppointmentDialog } from './AppointmentDialog';
-import { AppointmentDropdown } from './AppointmentDropdown';
-
-import { appointmentStore } from '@/store/appointmentStore';
-import useAppointments from '@/hooks/useAppointments';
 
 export function Scheduler() {
   setDefaultOptions({ locale: es }); // FullCalendar language
@@ -26,19 +23,25 @@ export function Scheduler() {
   const { appointmentsQuery } = useAppointments();
 
   // Zustand states
-  const setDialogOpen = appointmentStore((state) => state.setDialogOpen);
-  const setDropdownOpen = appointmentStore((state) => state.setDropdownOpen);
-  const setDropdownPosition = appointmentStore(
-    (state) => state.setDropdownPosition
+  const setCreateAppointmentDialog = useAppointmentStore(
+    (state) => state.setCreateAppointmentDialog
   );
-  const setAppointmentDate = appointmentStore(
+  const setAppointmentDropdown = useAppointmentStore(
+    (state) => state.setAppointmentDropdown
+  );
+  const setAppointmentDropdownPosition = useAppointmentStore(
+    (state) => state.setAppointmentDropdownPosition
+  );
+  const setAppointmentDate = useAppointmentStore(
     (state) => state.setAppointmentDate
   );
-  const setAppointmentStartTime = appointmentStore(
+  const setAppointmentStartTime = useAppointmentStore(
     (state) => state.setAppointmentStartTime
   );
-  const setAppointmentId = appointmentStore((state) => state.setAppointmentId);
-  const setAppointmentStatus = appointmentStore(
+  const setAppointmentId = useAppointmentStore(
+    (state) => state.setAppointmentId
+  );
+  const setAppointmentStatus = useAppointmentStore(
     (state) => state.setAppointmentStatus
   );
 
@@ -47,7 +50,7 @@ export function Scheduler() {
     if (role === 'medic') {
       setAppointmentDate(arg.date);
       setAppointmentStartTime(format(arg.date, 'HH:mm'));
-      setDialogOpen(true);
+      setCreateAppointmentDialog(true);
     } else {
       return;
     }
@@ -58,8 +61,8 @@ export function Scheduler() {
     // if (isAssistant) {
 
     // }
-    setDropdownOpen(true);
-    setDropdownPosition({
+    setAppointmentDropdown(true);
+    setAppointmentDropdownPosition({
       top: info.jsEvent.clientY,
       left: info.jsEvent.clientX,
     });
@@ -112,7 +115,7 @@ export function Scheduler() {
           description: 'Error en la solicitud.',
         })}
 
-      <AppointmentDialog />
+      {/* <AppointmentDialog /> */}
 
       <AppointmentDropdown />
     </div>

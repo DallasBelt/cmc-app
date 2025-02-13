@@ -1,7 +1,5 @@
-import Profile from '@/pages/Profile';
+import { Profile } from '@/pages';
 
-const CompleteInfo = () => {
+export const CompleteInfo = () => {
   return <Profile />;
 };
-
-export default CompleteInfo;

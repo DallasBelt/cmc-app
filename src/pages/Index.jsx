@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
+import { Scheduler } from '@/components';
 import { useToastStore } from '@/store/store';
-import { Scheduler } from '@/components/Scheduler';
 
 const chartConfig = {
   patients: {
@@ -24,7 +24,7 @@ const chartData = [
   { month: 'Junio', patients: 214, appointments: 140 },
 ];
 
-const Index = () => {
+export const Index = () => {
   const showToast = useToastStore((state) => state.showToast);
   const toastMessage = useToastStore((state) => state.toastMessage);
   const setToast = useToastStore((state) => state.setToast);
@@ -44,5 +44,3 @@ const Index = () => {
     </div>
   );
 };
-
-export default Index;

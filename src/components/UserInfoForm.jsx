@@ -38,7 +38,7 @@ import { CalendarDots } from '@phosphor-icons/react';
 
 import { userInfoSchema } from '@/utils/userInfoSchema';
 
-const UserInfoForm = () => {
+export const UserInfoForm = () => {
   setDefaultOptions({ locale: es });
   const location = useLocation();
   const isCompleteInfo = location.pathname === '/complete-info';
@@ -384,5 +384,3 @@ const UserInfoForm = () => {
     </Form>
   );
 };
-
-export default UserInfoForm;

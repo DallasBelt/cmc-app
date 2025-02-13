@@ -1,12 +1,11 @@
-import { DataTable } from '@/components/DataTable';
-
-import NewPatientDialog from '@/components/NewPatientDialog';
-import { patientsColumns } from '@/config/patientsColumns';
-import { usePatients } from '@/hooks/usePatients';
-
 import { Loader2 } from 'lucide-react';
 
-const Patients = () => {
+import { CreatePatientDialog, DataTable } from '@/components';
+
+import { usePatients } from '@/hooks/usePatients';
+import { patientsColumns } from '@/config/patientsColumns';
+
+export const Patients = () => {
   const { patientsQuery } = usePatients();
 
   const patientList = Array.isArray(patientsQuery.data?.data)
@@ -26,10 +25,8 @@ const Patients = () => {
     </div>
   ) : (
     <div className='flex flex-col gap-5'>
-      <NewPatientDialog />
+      <CreatePatientDialog />
       <DataTable columns={patientsColumns} data={data} />
     </div>
   );
 };
-
-export default Patients;

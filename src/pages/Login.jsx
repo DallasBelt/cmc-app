@@ -1,14 +1,13 @@
 import { Link } from 'react-router-dom';
 
-import LoginForm from '@/components/LoginForm';
 import { Toaster } from '@/components/ui/sonner';
+import { LoginForm, RegistrationDialog } from '@/components';
 
-import RegistrationDialog from '@/components/RegistrationDialog';
 import { useTheme } from '@/components/theme-provider';
 import LoginLight from '@/assets/login-light.svg';
 import LoginDark from '@/assets/login-dark.svg';
 
-const Login = () => {
+export const Login = () => {
   const { effectiveTheme } = useTheme();
 
   return (
@@ -45,5 +44,3 @@ const Login = () => {
     </>
   );
 };
-
-export default Login;

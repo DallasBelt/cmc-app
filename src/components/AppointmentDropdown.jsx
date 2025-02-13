@@ -6,42 +6,53 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 
-import { AppointmentDialog } from '@/components/AppointmentDialog';
-import { ChangeAppointmentStatusDialog } from '@/components/ChangeAppointmentStatusDialog';
-import { DeleteAppointmentDialog } from '@/components/DeleteAppointmentDialog';
+import {
+  AppointmentDialog,
+  ChangeAppointmentStatusDialog,
+  DeleteAppointmentDialog,
+} from '@/components';
 
-import { appointmentStore } from '@/store/appointmentStore';
+import { useAppointmentStore } from '@/store';
 
 export const AppointmentDropdown = () => {
-  const appointmentStatus = appointmentStore(
+  const appointmentStatus = useAppointmentStore(
     (state) => state.appointmentStatus
   );
-  const setEditMode = appointmentStore((state) => state.setEditMode);
-
-  const dropdownOpen = appointmentStore((state) => state.dropdownOpen);
-  const setDropdownOpen = appointmentStore((state) => state.setDropdownOpen);
-  const dropdownPosition = appointmentStore((state) => state.dropdownPosition);
-
-  const setDialogOpen = appointmentStore((state) => state.setDialogOpen);
-
-  const setChangeStatusDialogOpen = appointmentStore(
-    (state) => state.setChangeStatusDialogOpen
+  const setEditAppointment = useAppointmentStore(
+    (state) => state.setEditsetEditAppointmentMode
   );
-
-  const setDeleteDialogOpen = appointmentStore(
-    (state) => state.setDeleteDialogOpen
+  const appointmentDropdown = useAppointmentStore(
+    (state) => state.appointmentDropdown
+  );
+  const setAppointmentDropdown = useAppointmentStore(
+    (state) => state.setAppointmentDropdown
+  );
+  const appointmentDropdownPosition = useAppointmentStore(
+    (state) => state.appointmentDropdownPosition
+  );
+  const setCreateAppointmentDialog = useAppointmentStore(
+    (state) => state.setCreateAppointmentDialog
+  );
+  const setChangeAppointmentStatusDialog = useAppointmentStore(
+    (state) => state.setChangeAppointmentStatusDialog
+  );
+  const setDeleteAppointmentDialog = useAppointmentStore(
+    (state) => state.setDeleteAppointmentDialog
   );
 
   return (
     <>
-      <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+      <DropdownMenu
+        open={appointmentDropdown}
+        onOpenChange={setAppointmentDropdown}
+      >
         <DropdownMenuContent
           align='end'
           className='flex flex-col'
           style={{
             position: 'absolute',
-            top: dropdownPosition.top,
-            left: dropdownPosition.left,
+            top: appointmentDropdownPosition.top,
+            left: appointmentDropdownPosition.left,
           }}
         >
           {/* Edit */}
@@ -50,8 +61,8 @@ export const AppointmentDropdown = () => {
               appointmentStatus === 'canceled' ? 'hidden' : 'cursor-pointer'
             }
             onSelect={() => {
-              setDialogOpen(true);
-              setEditMode(true);
+              setCreateAppointmentDialog(true);
+              setEditAppointment(true);
             }}
           >
             <Pencil size={16} className='me-2' />
@@ -62,7 +73,7 @@ export const AppointmentDropdown = () => {
           <DropdownMenuItem
             className={'cursor-pointer'}
             onSelect={() => {
-              setChangeStatusDialogOpen(true);
+              setChangeAppointmentStatusDialog(true);
             }}
           >
             {appointmentStatus === 'canceled' ? (
@@ -77,7 +88,7 @@ export const AppointmentDropdown = () => {
           <DropdownMenuItem
             className='cursor-pointer'
             onSelect={() => {
-              setDeleteDialogOpen(true);
+              setDeleteAppointmentDialog(true);
             }}
           >
             <Trash size={16} className='me-2' />

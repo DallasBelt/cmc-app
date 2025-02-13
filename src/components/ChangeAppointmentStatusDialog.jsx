@@ -12,28 +12,28 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
-import useAppointments from '@/hooks/useAppointments';
-import { appointmentStore } from '@/store/appointmentStore';
+import { useAppointments } from '@/hooks';
+import { useAppointmentStore } from '@/store';
 
 export const ChangeAppointmentStatusDialog = () => {
   const { changeAppointmentStatusMutation } = useAppointments();
 
-  const { changeStatusDialogOpen } = appointmentStore((state) => ({
-    changeStatusDialogOpen: state.changeStatusDialogOpen,
+  const { changeAppointmentStatusDialog } = useAppointmentStore((state) => ({
+    changeAppointmentStatusDialog: state.changeAppointmentStatusDialog,
   }));
-  const { setChangeStatusDialogOpen } = appointmentStore((state) => ({
-    setChangeStatusDialogOpen: state.setChangeStatusDialogOpen,
+  const { setChangeAppointmentStatusDialog } = useAppointmentStore((state) => ({
+    setChangeAppointmentStatusDialog: state.setChangeAppointmentStatusDialog,
   }));
 
-  const appointmentId = appointmentStore((state) => state.appointmentId);
-  const appointmentStatus = appointmentStore(
+  const appointmentId = useAppointmentStore((state) => state.appointmentId);
+  const appointmentStatus = useAppointmentStore(
     (state) => state.appointmentStatus
   );
 
   return (
     <AlertDialog
-      open={changeStatusDialogOpen}
-      onOpenChange={setChangeStatusDialogOpen}
+      open={changeAppointmentStatusDialog}
+      onOpenChange={setChangeAppointmentStatusDialog}
     >
       <AlertDialogContent
         className='max-w-xl max-h-[80%] overflow-y-auto'

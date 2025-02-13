@@ -10,24 +10,27 @@ import {
   deleteAppointment,
 } from '@/api/appointment';
 
-import { appointmentStore } from '@/store/appointmentStore';
+import { useAppointmentStore } from '@/store';
 
-const useAppointments = () => {
+export const useAppointments = () => {
   const queryClient = useQueryClient();
 
-  const setDropdownOpen = appointmentStore((state) => state.setDropdownOpen);
-  const setAppointmentStatus = appointmentStore(
+  const setCreateAppointmentDialog = useAppointmentStore(
+    (state) => state.setCreateAppointmentDialog
+  );
+  const setAppointmentDropdown = useAppointmentStore(
+    (state) => state.setAppointmentDropdown
+  );
+  const setAppointmentStatus = useAppointmentStore(
     (state) => state.setAppointmentStatus
   );
-
-  const setDialogOpen = appointmentStore((state) => state.setDialogOpen);
 
   const createAppointmentMutation = useMutation({
     mutationFn: createAppointment,
     onSuccess: () => {
       queryClient.invalidateQueries(['appointments']);
       toast.success('¡Cita creada exitósamente!');
-      setDialogOpen(false);
+      setCreateAppointmentDialog(false);
     },
     onError: (error) => {
       console.error(error);
@@ -44,7 +47,7 @@ const useAppointments = () => {
     mutationFn: deleteAppointment,
     onSuccess: () => {
       queryClient.invalidateQueries(['appointments']);
-      setDropdownOpen(false);
+      setAppointmentDropdown(false);
       toast.info('La cita ha sido eliminada.');
     },
     onError: (error) => {
@@ -57,7 +60,7 @@ const useAppointments = () => {
     mutationFn: changeAppointmentStatus,
     onSuccess: (newAppointmentStatus) => {
       queryClient.invalidateQueries(['appointments']);
-      setDropdownOpen(false);
+      setAppointmentDropdown(false);
       setAppointmentStatus(newAppointmentStatus);
       toast.info(
         `La cita ha sido ${
@@ -92,5 +95,3 @@ const useAppointments = () => {
     // updateAppointmentMutation,
   };
 };
-
-export default useAppointments;

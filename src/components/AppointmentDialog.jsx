@@ -7,20 +7,26 @@ import {
 
 import AppointmentForm from '@/components/AppointmentForm';
 
-import { appointmentStore } from '@/store/appointmentStore';
+import { useAppointmentStore } from '@/store';
 
 export const AppointmentDialog = () => {
-  const dialogOpen = appointmentStore((state) => state.dialogOpen);
-  const setDialogOpen = appointmentStore((state) => state.setDialogOpen);
-  const editMode = appointmentStore((state) => state.editMode);
-  const setEditMode = appointmentStore((state) => state.setEditMode);
+  const createAppointmentDialog = useAppointmentStore(
+    (state) => state.createAppointmentDialog
+  );
+  const setCreateAppointmentDialog = useAppointmentStore(
+    (state) => state.setCreateAppointmentDialog
+  );
+  const editAppointment = useAppointmentStore((state) => state.editAppointment);
+  const setEditAppointment = useAppointmentStore(
+    (state) => state.setEditAppointment
+  );
 
   return (
     <Dialog
-      open={dialogOpen}
+      open={createAppointmentDialog}
       onOpenChange={(open) => {
-        setDialogOpen(open);
-        if (!open) setEditMode(false);
+        setCreateAppointmentDialog(open);
+        if (!open) setEditAppointment(false);
       }}
     >
       <DialogContent
@@ -31,7 +37,7 @@ export const AppointmentDialog = () => {
         }}
       >
         <DialogHeader>
-          <DialogTitle>{editMode ? 'Editar' : 'Crear'} cita</DialogTitle>
+          <DialogTitle>{editAppointment ? 'Editar' : 'Crear'} cita</DialogTitle>
         </DialogHeader>
         <AppointmentForm />
       </DialogContent>

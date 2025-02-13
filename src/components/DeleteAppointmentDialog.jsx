@@ -12,23 +12,25 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
-import useAppointments from '@/hooks/useAppointments';
-import { appointmentStore } from '@/store/appointmentStore';
+import { useAppointments } from '@/hooks';
+import { useAppointmentStore } from '@/store';
 
 export const DeleteAppointmentDialog = () => {
   const { deleteAppointmentMutation } = useAppointments();
 
-  const appointmentId = appointmentStore((state) => state.appointmentId);
-
-  const { deleteDialogOpen } = appointmentStore((state) => ({
-    deleteDialogOpen: state.deleteDialogOpen,
-  }));
-  const { setDeleteDialogOpen } = appointmentStore((state) => ({
-    setDeleteDialogOpen: state.setDeleteDialogOpen,
-  }));
+  const appointmentId = useAppointmentStore((state) => state.appointmentId);
+  const deleteAppointmentDialog = useAppointmentStore(
+    (state) => state.deleteAppointmentDialog
+  );
+  const setDeleteAppointmentDialog = useAppointmentStore(
+    (state) => state.setDeleteAppointmentDialog
+  );
 
   return (
-    <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+    <AlertDialog
+      open={deleteAppointmentDialog}
+      onOpenChange={setDeleteAppointmentDialog}
+    >
       <AlertDialogContent
         className='max-w-xl max-h-[80%] overflow-y-auto'
         onInteractOutside={(e) => {

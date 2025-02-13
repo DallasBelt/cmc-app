@@ -32,7 +32,7 @@ import { medicInfoSchema } from '@/utils/medicSchema';
 import { days } from '@/constants/days';
 import { specialties } from '@/constants/specialties';
 
-const MedicInfoForm = () => {
+export const MedicInfoForm = () => {
   setDefaultOptions({ locale: es });
 
   const navigate = useNavigate();
@@ -394,5 +394,3 @@ const MedicInfoForm = () => {
     </Form>
   );
 };
-
-export default MedicInfoForm;

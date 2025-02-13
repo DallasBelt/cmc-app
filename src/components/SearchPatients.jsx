@@ -7,7 +7,7 @@ import { MagnifyingGlass, X } from '@phosphor-icons/react';
 
 import { usePatients } from '@/hooks/usePatients';
 
-const SearchPatients = ({ onSelectPatient }) => {
+export const SearchPatients = ({ onSelectPatient }) => {
   const { effectiveTheme } = useTheme();
   const [inputValue, setInputValue] = useState('');
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -103,5 +103,3 @@ const SearchPatients = ({ onSelectPatient }) => {
     </div>
   );
 };
-
-export default SearchPatients;

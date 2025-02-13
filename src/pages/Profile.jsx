@@ -1,11 +1,9 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import UserInfoForm from '@/components/UserInfoForm';
-import MedicInfoForm from '@/components/MedicInfoForm';
-import AssistantInfoForm from '@/components/AssistantInfoForm';
+import { AssistantInfoForm, MedicInfoForm, UserInfoForm } from '@/components';
 
-const Profile = () => {
+export const Profile = () => {
   const role = sessionStorage.getItem('roles');
 
   return (
@@ -36,5 +34,3 @@ const Profile = () => {
     </div>
   );
 };
-
-export default Profile;

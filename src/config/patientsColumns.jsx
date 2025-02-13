@@ -39,10 +39,10 @@ import {
   Pencil,
   Trash,
 } from '@phosphor-icons/react';
-import NewPatientForm from '@/components/NewPatientForm';
 
-import { useEditModeStore } from '@/store/store';
-import { usePatientIdStore } from '@/store/store';
+import { CreatePatientForm } from '@/components';
+
+import { usePatientStore } from '@/store';
 
 export const patientsColumns = [
   {
@@ -106,8 +106,8 @@ export const patientsColumns = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const setEditMode = useEditModeStore((state) => state.setEditMode);
-      const setPatientId = usePatientIdStore((state) => state.setPatientId);
+      const setEditPatient = usePatientStore((state) => state.setEditPatient);
+      const setPatientId = usePatientStore((state) => state.setPatientId);
       const [isSubmitting, setIsSubmitting] = useState(false);
 
       const isAssistant = sessionStorage.getItem('roles').includes('assistant');
@@ -198,7 +198,7 @@ export const patientsColumns = [
                     <DialogTitle>Editar información del paciente</DialogTitle>
                     <DialogDescription></DialogDescription>
                   </DialogHeader>
-                  <NewPatientForm />
+                  <CreatePatientForm />
                 </DialogContent>
               </Dialog>
 

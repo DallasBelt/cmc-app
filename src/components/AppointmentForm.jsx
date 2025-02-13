@@ -1,9 +1,12 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+
 import { format, setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
+
 import { CalendarDays, Loader2 } from 'lucide-react';
 
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -27,24 +30,22 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import SearchPatients from '@/components/SearchPatients';
+import { SearchPatients } from '@/components';
+import { useAppointments } from '@/hooks';
+import { useAppointmentStore } from '@/store';
 
-import { cn } from '@/lib/utils';
 import { newAppointmentSchema } from '@/utils/appointmentSchema';
-
-import { appointmentStore } from '@/store/appointmentStore';
-import useAppointments from '@/hooks/useAppointments';
 
 const AppointmentForm = () => {
   setDefaultOptions({ locale: es });
 
   const medicId = sessionStorage.getItem('id');
 
-  const appointmentDate = appointmentStore((state) => state.appointmentDate);
-  const appointmentStartTime = appointmentStore(
+  const appointmentDate = useAppointmentStore((state) => state.appointmentDate);
+  const appointmentStartTime = useAppointmentStore(
     (state) => state.appointmentStartTime
   );
-  const editMode = appointmentStore((state) => state.editMode);
+  const editAppointment = useAppointmentStore((state) => state.editAppointment);
 
   const { createAppointmentMutation } = useAppointments();
 
@@ -261,7 +262,7 @@ const AppointmentForm = () => {
               disabled={createAppointmentMutation.isPending}
               className='w-full md:w-fit'
             >
-              {editMode ? 'Guardar cambios' : 'Crear cita'}
+              {editAppointment ? 'Guardar cambios' : 'Crear cita'}
               {createAppointmentMutation.isPending && (
                 <Loader2 className='me-2 animate-spin' />
               )}

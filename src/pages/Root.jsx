@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
-import NavMenu from '@/components/NavMenu';
 import {
   Sheet,
   SheetContent,
@@ -14,12 +13,11 @@ import { Toaster } from '@/components/ui/sonner';
 
 import { List, SignOut } from '@phosphor-icons/react';
 
-import AvatarMenu from '@/components/AvatarMenu';
-import navbarLogo from '@/assets/navbar-logo.svg';
+import { AvatarMenu, ModeToggle, NavMenu } from '@/components';
 import { useTheme } from '@/components/theme-provider';
-import { ModeToggle } from '@/components/ModeToggle';
+import navbarLogo from '@/assets/navbar-logo.svg';
 
-const Root = () => {
+export const Root = () => {
   const { effectiveTheme } = useTheme();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const navigate = useNavigate();
@@ -96,5 +94,3 @@ const Root = () => {
     </>
   );
 };
-
-export default Root;

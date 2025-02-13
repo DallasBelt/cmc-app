@@ -1,11 +1,11 @@
 import { RotatingLines } from 'react-loader-spinner';
 
-import { DataTable } from '@/components/DataTable';
+import { DataTable } from '@/components';
 
-import { usersColumns } from '@/config/usersColumns';
-import getTableData from '@/hooks/getTableData';
+import { getTableData } from '@/hooks';
+import { usersColumns } from '@/config';
 
-const Users = () => {
+export const Users = () => {
   const token = sessionStorage.getItem('token');
 
   const { data, loading } = getTableData(
@@ -35,5 +35,3 @@ const Users = () => {
     </div>
   );
 };
-
-export default Users;

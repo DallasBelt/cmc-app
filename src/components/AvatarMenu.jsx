@@ -10,7 +10,7 @@ import {
 
 import { SignOut, User } from '@phosphor-icons/react';
 
-const AvatarMenu = () => {
+export const AvatarMenu = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isCompleteInfo = location.pathname === '/complete-info';
@@ -49,5 +49,3 @@ const AvatarMenu = () => {
     </DropdownMenu>
   );
 };
-
-export default AvatarMenu;

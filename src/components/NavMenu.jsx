@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/navigation-menu';
 import { Separator } from '@/components/ui/separator';
 
-const NavMenu = ({ onLinkClick }) => {
+export const NavMenu = ({ onLinkClick }) => {
   const navigate = useNavigate();
   const roles = sessionStorage.getItem('roles');
   const isAdmin = roles && roles.includes('admin');
@@ -149,5 +149,3 @@ const NavMenu = ({ onLinkClick }) => {
     </NavigationMenu>
   );
 };
-
-export default NavMenu;

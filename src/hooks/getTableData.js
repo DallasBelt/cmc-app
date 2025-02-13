@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import { toast } from 'sonner';
 
-const getTableData = (endpoint, token) => {
+export const getTableData = (endpoint, token) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,5 +36,3 @@ const getTableData = (endpoint, token) => {
 
   return { data, loading };
 };
-
-export default getTableData;

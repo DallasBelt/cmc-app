@@ -1,3 +1,5 @@
+import { UserPlus2 } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -7,31 +9,32 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-import { UserPlus } from '@phosphor-icons/react';
+import { CreatePatientForm } from '@/components';
+import { usePatientStore } from '@/store';
 
-import NewPatientForm from './NewPatientForm';
-import { useNewPatientModalStore } from '@/store/store';
-import { useEditModeStore } from '@/store/store';
-
-const NewPatientDialog = () => {
-  const modalState = useNewPatientModalStore((state) => state.modalState);
-  const setModalState = useNewPatientModalStore((state) => state.setModalState);
-  const setEditMode = useEditModeStore((state) => state.setEditMode);
+export const CreatePatientDialog = () => {
+  const createPatientModal = usePatientStore(
+    (state) => state.createPatientModal
+  );
+  const setCreatePatientModal = usePatientStore(
+    (state) => state.setCreatePatientModal
+  );
+  const setEditPatient = usePatientStore((state) => state.setEditPatient);
 
   return (
     <>
       <Button
         onClick={() => {
-          setModalState(true);
-          setEditMode(false);
+          setCreatePatientModal(true);
+          setEditPatient(false);
         }}
         className='w-full md:max-w-fit'
       >
-        <UserPlus size={24} className='mr-2' />
+        <UserPlus2 size={24} className='mr-2' />
         Nuevo paciente
       </Button>
 
-      <Dialog open={modalState} onOpenChange={setModalState}>
+      <Dialog open={createPatientModal} onOpenChange={setCreatePatientModal}>
         <DialogContent
           className='max-w-xl max-h-[80%] overflow-y-auto'
           onInteractOutside={(e) => {
@@ -44,11 +47,9 @@ const NewPatientDialog = () => {
               Por favor, llene los datos solicitados.
             </DialogDescription>
           </DialogHeader>
-          <NewPatientForm />
+          <CreatePatientForm />
         </DialogContent>
       </Dialog>
     </>
   );
 };
-
-export default NewPatientDialog;

@@ -1,21 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { useNewPatientModalStore } from '@/store/store';
-
 import { createPatient, getPatients } from '@/api/patient';
+import { usePatientStore } from '@/store';
 
 export const usePatients = () => {
   const queryClient = useQueryClient();
 
-  const setModalState = useNewPatientModalStore((state) => state.setModalState);
+  const setCreatePatientModal = usePatientStore(
+    (state) => state.createPatientModal
+  );
 
   const createPatientMutation = useMutation({
     mutationFn: createPatient,
     onSuccess: () => {
       queryClient.invalidateQueries(['patients']);
       toast.success('¡Paciente creado exitósamente!');
-      setModalState(false);
+      setCreatePatientModal(false);
     },
     onError: (error) => {
       console.error(error);

@@ -23,7 +23,7 @@ import { Eye, EyeSlash } from '@phosphor-icons/react';
 import { loginSchema } from '@/utils/loginSchema';
 import { useToastStore } from '@/store/store';
 
-const LoginForm = () => {
+export const LoginForm = () => {
   const navigate = useNavigate();
 
   const setToast = useToastStore((state) => state.setToast);
@@ -179,5 +179,3 @@ const LoginForm = () => {
     </Form>
   );
 };
-
-export default LoginForm;

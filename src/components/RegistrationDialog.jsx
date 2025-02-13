@@ -12,7 +12,7 @@ import { UserPlus } from '@phosphor-icons/react';
 import RegistrationForm from './RegistrationForm';
 import { useRegistrationStore } from '@/store/store';
 
-const RegistrationDialog = () => {
+export const RegistrationDialog = () => {
   // Retrieve the token
   const token = sessionStorage.getItem('token');
 
@@ -53,5 +53,3 @@ const RegistrationDialog = () => {
     </>
   );
 };
-
-export default RegistrationDialog;
