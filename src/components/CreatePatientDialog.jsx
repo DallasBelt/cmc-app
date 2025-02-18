@@ -13,11 +13,11 @@ import { CreatePatientForm } from '@/components';
 import { usePatientStore } from '@/store';
 
 export const CreatePatientDialog = () => {
-  const createPatientModal = usePatientStore(
-    (state) => state.createPatientModal
+  const createPatientDialog = usePatientStore(
+    (state) => state.createPatientDialog
   );
-  const setCreatePatientModal = usePatientStore(
-    (state) => state.setCreatePatientModal
+  const setCreatePatientDialog = usePatientStore(
+    (state) => state.setCreatePatientDialog
   );
   const setEditPatient = usePatientStore((state) => state.setEditPatient);
 
@@ -25,7 +25,7 @@ export const CreatePatientDialog = () => {
     <>
       <Button
         onClick={() => {
-          setCreatePatientModal(true);
+          setCreatePatientDialog(true);
           setEditPatient(false);
         }}
         className='w-full md:max-w-fit'
@@ -34,7 +34,7 @@ export const CreatePatientDialog = () => {
         Nuevo paciente
       </Button>
 
-      <Dialog open={createPatientModal} onOpenChange={setCreatePatientModal}>
+      <Dialog open={createPatientDialog} onOpenChange={setCreatePatientDialog}>
         <DialogContent
           className='max-w-xl max-h-[80%] overflow-y-auto'
           onInteractOutside={(e) => {

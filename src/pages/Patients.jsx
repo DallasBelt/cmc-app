@@ -19,14 +19,20 @@ export const Patients = () => {
       )
     : [];
 
-  return patientsQuery.isFetching ? (
-    <div className='h-96 flex justify-center items-center'>
-      <Loader2 size={50} className='animate-spin' />
-    </div>
-  ) : (
-    <div className='flex flex-col gap-5'>
-      <CreatePatientDialog />
-      <DataTable columns={patientsColumns} data={data} />
-    </div>
+  return (
+    <>
+      <div className='mb-5'>
+        <CreatePatientDialog />
+      </div>
+      {patientsQuery.isFetching ? (
+        <div className='h-96 flex justify-center items-center'>
+          <Loader2 size={50} className='animate-spin' />
+        </div>
+      ) : (
+        <div className='flex flex-col gap-5'>
+          <DataTable columns={patientsColumns} data={data} />
+        </div>
+      )}
+    </>
   );
 };

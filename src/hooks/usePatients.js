@@ -1,14 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { createPatient, getPatients } from '@/api/patient';
+import { createPatient, getPatients, deletePatient } from '@/api/patient';
 import { usePatientStore } from '@/store';
 
 export const usePatients = () => {
   const queryClient = useQueryClient();
 
-  const setCreatePatientModal = usePatientStore(
-    (state) => state.createPatientModal
+  const setCreatePatientDialog = usePatientStore(
+    (state) => state.setCreatePatientDialog
   );
 
   const createPatientMutation = useMutation({
@@ -16,7 +16,7 @@ export const usePatients = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['patients']);
       toast.success('¡Paciente creado exitósamente!');
-      setCreatePatientModal(false);
+      setCreatePatientDialog(false);
     },
     onError: (error) => {
       console.error(error);
@@ -31,5 +31,30 @@ export const usePatients = () => {
     refetchOnWindowFocus: false,
   });
 
-  return { createPatientMutation, patientsQuery };
+  // const updatePatientMutation = useMutation({
+  //   mutationFn: updatePatient,
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(['patients']);
+  //     toast.success('¡Paciente actualizado exitósamente!');
+  //     setCreatePatientDialog(false);
+  //   },
+  //   onError: (error) => {
+  //     console.error(error);
+  //     toast.error('Error al actualizar paciente.');
+  //   },
+  // });
+
+  const deletePatientMutation = useMutation({
+    mutationFn: deletePatient,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['patients']);
+      toast.success('Paciente eliminado exitósamente.');
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error('Error al eliminar paciente.');
+    },
+  });
+
+  return { createPatientMutation, patientsQuery, deletePatientMutation };
 };

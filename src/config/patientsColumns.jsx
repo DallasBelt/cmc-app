@@ -1,7 +1,12 @@
-import { useState } from 'react';
-import axios from 'axios';
 import { differenceInYears } from 'date-fns';
-import { RotatingLines } from 'react-loader-spinner';
+import {
+  Loader2,
+  ArrowDownUp,
+  ClipboardList,
+  Ellipsis,
+  Pencil,
+  Trash,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -32,17 +37,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import {
-  ArrowsDownUp,
-  ClipboardText,
-  DotsThree,
-  Pencil,
-  Trash,
-} from '@phosphor-icons/react';
-
-import { CreatePatientForm } from '@/components';
-
+import { usePatients } from '@/hooks';
 import { usePatientStore } from '@/store';
+import { CreatePatientForm } from '@/components';
 
 export const patientsColumns = [
   {
@@ -59,7 +56,7 @@ export const patientsColumns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Apellido
-          <ArrowsDownUp size={24} className='ml-2 h-4 w-4' />
+          <ArrowDownUp size={24} className='ml-2 h-4 w-4' />
         </Button>
       );
     },
@@ -74,7 +71,7 @@ export const patientsColumns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Nombre
-          <ArrowsDownUp size={24} className='ml-2 h-4 w-4' />
+          <ArrowDownUp size={24} className='ml-2 h-4 w-4' />
         </Button>
       );
     },
@@ -93,7 +90,7 @@ export const patientsColumns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Edad
-          <ArrowsDownUp size={24} className='ml-2 h-4 w-4' />
+          <ArrowDownUp size={24} className='ml-2 h-4 w-4' />
         </Button>
       );
     },
@@ -106,52 +103,19 @@ export const patientsColumns = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const setEditPatient = usePatientStore((state) => state.setEditPatient);
+      // const setEditPatient = usePatientStore((state) => state.setEditPatient);
       const setPatientId = usePatientStore((state) => state.setPatientId);
-      const [isSubmitting, setIsSubmitting] = useState(false);
 
       const isAssistant = sessionStorage.getItem('roles').includes('assistant');
 
-      const deletePatient = async () => {
-        try {
-          setIsSubmitting(true);
-
-          // Check auth
-          const token = sessionStorage.getItem('token');
-          if (!token) {
-            toast.error('Oops!', {
-              description: 'Error de autenticación.',
-            });
-            return;
-          }
-
-          // Delete request to delete a patient
-          const res = await axios.delete(
-            `http://localhost:3000/api/v1/patient/${row.original.id}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-
-          if (res.status === 200) {
-            toast.success('¡Enhorabuena!', {
-              description: 'Paciente borrado con éxito.',
-            });
-          }
-        } catch (error) {
-          console.error(error);
-          toast.error('Oops...', {
-            description: 'Error al borrar el paciente.',
-          });
-        }
-      };
+      const { deletePatientMutation } = usePatients();
 
       return (
         <>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant='ghost' className='h-8 w-8 p-0'>
-                <DotsThree size={24} className='h-4 w-4' />
+                <Ellipsis size={24} className='h-4 w-4' />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end' className='flex flex-col'>
@@ -162,7 +126,7 @@ export const patientsColumns = [
                 <Dialog>
                   <DialogTrigger>
                     <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                      <ClipboardText size={16} className='me-2' />
+                      <ClipboardList size={16} className='me-2' />
                       Ver historial
                     </DropdownMenuItem>
                   </DialogTrigger>
@@ -207,7 +171,7 @@ export const patientsColumns = [
                   <DropdownMenuItem
                     onSelect={(e) => {
                       e.preventDefault();
-                      setEditMode(true);
+                      // setEditMode(true);
                       setPatientId(row.original.id);
                     }}
                   >
@@ -234,19 +198,15 @@ export const patientsColumns = [
                       asChild
                       className='bg-red-600 text-white hover:bg-red-500'
                     >
-                      <Button onClick={() => deletePatient()}>
+                      <Button
+                        onClick={() =>
+                          deletePatientMutation.mutate(row.original.id)
+                        }
+                      >
                         Sí, borrar
-                        {isSubmitting && (
+                        {deletePatientMutation.isPending && (
                           <span className='ms-2'>
-                            <RotatingLines
-                              visible={true}
-                              height='20'
-                              width='20'
-                              strokeColor='#FFF'
-                              strokeWidth={5}
-                              animationDuration='0.75'
-                              ariaLabel='rotating-lines-loading'
-                            />
+                            <Loader2 className='animate-spin' />
                           </span>
                         )}
                       </Button>

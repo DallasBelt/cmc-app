@@ -35,7 +35,7 @@ import { PhoneInput } from '@/components/PhoneInput';
 
 import { newPatientSchema, editPatientSchema } from '@/utils/patientSchema';
 
-import { usePatients } from '@/hooks/usePatients';
+import { usePatients } from '@/hooks';
 import { usePatientStore } from '@/store';
 
 export const CreatePatientForm = () => {
@@ -312,7 +312,7 @@ export const CreatePatientForm = () => {
                       }
                       captionLayout='dropdown'
                       toYear={new Date().getFullYear() - 18}
-                      fromYear={new Date().getFullYear() - 70}
+                      fromYear={new Date().getFullYear() - 100}
                       locale={es}
                       initialFocus
                       classNames={{
