@@ -75,7 +75,7 @@ export function DataTable({ columns, data }) {
   return (
     <>
       <div className='flex flex-col gap-5'>
-        <div className='flex flex-col gap-2.5 md:flex-row md:justify-between md:items-center'>
+        <div className='flex flex-col items-center gap-2.5 md:flex-row md:justify-between'>
           <Input
             placeholder='Buscar...'
             value={globalFilter}

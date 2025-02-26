@@ -1,7 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { createPatient, getPatients, deletePatient } from '@/api/patient';
+import {
+  createPatient,
+  deletePatient,
+  getPatients,
+  updatePatient,
+} from '@/api/patient';
 import { usePatientStore } from '@/store';
 
 export const usePatients = () => {
@@ -31,18 +36,18 @@ export const usePatients = () => {
     refetchOnWindowFocus: false,
   });
 
-  // const updatePatientMutation = useMutation({
-  //   mutationFn: updatePatient,
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries(['patients']);
-  //     toast.success('¡Paciente actualizado exitósamente!');
-  //     setCreatePatientDialog(false);
-  //   },
-  //   onError: (error) => {
-  //     console.error(error);
-  //     toast.error('Error al actualizar paciente.');
-  //   },
-  // });
+  const updatePatientMutation = useMutation({
+    mutationFn: updatePatient,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['patients']);
+      toast.success('¡Paciente actualizado exitósamente!');
+      setCreatePatientDialog(false);
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error('Error al actualizar paciente.');
+    },
+  });
 
   const deletePatientMutation = useMutation({
     mutationFn: deletePatient,
@@ -56,5 +61,10 @@ export const usePatients = () => {
     },
   });
 
-  return { createPatientMutation, patientsQuery, deletePatientMutation };
+  return {
+    createPatientMutation,
+    patientsQuery,
+    deletePatientMutation,
+    updatePatientMutation,
+  };
 };

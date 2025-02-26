@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { CalendarDays, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -39,123 +40,56 @@ import { usePatients } from '@/hooks';
 import { usePatientStore } from '@/store';
 
 export const CreatePatientForm = () => {
-  const editPatient = usePatientStore((state) => state.editPatient);
-  // const [initialPatientValues, setInitialPatientValues] = useState(null);
-  // const patientId = usePatientIdStore((state) => state.patientId);
+  const isEditingPatient = usePatientStore((state) => state.isEditingPatient);
+  const patientData = usePatientStore((state) => state.patientData);
 
-  const schema = !editPatient ? newPatientSchema : editPatientSchema;
+  const schema = !isEditingPatient ? newPatientSchema : editPatientSchema;
 
-  const { createPatientMutation } = usePatients();
+  const { createPatientMutation, updatePatientMutation } = usePatients();
 
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      firstName: isEditingPatient ? patientData?.firstName : '',
+      lastName: isEditingPatient ? patientData?.lastName : '',
       dniType: '',
       dni: '',
-      occupation: '',
-      email: '',
-      dob: null,
-      phone: '',
-      address: '',
+      occupation: isEditingPatient ? patientData?.occupation : '',
+      email: isEditingPatient ? patientData?.email : '',
+      dob:
+        isEditingPatient && patientData?.dob ? new Date(patientData.dob) : null,
+      phone: isEditingPatient ? patientData?.phone : '',
+      address: isEditingPatient ? patientData?.address : '',
     },
   });
 
+  const { isDirty } = form.formState;
+
   const onSubmit = async (values) => {
-    const patient = {
-      ...values,
-      dob: format(values.dob, 'dd-MM-yyyy'),
-      medicId: sessionStorage.getItem('id'),
-    };
+    if (isEditingPatient) {
+      if (!isDirty) {
+        toast.warning('No se detectaron cambios.');
+        return;
+      }
 
-    createPatientMutation.mutate(patient);
-    // try {
-    //   setIsSubmitting(true);
+      const updatedPatientData = {
+        ...values,
+        dob: format(values.dob, 'dd-MM-yyyy'),
+      };
 
-    //   // Check auth
-    //   const token = sessionStorage.getItem('token');
-    //   if (!token) {
-    //     toast.error('Oops!', {
-    //       description: 'Error de autenticación.',
-    //     });
-    //     return;
-    //   }
+      updatePatientMutation.mutate({
+        updatedPatientData: updatedPatientData,
+        patientId: patientData.id,
+      });
+    } else {
+      const newPatient = {
+        ...values,
+        dob: format(values.dob, 'dd-MM-yyyy'),
+        medicId: sessionStorage.getItem('id'),
+      };
 
-    //   if (!initialPatientValues) {
-    //     // New entry
-
-    //     // Post request to create a new patient
-    //     const res = await axios.post(
-    //       'http://localhost:3000/api/v1/patient',
-    //       {
-    //         ...values,
-    //         dob: format(values.dob, 'dd-MM-yyyy'),
-    //         medicId: sessionStorage.getItem('id'),
-    //       },
-    //       {
-    //         headers: { Authorization: `Bearer ${token}` },
-    //       }
-    //     );
-
-    //     if (res.status === 201) {
-    //       toast.success('¡Enhorabuena!', {
-    //         description: 'Paciente creado con éxito.',
-    //       });
-
-    //       form.reset();
-    //       setModalState(false);
-    //     }
-    //   } else {
-    //     // Get current form values
-    //     const currentValues = form.getValues();
-
-    //     // Exclude 'dni' and 'dniType' keys
-    //     const { dni, dniType, ...rest } = currentValues;
-
-    //     // Compare the values
-    //     const hasChanges =
-    //       JSON.stringify(rest) !== JSON.stringify(initialPatientValues);
-
-    //     if (!hasChanges) {
-    //       toast.warning('Oops!', {
-    //         description: 'No se detectaron cambios.',
-    //       });
-    //       return;
-    //     }
-
-    //     // Patch request to update patient info
-    //     const res = await axios.patch(
-    //       `http://localhost:3000/api/v1/patient/${patientId}`,
-    //       { ...rest, dob: format(values.dob, 'dd-MM-yyyy') },
-    //       {
-    //         headers: { Authorization: `Bearer ${token}` },
-    //       }
-    //     );
-
-    //     if (res.status === 200) {
-    //       toast.success('¡Enhorabuena!', {
-    //         description: 'Información actualizada con éxito.',
-    //       });
-
-    //       // Set new current values after editing
-    //       setInitialPatientValues(rest);
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    //   if (error.response.status === 400) {
-    //     toast.error('Oops...', {
-    //       description: 'El paciente ya existe.',
-    //     });
-    //   } else {
-    //     toast.error('Oops...', {
-    //       description: 'Error al crear paciente.',
-    //     });
-    //   }
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
+      createPatientMutation.mutate(newPatient);
+    }
   };
 
   return (
@@ -197,7 +131,7 @@ export const CreatePatientForm = () => {
             />
           </div>
 
-          <div className={editPatient ? 'hidden' : 'flex'}>
+          <div className={isEditingPatient ? 'hidden' : 'flex'}>
             <FormField
               control={form.control}
               name='dniType'
@@ -230,7 +164,7 @@ export const CreatePatientForm = () => {
             />
           </div>
 
-          <div className={editPatient ? 'hidden' : 'flex'}>
+          <div className={isEditingPatient ? 'hidden' : 'flex'}>
             <FormField
               control={form.control}
               name='dni'
@@ -311,7 +245,7 @@ export const CreatePatientForm = () => {
                         date > new Date() || date < new Date('1900-01-01')
                       }
                       captionLayout='dropdown'
-                      toYear={new Date().getFullYear() - 18}
+                      toYear={new Date().getFullYear()}
                       fromYear={new Date().getFullYear() - 100}
                       locale={es}
                       initialFocus
@@ -365,7 +299,7 @@ export const CreatePatientForm = () => {
               disabled={createPatientMutation.isPending}
               className='w-full md:w-fit'
             >
-              {editPatient ? 'Guardar cambios' : 'Crear paciente'}
+              {isEditingPatient ? 'Guardar cambios' : 'Crear paciente'}
               {createPatientMutation.isPending && (
                 <Loader2 className='me-2 animate-spin' />
               )}

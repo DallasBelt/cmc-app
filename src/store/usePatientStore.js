@@ -5,9 +5,8 @@ export const usePatientStore = create((set) => ({
   createPatientDialog: false,
   setCreatePatientDialog: (state) => set({ createPatientDialog: state }),
   // Edit patient flag
-  editPatient: false,
-  setEditPatient: (mode) => set({ editPatient: mode }),
-  // Patient ID
-  patientId: null,
-  setPatientId: (id) => set({ patientId: id }),
+  isEditingPatient: false,
+  setIsEditingPatient: (flag) => set({ isEditingPatient: flag }),
+  patientData: null,
+  setPatientData: (data) => set({ patientData: data }),
 }));

@@ -19,14 +19,16 @@ export const CreatePatientDialog = () => {
   const setCreatePatientDialog = usePatientStore(
     (state) => state.setCreatePatientDialog
   );
-  const setEditPatient = usePatientStore((state) => state.setEditPatient);
+  const setIsEditingPatient = usePatientStore(
+    (state) => state.setIsEditingPatient
+  );
 
   return (
     <>
       <Button
         onClick={() => {
           setCreatePatientDialog(true);
-          setEditPatient(false);
+          setIsEditingPatient(false);
         }}
         className='w-full md:max-w-fit'
       >

@@ -1,4 +1,4 @@
-import { differenceInYears } from 'date-fns';
+import { differenceInYears, set } from 'date-fns';
 import {
   Loader2,
   ArrowDownUp,
@@ -103,8 +103,10 @@ export const patientsColumns = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      // const setEditPatient = usePatientStore((state) => state.setEditPatient);
-      const setPatientId = usePatientStore((state) => state.setPatientId);
+      const setIsEditingPatient = usePatientStore(
+        (state) => state.setIsEditingPatient
+      );
+      const setPatientData = usePatientStore((state) => state.setPatientData);
 
       const isAssistant = sessionStorage.getItem('roles').includes('assistant');
 
@@ -145,8 +147,8 @@ export const patientsColumns = [
                   <DropdownMenuItem
                     onSelect={(e) => {
                       e.preventDefault();
-                      setEditMode(true);
-                      setPatientId(row.original.id);
+                      setIsEditingPatient(true);
+                      setPatientData(row.original);
                     }}
                   >
                     <Pencil size={16} className='me-2' /> Editar
@@ -171,11 +173,10 @@ export const patientsColumns = [
                   <DropdownMenuItem
                     onSelect={(e) => {
                       e.preventDefault();
-                      // setEditMode(true);
                       setPatientId(row.original.id);
                     }}
                   >
-                    <Trash size={16} className='me-2' /> Borrar
+                    <Trash size={16} className='me-2' /> Eliminar
                   </DropdownMenuItem>
                 </AlertDialogTrigger>
                 <AlertDialogContent
@@ -186,7 +187,11 @@ export const patientsColumns = [
                 >
                   <AlertDialogHeader>
                     <AlertDialogTitle>
-                      ¿Está absolutamente seguro?
+                      ¿Desea eliminar a{' '}
+                      <span className='text-red-600'>
+                        {row.original.firstName} {row.original.lastName}
+                      </span>{' '}
+                      de la lista de pacientes?
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                       Esta acción no se puede deshacer.
