@@ -13,7 +13,5 @@ export const getPatients = async () => {
   }
 
   // Convert to JSON
-  const data = await res.json();
-
-  return data;
+  return await res.json();
 };

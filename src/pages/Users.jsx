@@ -1,37 +1,26 @@
-import { RotatingLines } from 'react-loader-spinner';
+import { Loader2 } from 'lucide-react';
 
 import { DataTable } from '@/components';
 
-import { getTableData } from '@/hooks';
+import { useUsers } from '@/hooks';
 import { usersColumns } from '@/config';
 
 export const Users = () => {
-  const token = sessionStorage.getItem('token');
+  const { usersQuery } = useUsers();
 
-  const { data, loading } = getTableData(
-    'http://localhost:3000/api/v1/auth/all',
-    token
-  );
-
-  if (loading) {
-    return (
-      <div className='h-96 flex justify-center items-center'>
-        <RotatingLines
-          visible={true}
-          height='100'
-          width='100'
-          strokeColor='#2563eb'
-          strokeWidth={5}
-          animationDuration='0.75'
-          ariaLabel='rotating-lines-loading'
-        />
-      </div>
-    );
-  }
+  const data = Array.isArray(usersQuery.data?.data) ? usersQuery.data.data : [];
 
   return (
-    <div className=''>
-      <DataTable columns={usersColumns} data={data} />
-    </div>
+    <>
+      {usersQuery.isPending ? (
+        <div className='h-96 flex justify-center items-center'>
+          <Loader2 size={50} className='animate-spin' />
+        </div>
+      ) : (
+        <div className='flex flex-col gap-5'>
+          <DataTable columns={usersColumns} data={data} />
+        </div>
+      )}
+    </>
   );
 };

@@ -11,7 +11,7 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-import { useToastStore } from '@/store/store';
+import { useToastStore } from '@/store';
 
 const chartConfig = {
   patients: {

@@ -21,6 +21,7 @@ export * from './RegistrationForm';
 export * from './Scheduler';
 export * from './SearchPatients';
 export * from './UserInfoForm';
+export * from './UsersDropdown';
 export * from './theme-provider';
 export * from './ui/alert-dialog';
 export * from './ui/avatar';

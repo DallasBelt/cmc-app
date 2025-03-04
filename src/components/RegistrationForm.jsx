@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
+
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -13,19 +14,11 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import { toast } from 'sonner';
-
-import { RotatingLines } from 'react-loader-spinner';
-
-import { Eye, EyeSlash, UserPlus } from '@phosphor-icons/react';
-
+import { useAuth } from '@/hooks';
 import { registrationSchema } from '@/utils/registrationSchema';
-import { useRegistrationStore } from '@/store/store';
 
-const RegistrationForm = () => {
-  // Retrieve the token
-  const token = sessionStorage.getItem('token');
-  const setModalState = useRegistrationStore((state) => state.setModalState);
+export const RegistrationForm = () => {
+  const { registerMutation } = useAuth();
 
   // Hide/Show password button
   const [showPassword, setShowPassword] = useState(false);
@@ -35,9 +28,6 @@ const RegistrationForm = () => {
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const togglePasswordConfirmVisibility = () =>
     setShowPasswordConfirm(!showPasswordConfirm);
-
-  // Loading with React Spinners
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(registrationSchema),
@@ -49,59 +39,16 @@ const RegistrationForm = () => {
   });
 
   const onSubmit = async (values) => {
-    try {
-      // Show loading React Spinners
-      setIsSubmitting(true);
+    // Hide password fields
+    setShowPassword(false);
+    setShowPasswordConfirm(false);
 
-      // Hide password and confirm password fields
-      setShowPassword(false);
-      setShowPasswordConfirm(false);
+    const newUser = {
+      email: values.email,
+      password: values.password,
+    };
 
-      const newUser = {
-        email: values.email,
-        password: values.password,
-      };
-
-      // https://cmc-api-42qy.onrender.com/api/v1/auth/register
-      const response = await axios.post(
-        'http://localhost:3000/api/v1/auth/register',
-        newUser
-      );
-
-      if (response && response.status === 201) {
-        {
-          !token
-            ? (toast.success('Registro exitoso'),
-              toast.info('Importante', {
-                description:
-                  'Espere activación del administrador para iniciar sesión.',
-                duration: 5000,
-              }))
-            : toast.success('¡Enhorabuena!', {
-                description: 'Se ha creado un nuevo usuario.',
-              });
-        }
-
-        form.reset();
-        setModalState(false);
-      } else {
-        toast.error('Oops...', {
-          description: 'Error interno del servidor.',
-        });
-      }
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        toast.error('Error', {
-          description: 'El correo ya está registrado.',
-        });
-      } else {
-        toast.error('Oops...', {
-          description: 'Error interno del servidor.',
-        });
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
+    registerMutation.mutate(newUser);
   };
 
   return (
@@ -142,7 +89,7 @@ const RegistrationForm = () => {
                     onClick={togglePasswordVisibility}
                     className='cursor-pointer absolute right-3 text-slate-500'
                   >
-                    {showPassword ? <Eye size={24} /> : <EyeSlash size={24} />}
+                    {showPassword ? <Eye size={24} /> : <EyeOff size={24} />}
                   </span>
                 </div>
               </FormControl>
@@ -171,7 +118,7 @@ const RegistrationForm = () => {
                     {showPasswordConfirm ? (
                       <Eye size={24} />
                     ) : (
-                      <EyeSlash size={24} />
+                      <EyeOff size={24} />
                     )}
                   </span>
                 </div>
@@ -181,34 +128,17 @@ const RegistrationForm = () => {
           )}
         />
 
-        <div className='flex justify-end pt-3'>
+        <div className='flex justify-center pt-3'>
           <Button
             type='submit'
-            className={
-              !token ? 'h-10 text-xl bg-green-500 hover:bg-green-400' : 'none'
-            }
-            disabled={isSubmitting}
+            className={'h-10 text-xl bg-green-500 hover:bg-green-400'}
+            disabled={registerMutation.isPending}
           >
-            <UserPlus size={24} className={!token ? 'hidden' : 'mr-2'} />
-            {!token ? 'Registrarse' : 'Crear'}
-            {isSubmitting && (
-              <span className='ms-2'>
-                <RotatingLines
-                  visible={true}
-                  height='20'
-                  width='20'
-                  strokeColor='#FFF'
-                  strokeWidth={5}
-                  animationDuration='0.75'
-                  ariaLabel='rotating-lines-loading'
-                />
-              </span>
-            )}
+            {registerMutation.isPending && <Loader2 className='animate-spin' />}
+            Registrarse
           </Button>
         </div>
       </form>
     </Form>
   );
 };
-
-export default RegistrationForm;

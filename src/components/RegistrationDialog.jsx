@@ -1,3 +1,5 @@
+import { UserPlus2 } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -7,32 +9,34 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-import { UserPlus } from '@phosphor-icons/react';
-
-import RegistrationForm from './RegistrationForm';
-import { useRegistrationStore } from '@/store/store';
+import { RegistrationForm } from '@/components';
+import { useRegistrationStore } from '@/store';
 
 export const RegistrationDialog = () => {
   // Retrieve the token
   const token = sessionStorage.getItem('token');
 
   // Control modal global state
-  const modalState = useRegistrationStore((state) => state.modalState);
-  const setModalState = useRegistrationStore((state) => state.setModalState);
+  const registrationDialog = useRegistrationStore(
+    (state) => state.registrationDialog
+  );
+  const setRegistrationDialog = useRegistrationStore(
+    (state) => state.setRegistrationDialog
+  );
 
   return (
     <>
       <Button
-        onClick={() => setModalState(true)}
+        onClick={() => setRegistrationDialog(true)}
         className={
           !token ? 'bg-green-500 hover:bg-green-400 mx-auto h-12 text-xl' : ''
         }
       >
-        <UserPlus size={24} className={!token ? 'hidden' : 'mr-2'} />
+        <UserPlus2 size={24} className={!token ? 'hidden' : 'mr-2'} />
         {!token ? 'REGISTRARSE' : 'Nuevo'}
       </Button>
 
-      <Dialog open={modalState} onOpenChange={setModalState}>
+      <Dialog open={registrationDialog} onOpenChange={setRegistrationDialog}>
         <DialogContent
           className='max-w-md max-h-screen overflow-y-auto select-none'
           onInteractOutside={(e) => {

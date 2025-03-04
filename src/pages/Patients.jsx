@@ -2,7 +2,7 @@ import { Loader2 } from 'lucide-react';
 
 import { CreatePatientDialog, DataTable } from '@/components';
 
-import { usePatients } from '@/hooks/usePatients';
+import { usePatients } from '@/hooks';
 import { patientsColumns } from '@/config/patientsColumns';
 
 export const Patients = () => {
@@ -24,7 +24,7 @@ export const Patients = () => {
       <div className='mb-5'>
         <CreatePatientDialog />
       </div>
-      {patientsQuery.isFetching ? (
+      {patientsQuery.isPending ? (
         <div className='h-96 flex justify-center items-center'>
           <Loader2 size={50} className='animate-spin' />
         </div>

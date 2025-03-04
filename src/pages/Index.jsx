@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { toast } from 'sonner';
 
 import { Scheduler } from '@/components';
-import { useToastStore } from '@/store/store';
+import { useToastStore } from '@/store';
 
 const chartConfig = {
   patients: {

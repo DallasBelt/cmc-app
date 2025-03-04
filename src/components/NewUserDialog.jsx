@@ -1,3 +1,5 @@
+import { UserPlus2 } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -8,9 +10,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { UserPlus } from '@phosphor-icons/react';
-
-import RegistrationForm from './RegistrationForm';
+import { RegistrationForm } from '@/components';
 
 const NewUserDialog = () => {
   return (
@@ -18,7 +18,7 @@ const NewUserDialog = () => {
       <Dialog>
         <DialogTrigger asChild>
           <Button>
-            <UserPlus size={24} className='mr-2' />
+            <UserPlus2 size={24} className='mr-2' />
             Nuevo usuario
           </Button>
         </DialogTrigger>

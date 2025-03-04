@@ -11,12 +11,5 @@ export const createPatient = async (patient) => {
     body: JSON.stringify(patient),
   });
 
-  if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.message || 'Error al crear paciente.');
-  }
-
-  const data = await res.json();
-
-  return data;
+  return await res.json();
 };
