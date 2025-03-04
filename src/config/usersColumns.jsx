@@ -1,51 +1,8 @@
-import { toast } from 'sonner';
 import { ArrowUpDown } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 
 import { UsersDropdown } from '@/components';
-
-const changeState = async (email) => {
-  try {
-    // Check auth
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-      toast.error('Oops!', {
-        description: `Error de autenticación.`,
-      });
-      return;
-    }
-
-    // Send the request to the server
-    const res = await fetch('http://localhost:3000/api/v1/auth/soft-delete', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ email }),
-    });
-
-    // Check if the request was successful and the response contains success
-    if (!res.ok) {
-      toast.error('Oops...', {
-        description: 'Error al cambiar el estado.',
-      });
-      return;
-    }
-
-    // Give a toast message if succeeded
-    toast.success('¡Enhorabuena!', {
-      description: `Se ha cambiado el estado del usuario.`,
-    });
-  } catch (error) {
-    console.error(error);
-    // Give a toast message if error
-    toast.error('Oops...', {
-      description: `Ha ocurrido un error.`,
-    });
-  }
-};
 
 export const usersColumns = [
   {

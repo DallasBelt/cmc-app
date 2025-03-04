@@ -16,12 +16,12 @@ import {
 import { useUsers } from '@/hooks';
 
 export const UsersDropdown = ({ row }) => {
-  const { changeRoleMutation } = useUsers();
+  const { changeRoleMutation, changeStateMutation } = useUsers();
 
   const email = row.original.email;
 
   const [role, setRole] = useState(row.original.roles.toString());
-  const [state, setState] = useState('inactive');
+  const [state, setState] = useState(row.original.isActive);
 
   return (
     <DropdownMenu>
@@ -56,11 +56,17 @@ export const UsersDropdown = ({ row }) => {
         <DropdownMenuSeparator />
 
         <DropdownMenuLabel>Cambiar Estado</DropdownMenuLabel>
-        <DropdownMenuRadioGroup value={state} onValueChange={setState}>
-          <DropdownMenuRadioItem className='cursor-pointer' value='active'>
+        <DropdownMenuRadioGroup
+          value={state}
+          onValueChange={(state) => {
+            setState(state);
+            changeStateMutation.mutate(email);
+          }}
+        >
+          <DropdownMenuRadioItem className='cursor-pointer' value={true}>
             Activo
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem className='cursor-pointer' value='inactive'>
+          <DropdownMenuRadioItem className='cursor-pointer' value={false}>
             Inactivo
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
