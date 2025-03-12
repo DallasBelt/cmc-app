@@ -47,7 +47,7 @@ export const useAppointments = () => {
     mutationFn: deleteAppointment,
     onSuccess: () => {
       queryClient.invalidateQueries(['appointments']);
-      setAppointmentDropdown(false);
+      // setAppointmentDropdown(false);
       toast.info('La cita ha sido eliminada.');
     },
     onError: (error) => {
@@ -74,18 +74,18 @@ export const useAppointments = () => {
     },
   });
 
-  // const updateAppointmentMutation = useMutation({
-  //   mutationFn: updateAppointment,
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries(['appointments']);
-  //     setDropdownOpen(false);
-  //     toast.info('La cita ha sido actualizada.');
-  //   },
-  //   onError: (error) => {
-  //     console.error(error);
-  //     toast.error('Error en la solicitud.');
-  //   },
-  // });
+  const updateAppointmentMutation = useMutation({
+    mutationFn: updateAppointment,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['appointments']);
+      setDropdownOpen(false);
+      toast.info('La cita ha sido actualizada.');
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error('Error en la solicitud.');
+    },
+  });
 
   return {
     createAppointmentMutation,

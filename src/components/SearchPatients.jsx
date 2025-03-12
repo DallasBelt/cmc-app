@@ -1,11 +1,11 @@
 import { useState } from 'react';
+import { Search, X } from 'lucide-react';
 
-import { useTheme } from '@/components/theme-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { MagnifyingGlass, X } from '@phosphor-icons/react';
 
-import { usePatients } from '@/hooks/usePatients';
+import { usePatients } from '@/hooks';
+import { useTheme } from '@/components/theme-provider';
 
 export const SearchPatients = ({ onSelectPatient }) => {
   const { effectiveTheme } = useTheme();
@@ -48,7 +48,7 @@ export const SearchPatients = ({ onSelectPatient }) => {
 
   return (
     <div className='relative flex items-center'>
-      <MagnifyingGlass size={18} className='absolute left-3' />
+      <Search size={18} className='absolute left-3' />
       <Input
         type='text'
         placeholder='Buscar paciente...'

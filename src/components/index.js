@@ -8,6 +8,7 @@ export * from './CreatePatientDialog';
 export * from './CreatePatientForm';
 export * from './DataTable';
 export * from './DeleteAppointmentDialog';
+export * from './EventContent';
 export * from './LoginForm';
 export * from './MedicInfoForm';
 export * from './ModeToggle';
