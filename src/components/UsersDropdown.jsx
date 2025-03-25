@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Ellipsis } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,6 +24,15 @@ export const UsersDropdown = ({ row }) => {
   const [role, setRole] = useState(row.original.roles.toString());
   const [state, setState] = useState(row.original.isActive);
 
+  const handleRoleChange = (newRole) => {
+    if (newRole === role) {
+      toast.error('El rol es el mismo.');
+      return;
+    }
+    setRole(newRole);
+    changeRoleMutation.mutate({ email, role: newRole });
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -38,15 +48,9 @@ export const UsersDropdown = ({ row }) => {
         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuLabel>Cambiar Rol</DropdownMenuLabel>
-        <DropdownMenuRadioGroup
-          value={role}
-          onValueChange={(role) => {
-            setRole(role);
-            changeRoleMutation.mutate({ email, role });
-          }}
-        >
+        <DropdownMenuRadioGroup value={role} onValueChange={handleRoleChange}>
           <DropdownMenuRadioItem className='cursor-pointer' value='medic'>
-            Medico
+            Médico
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem className='cursor-pointer' value='assistant'>
             Asistente
