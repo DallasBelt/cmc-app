@@ -8,31 +8,26 @@ import { CalendarDays, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import {
+  Button,
+  Calendar,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import {
+  Input,
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-
-import { PhoneInput } from '@/components/PhoneInput';
+  PhoneInput,
+} from '@/components';
 
 import { newPatientSchema, editPatientSchema } from '@/utils/patientSchema';
 

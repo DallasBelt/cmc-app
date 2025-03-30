@@ -38,8 +38,8 @@ export const DeleteAppointmentDialog = () => {
         }}
       >
         <AlertDialogHeader>
-          <AlertDialogTitle>¿Está segur(a)?</AlertDialogTitle>
-          <AlertDialogDescription>Confirmar acción</AlertDialogDescription>
+          <AlertDialogTitle>Va a eliminar la cita</AlertDialogTitle>
+          <AlertDialogDescription>¿Está segur(a)?</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>No, volver</AlertDialogCancel>

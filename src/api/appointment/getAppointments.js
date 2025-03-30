@@ -12,18 +12,5 @@ export const getAppointments = async () => {
     throw new Error(`Request error: ${res.statusText}`);
   }
 
-  const data = await res.json();
-
-  const formattedData =
-    data?.data.map((e) => ({
-      id: e.id,
-      title: `${e.patient.firstName} ${e.patient.lastName}`,
-      start: e.startTime,
-      end: e.endTime,
-      extendedProps: {
-        status: e.status,
-      },
-    })) || [];
-
-  return formattedData;
+  return await res.json();
 };

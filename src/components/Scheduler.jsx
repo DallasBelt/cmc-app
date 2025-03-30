@@ -21,6 +21,17 @@ export function Scheduler() {
   const { getEventClassNames, handleDateClick, handleEventClick } =
     useScheduler();
 
+  const appointments =
+    appointmentsQuery.data?.data.map((e) => ({
+      id: e.id,
+      title: `${e.patient.firstName} ${e.patient.lastName}`,
+      start: e.startTime,
+      end: e.endTime,
+      extendedProps: {
+        status: e.status,
+      },
+    })) || [];
+
   return (
     <div className={effectiveTheme === 'dark' ? 'dark' : ''}>
       <FullCalendar
@@ -35,7 +46,7 @@ export function Scheduler() {
         }}
         weekends={true}
         firstDay={1}
-        events={appointmentsQuery.data}
+        events={appointments}
         eventClick={handleEventClick}
         eventClassNames={getEventClassNames}
         eventContent={(eventInfo) => <EventContent eventInfo={eventInfo} />}

@@ -19,7 +19,7 @@ export const AppointmentDropdown = () => {
     (state) => state.appointmentStatus
   );
   const setEditAppointment = useAppointmentStore(
-    (state) => state.setEditsetEditAppointmentMode
+    (state) => state.setEditAppointment
   );
   const appointmentDropdown = useAppointmentStore(
     (state) => state.appointmentDropdown

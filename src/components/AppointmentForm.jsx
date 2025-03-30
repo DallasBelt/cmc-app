@@ -5,62 +5,83 @@ import { format, setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { CalendarDays, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import {
+  Button,
+  Calendar,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import {
+  Input,
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+  SearchPatients,
+} from '@/components';
 
-import { SearchPatients } from '@/components';
 import { useAppointments } from '@/hooks';
 import { useAppointmentStore } from '@/store';
 
 import { newAppointmentSchema } from '@/utils/appointmentSchema';
 
-const AppointmentForm = () => {
+export const AppointmentForm = () => {
   setDefaultOptions({ locale: es });
+
+  const {
+    appointmentsQuery,
+    createAppointmentMutation,
+    updateAppointmentMutation,
+  } = useAppointments();
 
   const medicId = sessionStorage.getItem('id');
 
+  const appointmentId = useAppointmentStore((state) => state.appointmentId);
   const appointmentDate = useAppointmentStore((state) => state.appointmentDate);
   const appointmentStartTime = useAppointmentStore(
     (state) => state.appointmentStartTime
   );
   const editAppointment = useAppointmentStore((state) => state.editAppointment);
 
-  const { createAppointmentMutation } = useAppointments();
+  const appointmentToEdit = appointmentsQuery.data.data?.find(
+    (a) => a.id === appointmentId
+  );
 
   const form = useForm({
     resolver: zodResolver(newAppointmentSchema),
     defaultValues: {
-      date: appointmentDate,
-      startTime: appointmentStartTime === '00:00' ? '' : appointmentStartTime,
-      endTime: '',
+      date: editAppointment
+        ? new Date(appointmentToEdit.startTime)
+        : appointmentDate,
+      startTime: editAppointment
+        ? format(appointmentToEdit.startTime, 'HH:mm')
+        : appointmentStartTime,
+      endTime: editAppointment
+        ? format(appointmentToEdit.endTime, 'HH:mm')
+        : '',
       // reason: '',
-      patient: '',
+      patient: editAppointment ? appointmentToEdit.patient.id : '',
     },
   });
 
+  const { isDirty } = form.formState;
+
   const onSubmit = async (values) => {
+    if (editAppointment) {
+      if (!isDirty) {
+        toast.warning('No se detectaron cambios.');
+        return;
+      }
+    }
     const appointment = {
       startTime: format(
         new Date(
@@ -84,7 +105,12 @@ const AppointmentForm = () => {
       medicId,
     };
 
-    createAppointmentMutation.mutate(appointment);
+    editAppointment
+      ? updateAppointmentMutation.mutate({
+          id: appointmentToEdit.id,
+          appointment,
+        })
+      : createAppointmentMutation.mutate(appointment);
   };
 
   return (
@@ -98,9 +124,19 @@ const AppointmentForm = () => {
               <FormItem>
                 <FormLabel>Paciente</FormLabel>
                 <FormControl>
-                  <SearchPatients
-                    onSelectPatient={(id) => field.onChange(id)}
-                  />
+                  {editAppointment ? (
+                    <div>
+                      <Input
+                        placeholder={`${appointmentToEdit.patient.firstName} ${appointmentToEdit.patient.lastName}`}
+                        disabled
+                      />
+                      <Input {...field} disabled={true} className='hidden' />
+                    </div>
+                  ) : (
+                    <SearchPatients
+                      onSelectPatient={(id) => field.onChange(id)}
+                    />
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -273,5 +309,3 @@ const AppointmentForm = () => {
     </>
   );
 };
-
-export default AppointmentForm;

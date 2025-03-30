@@ -32,20 +32,12 @@ export const useScheduler = () => {
   };
 
   const handleEventClick = async (info) => {
-    // if (isAssistant) {
-
-    // }
     setAppointmentDropdown(true);
     setAppointmentDropdownPosition({
       top: info.jsEvent.clientY,
       left: info.jsEvent.clientX,
     });
-    // const appointment = {
-    //   patient: info.event.title,
-    //   date: info.event.start,
-    //   startTime: info.event.start,
-    //   endTime: info.event.end,
-    // };
+
     setAppointmentId(info.event.id);
     setAppointmentStatus(info.event.extendedProps.status);
   };

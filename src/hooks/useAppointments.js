@@ -18,9 +18,7 @@ export const useAppointments = () => {
   const setCreateAppointmentDialog = useAppointmentStore(
     (state) => state.setCreateAppointmentDialog
   );
-  const setAppointmentDropdown = useAppointmentStore(
-    (state) => state.setAppointmentDropdown
-  );
+
   const setAppointmentStatus = useAppointmentStore(
     (state) => state.setAppointmentStatus
   );
@@ -47,7 +45,6 @@ export const useAppointments = () => {
     mutationFn: deleteAppointment,
     onSuccess: () => {
       queryClient.invalidateQueries(['appointments']);
-      // setAppointmentDropdown(false);
       toast.info('La cita ha sido eliminada.');
     },
     onError: (error) => {
@@ -60,7 +57,6 @@ export const useAppointments = () => {
     mutationFn: changeAppointmentStatus,
     onSuccess: (newAppointmentStatus) => {
       queryClient.invalidateQueries(['appointments']);
-      setAppointmentDropdown(false);
       setAppointmentStatus(newAppointmentStatus);
       toast.info(
         `La cita ha sido ${
@@ -78,8 +74,8 @@ export const useAppointments = () => {
     mutationFn: updateAppointment,
     onSuccess: () => {
       queryClient.invalidateQueries(['appointments']);
-      setDropdownOpen(false);
       toast.info('La cita ha sido actualizada.');
+      setCreateAppointmentDialog(false);
     },
     onError: (error) => {
       console.error(error);
@@ -92,6 +88,6 @@ export const useAppointments = () => {
     appointmentsQuery,
     deleteAppointmentMutation,
     changeAppointmentStatusMutation,
-    // updateAppointmentMutation,
+    updateAppointmentMutation,
   };
 };
