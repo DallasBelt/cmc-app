@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { CalendarDays, Loader2 } from 'lucide-react';
@@ -51,8 +51,7 @@ export const CreatePatientForm = () => {
       dni: '',
       occupation: isEditingPatient ? patientData?.occupation : '',
       email: isEditingPatient ? patientData?.email : '',
-      dob:
-        isEditingPatient && patientData?.dob ? new Date(patientData.dob) : null,
+      dob: isEditingPatient ? parseISO(patientData.dob) : null,
       phone: isEditingPatient ? patientData?.phone : '',
       address: isEditingPatient ? patientData?.address : '',
     },
@@ -240,6 +239,7 @@ export const CreatePatientForm = () => {
                         date > new Date() || date < new Date('1900-01-01')
                       }
                       captionLayout='dropdown'
+                      defaultMonth={field.value || undefined}
                       toYear={new Date().getFullYear()}
                       fromYear={new Date().getFullYear() - 100}
                       locale={es}
