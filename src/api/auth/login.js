@@ -7,11 +7,20 @@ export const login = async (credentials) => {
     body: JSON.stringify(credentials),
   });
 
+  let data;
+
+  try {
+    data = await res.json();
+  } catch {
+    data = null;
+  }
+
   if (!res.ok) {
     throw {
       status: res.status,
+      errorCode: data?.errorCode || null,
     };
   }
 
-  return await res.json();
+  return data;
 };

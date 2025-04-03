@@ -30,10 +30,23 @@ export const useAuth = () => {
     },
     onError: (error) => {
       console.error(error);
-      if (error.status === 400 || error.status === 401) {
+      if (error.errorCode === 'USER_INACTIVE') {
+        toast.error('Usuario inactivo.');
+        return;
+      }
+
+      if (error.errorCode === 'USER_UNAUTHORIZED') {
+        toast.error('Usuario no autorizado.');
+        return;
+      }
+
+      if (error.errorCode === 'BAD_CREDENTIALS') {
         toast.error('Revise sus credenciales.');
-      } else {
-        toast.error('Error al iniciar sesión');
+        return;
+      }
+
+      if (error.status) {
+        toast.error('Error al iniciar sesión.');
       }
     },
   });
