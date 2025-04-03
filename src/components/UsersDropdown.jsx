@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { Ellipsis } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -20,17 +18,23 @@ export const UsersDropdown = ({ row }) => {
   const { changeRoleMutation, changeStateMutation } = useUsers();
 
   const email = row.original.email;
-
-  const [role, setRole] = useState(row.original.roles.toString());
-  const [state, setState] = useState(row.original.isActive);
+  const state = row.original.isActive;
+  const role = row.original.roles.toString();
 
   const handleRoleChange = (newRole) => {
     if (newRole === role) {
-      toast.error('El rol es el mismo.');
+      toast.error('El usuario ya tiene ese rol.');
       return;
     }
-    setRole(newRole);
     changeRoleMutation.mutate({ email, role: newRole });
+  };
+
+  const handleStateChange = (newState) => {
+    if (newState === state) {
+      toast.error('El usuario ya tiene ese estado.');
+      return;
+    }
+    changeStateMutation.mutate(email);
   };
 
   return (
@@ -45,28 +49,22 @@ export const UsersDropdown = ({ row }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56'>
-        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuLabel>Cambiar Rol</DropdownMenuLabel>
-        <DropdownMenuRadioGroup value={role} onValueChange={handleRoleChange}>
-          <DropdownMenuRadioItem className='cursor-pointer' value='medic'>
-            Médico
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem className='cursor-pointer' value='assistant'>
-            Asistente
-          </DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
+        <div className={state ? 'block' : 'hidden'}>
+          <DropdownMenuLabel>Cambiar Rol</DropdownMenuLabel>
+          <DropdownMenuRadioGroup value={role} onValueChange={handleRoleChange}>
+            <DropdownMenuRadioItem className='cursor-pointer' value='medic'>
+              Médico
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem className='cursor-pointer' value='assistant'>
+              Asistente
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
 
-        <DropdownMenuSeparator />
+          <DropdownMenuSeparator />
+        </div>
 
         <DropdownMenuLabel>Cambiar Estado</DropdownMenuLabel>
-        <DropdownMenuRadioGroup
-          value={state}
-          onValueChange={(state) => {
-            setState(state);
-            changeStateMutation.mutate(email);
-          }}
-        >
+        <DropdownMenuRadioGroup value={state} onValueChange={handleStateChange}>
           <DropdownMenuRadioItem className='cursor-pointer' value={true}>
             Activo
           </DropdownMenuRadioItem>

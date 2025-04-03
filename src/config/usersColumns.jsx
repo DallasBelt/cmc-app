@@ -74,6 +74,7 @@ export const usersColumns = [
   },
   {
     id: 'actions',
+    header: 'Acciones',
     cell: ({ row }) => {
       return (
         <>
