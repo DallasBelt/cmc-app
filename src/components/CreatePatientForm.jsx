@@ -29,7 +29,7 @@ import {
   PhoneInput,
 } from '@/components';
 
-import { newPatientSchema, editPatientSchema } from '@/utils/patientSchema';
+import { newPatientSchema, editPatientSchema } from '@/schemas/patientSchema';
 
 import { usePatients } from '@/hooks';
 import { usePatientStore } from '@/store';

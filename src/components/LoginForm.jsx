@@ -15,7 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 
 import { useAuth } from '@/hooks';
-import { loginSchema } from '@/utils/loginSchema';
+import { loginSchema } from '@/schemas/loginSchema';
 
 export const LoginForm = () => {
   const { loginMutation } = useAuth();

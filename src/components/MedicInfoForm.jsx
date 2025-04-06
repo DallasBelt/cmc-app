@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { medicInfoSchema } from '@/utils/medicSchema';
+import { medicInfoSchema } from '@/schemas/medicSchema';
 import { days } from '@/constants/days';
 import { specialties } from '@/constants/specialties';
 

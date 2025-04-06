@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { assistantInfoSchema } from '@/utils/assistantSchema';
+import { assistantInfoSchema } from '@/schemas';
 import { days } from '@/constants/days';
 
 export const AssistantInfoForm = () => {

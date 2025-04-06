@@ -15,7 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 
 import { useAuth } from '@/hooks';
-import { registrationSchema } from '@/utils/registrationSchema';
+import { registrationSchema } from '@/schemas';
 
 export const RegistrationForm = () => {
   const { registerMutation } = useAuth();

@@ -36,7 +36,7 @@ import { PhoneInput } from '@/components/PhoneInput';
 
 import { CalendarDots } from '@phosphor-icons/react';
 
-import { userInfoSchema } from '@/utils/userInfoSchema';
+import { userInfoSchema } from '@/schemas/userInfoSchema';
 
 export const UserInfoForm = () => {
   setDefaultOptions({ locale: es });

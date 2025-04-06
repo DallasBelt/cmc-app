@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import {
   Button,
@@ -13,13 +14,18 @@ import {
   Textarea,
 } from '@/components';
 
-import { usePatientStore } from '@/store';
+import { useAppointments, useHistory } from '@/hooks';
+import { historySchema } from '@/schemas';
+import { useAppointmentStore } from '@/store';
 
 export const HistoryForm = () => {
-  const patientData = usePatientStore((state) => state.patientData);
+  const { createHistoryMutation } = useHistory();
+  const { updateAppointmentMutation } = useAppointments();
+
+  const { appointmentData } = useAppointmentStore();
 
   const form = useForm({
-    // resolver: zodResolver(newAppointmentSchema),
+    resolver: zodResolver(historySchema),
     defaultValues: {
       bloodPressure: '',
       oxygenSaturation: '',
@@ -34,24 +40,43 @@ export const HistoryForm = () => {
       treatment: '',
       prescription: '',
       observations: '',
-      patientId: '',
+      patientId: appointmentData.patientData.id,
     },
   });
 
   const onSubmit = (values) => {
-    const history = {
+    const newHistoryEntry = {
       ...values,
-      bloodPressure: `${values.bloodPressure.systolic}/${values.bloodPressure.diastolic} mmHg`,
+      bloodPressure:
+        values.bloodPressure &&
+        `${values.bloodPressure.systolic}/${values.bloodPressure.diastolic} mmHg`,
+      oxygenSaturation:
+        values.oxygenSaturation && `${values.oxygenSaturation}%`,
+      bodyTemperature: values.bodyTemperature && `${values.bodyTemperature}ºC`,
+      heartRate: values.heartRate && `${values.heartRate} bpm`,
+      respiratoryRate:
+        values.respiratoryRate && `${values.respiratoryRate} lmp`,
+      weight: values.weight && `${values.weight} kg`,
+      height: values.height && `${values.height} cm`,
     };
-    console.log(history);
+
+    createHistoryMutation.mutate(newHistoryEntry);
+    updateAppointmentMutation.mutate({
+      id: appointmentData.id,
+      appointment: {
+        status: 'completed',
+        patientId: appointmentData.patientData.id,
+      },
+    });
   };
 
   return (
     <>
       <Label>
-        Paciente: {`${patientData.firstName} ${patientData.lastName}`}
+        Paciente:{' '}
+        {`${appointmentData.patientData.firstName} ${appointmentData.patientData.lastName}`}
       </Label>
-      <Label>Identificación: {patientData.dni}</Label>
+      <Label>Identificación: {appointmentData.patientData.dni}</Label>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-10'>
           <fieldset className='border-2 p-4 rounded-md space-y-2.5'>
@@ -201,6 +226,39 @@ export const HistoryForm = () => {
                         <Input type='number' className='flex-1' {...field} />
                         <span>cm</span>
                       </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </fieldset>
+
+          <fieldset className='border-2 p-4 rounded-md space-y-2.5'>
+            <legend className='font-bold'>Antecedentes</legend>
+            <div className='md:flex md:gap-10 w-full'>
+              <FormField
+                control={form.control}
+                name='allergies'
+                render={({ field }) => (
+                  <FormItem className='flex-1'>
+                    <FormLabel>Alergias</FormLabel>
+                    <FormControl>
+                      <Textarea className='w-full resize-none' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='pe-diseases'
+                render={({ field }) => (
+                  <FormItem className='flex-1'>
+                    <FormLabel>Enfermedades preexistentes</FormLabel>
+                    <FormControl>
+                      <Textarea className='w-full resize-none' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

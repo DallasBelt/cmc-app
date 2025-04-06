@@ -5,7 +5,24 @@ export const useAppointmentStore = create((set) => ({
   createAppointmentDialog: false,
   setCreateAppointmentDialog: (state) =>
     set({ createAppointmentDialog: state }),
-  // Appointment ID
+
+  // Appointment data
+  appointmentData: {
+    id: null,
+    date: '',
+    startTime: '',
+    status: '',
+    patientData: {},
+  },
+  setAppointmentData: (data) => set({ appointmentData: data }),
+  updateAppointmentField: (field, value) =>
+    set((state) => ({
+      appointmentData: {
+        ...state.appointmentData,
+        [field]: value,
+      },
+    })),
+  /* // Appointment ID
   appointmentId: null,
   setAppointmentId: (id) => set({ appointmentId: id }),
   // Appointment date
@@ -17,21 +34,25 @@ export const useAppointmentStore = create((set) => ({
     set({ appointmentStartTime: startTime }),
   // Appointment status
   appointmentStatus: '',
-  setAppointmentStatus: (status) => set({ appointmentStatus: status }),
+  setAppointmentStatus: (status) => set({ appointmentStatus: status }),*/
+
   // Appointment dropdown
   appointmentDropdown: false,
   setAppointmentDropdown: (state) => set({ appointmentDropdown: state }),
   appointmentDropdownPosition: { top: 0, left: 0 },
   setAppointmentDropdownPosition: (position) =>
     set({ appointmentDropdownPosition: position }),
+
   // Change appointment status dialog
   changeAppointmentStatusDialog: false,
   setChangeAppointmentStatusDialog: (state) =>
     set({ changeAppointmentStatusDialog: state }),
+
   // Delete appointment dialog
   deleteAppointmentDialog: false,
   setDeleteAppointmentDialog: (state) =>
     set({ deleteAppointmentDialog: state }),
+
   // Edit appointment flag
   editAppointment: false,
   setEditAppointment: (state) => set({ editAppointment: state }),
