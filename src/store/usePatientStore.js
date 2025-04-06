@@ -8,6 +8,6 @@ export const usePatientStore = create((set) => ({
   isEditingPatient: false,
   setIsEditingPatient: (flag) => set({ isEditingPatient: flag }),
   // Patient data
-  patientData: null,
+  patientData: {},
   setPatientData: (data) => set({ patientData: data }),
 }));

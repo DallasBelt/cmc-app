@@ -29,6 +29,7 @@ export function Scheduler() {
       end: e.endTime,
       extendedProps: {
         status: e.status,
+        patientData: e.patient,
       },
     })) || [];
 

@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 
-import { useAppointmentStore } from '@/store';
+import { useAppointmentStore, usePatientStore } from '@/store';
 
 export const useScheduler = () => {
   const setAppointmentDate = useAppointmentStore(
@@ -25,6 +25,8 @@ export const useScheduler = () => {
     (state) => state.setAppointmentStatus
   );
 
+  const setPatientData = usePatientStore((state) => state.setPatientData);
+
   const handleDateClick = (arg) => {
     setAppointmentDate(arg.date);
     setAppointmentStartTime(format(arg.date, 'HH:mm'));
@@ -40,6 +42,7 @@ export const useScheduler = () => {
 
     setAppointmentId(info.event.id);
     setAppointmentStatus(info.event.extendedProps.status);
+    setPatientData(info.event.extendedProps.patientData);
   };
 
   const getEventClassNames = (eventInfo) => {

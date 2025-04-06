@@ -1,15 +1,14 @@
-import { CalendarCheck2, Pencil, Trash, X } from 'lucide-react';
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from '@/components/ui/dropdown-menu';
+import { useState } from 'react';
+import { CalendarCheck2, Pencil, Stethoscope, Trash, X } from 'lucide-react';
 
 import {
   AppointmentDialog,
   ChangeAppointmentStatusDialog,
   DeleteAppointmentDialog,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  HistoryDialog,
 } from '@/components';
 
 import { useAppointmentStore } from '@/store';
@@ -40,6 +39,8 @@ export const AppointmentDropdown = () => {
     (state) => state.setDeleteAppointmentDialog
   );
 
+  const [historyDialogOpen, setHistoryDialogOpen] = useState(false);
+
   return (
     <>
       <DropdownMenu
@@ -55,6 +56,19 @@ export const AppointmentDropdown = () => {
             left: appointmentDropdownPosition.left,
           }}
         >
+          {/* Attend */}
+          <DropdownMenuItem
+            className={
+              appointmentStatus === 'canceled' ? 'hidden' : 'cursor-pointer'
+            }
+            onSelect={() => {
+              setHistoryDialogOpen(true);
+            }}
+          >
+            <Stethoscope size={16} className='me-2' />
+            Atender
+          </DropdownMenuItem>
+
           {/* Edit */}
           <DropdownMenuItem
             className={
@@ -97,6 +111,10 @@ export const AppointmentDropdown = () => {
         </DropdownMenuContent>
       </DropdownMenu>
 
+      <HistoryDialog
+        open={historyDialogOpen}
+        onOpenChange={setHistoryDialogOpen}
+      />
       <AppointmentDialog />
       <ChangeAppointmentStatusDialog />
       <DeleteAppointmentDialog />

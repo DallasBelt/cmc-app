@@ -64,6 +64,8 @@ export const AppointmentForm = () => {
         : appointmentDate,
       startTime: editAppointment
         ? format(appointmentToEdit.startTime, 'HH:mm')
+        : appointmentStartTime === '00:00'
+        ? ''
         : appointmentStartTime,
       endTime: editAppointment
         ? format(appointmentToEdit.endTime, 'HH:mm')

@@ -43,9 +43,9 @@ export const ChangeAppointmentStatusDialog = () => {
       >
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {`Va a ${
+            {`Se va a ${
               appointmentStatus === 'canceled' ? 'reagendar' : 'cancelar'
-            } la cita`}
+            } una cita`}
           </AlertDialogTitle>
           <AlertDialogDescription>¿Está seguro(a)?</AlertDialogDescription>
         </AlertDialogHeader>

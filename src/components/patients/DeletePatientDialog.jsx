@@ -26,16 +26,8 @@ export const DeletePatientDialog = ({ row, open, onOpenChange }) => {
         }}
       >
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            ¿Desea eliminar a{' '}
-            <span className='text-red-600'>
-              {row.original.firstName} {row.original.lastName}
-            </span>{' '}
-            de la lista de pacientes?
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Esta acción no se puede deshacer.
-          </AlertDialogDescription>
+          <AlertDialogTitle>Se va a eliminar un paciente</AlertDialogTitle>
+          <AlertDialogDescription>¿Está seguro(a)?</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>No, cancelar</AlertDialogCancel>
