@@ -40,7 +40,7 @@ export const HistoryForm = () => {
       treatment: '',
       prescription: '',
       observations: '',
-      patientId: appointmentData.patientData.id,
+      patientId: appointmentData.patient.id,
     },
   });
 
@@ -65,7 +65,7 @@ export const HistoryForm = () => {
       id: appointmentData.id,
       appointment: {
         status: 'completed',
-        patientId: appointmentData.patientData.id,
+        patientId: appointmentData.patient.id,
       },
     });
   };
@@ -74,9 +74,9 @@ export const HistoryForm = () => {
     <>
       <Label>
         Paciente:{' '}
-        {`${appointmentData.patientData.firstName} ${appointmentData.patientData.lastName}`}
+        {`${appointmentData.patient.firstName} ${appointmentData.patient.lastName}`}
       </Label>
-      <Label>Identificación: {appointmentData.patientData.dni}</Label>
+      <Label>Identificación: {appointmentData.patient.dni}</Label>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-10'>
           <fieldset className='border-2 p-4 rounded-md space-y-2.5'>

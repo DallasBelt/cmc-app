@@ -9,8 +9,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+  Button,
+} from '@/components';
 
 import { useAppointments } from '@/hooks';
 import { useAppointmentStore } from '@/store';
@@ -18,7 +18,8 @@ import { useAppointmentStore } from '@/store';
 export const DeleteAppointmentDialog = () => {
   const { deleteAppointmentMutation } = useAppointments();
 
-  const appointmentId = useAppointmentStore((state) => state.appointmentId);
+  const { appointmentData } = useAppointmentStore();
+
   const deleteAppointmentDialog = useAppointmentStore(
     (state) => state.deleteAppointmentDialog
   );
@@ -48,7 +49,9 @@ export const DeleteAppointmentDialog = () => {
             className='bg-red-600 text-white hover:bg-red-500'
           >
             <Button
-              onClick={() => deleteAppointmentMutation.mutate(appointmentId)}
+              onClick={() =>
+                deleteAppointmentMutation.mutate(appointmentData.id)
+              }
               disabled={deleteAppointmentMutation.isPending}
             >
               {deleteAppointmentMutation.isPending && (

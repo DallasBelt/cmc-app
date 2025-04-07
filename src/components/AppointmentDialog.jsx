@@ -9,16 +9,12 @@ import {
 import { useAppointmentStore } from '@/store';
 
 export const AppointmentDialog = () => {
-  const createAppointmentDialog = useAppointmentStore(
-    (state) => state.createAppointmentDialog
-  );
-  const setCreateAppointmentDialog = useAppointmentStore(
-    (state) => state.setCreateAppointmentDialog
-  );
-  const editAppointment = useAppointmentStore((state) => state.editAppointment);
-  const setEditAppointment = useAppointmentStore(
-    (state) => state.setEditAppointment
-  );
+  const {
+    createAppointmentDialog,
+    editAppointment,
+    setCreateAppointmentDialog,
+    setEditAppointment,
+  } = useAppointmentStore();
 
   return (
     <Dialog

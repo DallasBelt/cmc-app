@@ -18,17 +18,14 @@ import { useAppointmentStore } from '@/store';
 export const ChangeAppointmentStatusDialog = () => {
   const { changeAppointmentStatusMutation } = useAppointments();
 
+  const { appointmentData } = useAppointmentStore();
+
   const { changeAppointmentStatusDialog } = useAppointmentStore((state) => ({
     changeAppointmentStatusDialog: state.changeAppointmentStatusDialog,
   }));
   const { setChangeAppointmentStatusDialog } = useAppointmentStore((state) => ({
     setChangeAppointmentStatusDialog: state.setChangeAppointmentStatusDialog,
   }));
-
-  const appointmentId = useAppointmentStore((state) => state.appointmentId);
-  const appointmentStatus = useAppointmentStore(
-    (state) => state.appointmentStatus
-  );
 
   return (
     <AlertDialog
@@ -44,7 +41,7 @@ export const ChangeAppointmentStatusDialog = () => {
         <AlertDialogHeader>
           <AlertDialogTitle>
             {`Se va a ${
-              appointmentStatus === 'canceled' ? 'reagendar' : 'cancelar'
+              appointmentData.status === 'canceled' ? 'reagendar' : 'cancelar'
             } una cita`}
           </AlertDialogTitle>
           <AlertDialogDescription>¿Está seguro(a)?</AlertDialogDescription>
@@ -58,8 +55,8 @@ export const ChangeAppointmentStatusDialog = () => {
             <Button
               onClick={() => {
                 changeAppointmentStatusMutation.mutate({
-                  appointmentId,
-                  appointmentStatus,
+                  appointmentId: appointmentData.id,
+                  appointmentStatus: appointmentData.status,
                 });
               }}
               disabled={changeAppointmentStatusMutation.isPending}
@@ -67,7 +64,7 @@ export const ChangeAppointmentStatusDialog = () => {
               {changeAppointmentStatusMutation.isPending && (
                 <Loader2 className='me-2 animate-spin' />
               )}
-              {appointmentStatus === 'canceled'
+              {appointmentData.status === 'canceled'
                 ? 'Sí, reagendar'
                 : 'Sí, cancelar'}
             </Button>

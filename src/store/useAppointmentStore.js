@@ -12,7 +12,8 @@ export const useAppointmentStore = create((set) => ({
     date: '',
     startTime: '',
     status: '',
-    patientData: {},
+    patient: {},
+    medic: {},
   },
   setAppointmentData: (data) => set({ appointmentData: data }),
   updateAppointmentField: (field, value) =>
@@ -22,19 +23,6 @@ export const useAppointmentStore = create((set) => ({
         [field]: value,
       },
     })),
-  /* // Appointment ID
-  appointmentId: null,
-  setAppointmentId: (id) => set({ appointmentId: id }),
-  // Appointment date
-  appointmentDate: '',
-  setAppointmentDate: (date) => set({ appointmentDate: date }),
-  // Appointment start time
-  appointmentStartTime: '',
-  setAppointmentStartTime: (startTime) =>
-    set({ appointmentStartTime: startTime }),
-  // Appointment status
-  appointmentStatus: '',
-  setAppointmentStatus: (status) => set({ appointmentStatus: status }),*/
 
   // Appointment dropdown
   appointmentDropdown: false,

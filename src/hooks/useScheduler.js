@@ -24,7 +24,8 @@ export const useScheduler = () => {
     // Update id and status properties of appointmentStore
     updateAppointmentField('id', info.event.id);
     updateAppointmentField('status', info.event.extendedProps.status);
-    updateAppointmentField('patientData', info.event.extendedProps.patientData);
+    updateAppointmentField('patient', info.event.extendedProps.patient);
+    updateAppointmentField('medic', info.event.extendedProps.medic);
 
     // Update patientData store
     setPatientData(info.event.extendedProps.patientData);
@@ -42,9 +43,9 @@ export const useScheduler = () => {
     const isCompleted = eventInfo.event.extendedProps.status === 'completed';
 
     return isCanceled
-      ? ['rounded-lg bg-red-400 cursor-pointer']
+      ? ['rounded-lg bg-red-400 border-red-400 cursor-pointer']
       : isCompleted
-      ? ['rounded-lg bg-green-400 cursor-pointer']
+      ? ['rounded-lg bg-green-500 border-green-500 cursor-pointer']
       : ['rounded-lg cursor-pointer'];
   };
 

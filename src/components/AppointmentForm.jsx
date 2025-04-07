@@ -43,17 +43,11 @@ export const AppointmentForm = () => {
     updateAppointmentMutation,
   } = useAppointments();
 
+  const { appointmentData, editAppointment } = useAppointmentStore();
   const medicId = sessionStorage.getItem('id');
 
-  const appointmentId = useAppointmentStore((state) => state.appointmentId);
-  const appointmentDate = useAppointmentStore((state) => state.appointmentDate);
-  const appointmentStartTime = useAppointmentStore(
-    (state) => state.appointmentStartTime
-  );
-  const editAppointment = useAppointmentStore((state) => state.editAppointment);
-
   const appointmentToEdit = appointmentsQuery.data.data?.find(
-    (a) => a.id === appointmentId
+    (a) => a.id === appointmentData.id
   );
 
   const form = useForm({
@@ -61,12 +55,12 @@ export const AppointmentForm = () => {
     defaultValues: {
       date: editAppointment
         ? new Date(appointmentToEdit.startTime)
-        : appointmentDate,
+        : appointmentData.date,
       startTime: editAppointment
         ? format(appointmentToEdit.startTime, 'HH:mm')
-        : appointmentStartTime === '00:00'
+        : appointmentData.startTime === '00:00'
         ? ''
-        : appointmentStartTime,
+        : appointmentData.startTime,
       endTime: editAppointment
         ? format(appointmentToEdit.endTime, 'HH:mm')
         : '',

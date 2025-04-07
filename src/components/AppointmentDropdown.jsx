@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { CalendarCheck2, Pencil, Stethoscope, Trash, X } from 'lucide-react';
+import {
+  CalendarCheck2,
+  ClipboardList,
+  Pencil,
+  Stethoscope,
+  Trash,
+  X,
+} from 'lucide-react';
 
 import {
   AppointmentDialog,
@@ -14,30 +21,16 @@ import {
 import { useAppointmentStore } from '@/store';
 
 export const AppointmentDropdown = () => {
-  const appointmentStatus = useAppointmentStore(
-    (state) => state.appointmentStatus
-  );
-  const setEditAppointment = useAppointmentStore(
-    (state) => state.setEditAppointment
-  );
-  const appointmentDropdown = useAppointmentStore(
-    (state) => state.appointmentDropdown
-  );
-  const setAppointmentDropdown = useAppointmentStore(
-    (state) => state.setAppointmentDropdown
-  );
-  const appointmentDropdownPosition = useAppointmentStore(
-    (state) => state.appointmentDropdownPosition
-  );
-  const setCreateAppointmentDialog = useAppointmentStore(
-    (state) => state.setCreateAppointmentDialog
-  );
-  const setChangeAppointmentStatusDialog = useAppointmentStore(
-    (state) => state.setChangeAppointmentStatusDialog
-  );
-  const setDeleteAppointmentDialog = useAppointmentStore(
-    (state) => state.setDeleteAppointmentDialog
-  );
+  const {
+    appointmentData,
+    appointmentDropdown,
+    appointmentDropdownPosition,
+    setAppointmentDropdown,
+    setChangeAppointmentStatusDialog,
+    setCreateAppointmentDialog,
+    setDeleteAppointmentDialog,
+    setEditAppointment,
+  } = useAppointmentStore();
 
   const [historyDialogOpen, setHistoryDialogOpen] = useState(false);
 
@@ -59,7 +52,10 @@ export const AppointmentDropdown = () => {
           {/* Attend */}
           <DropdownMenuItem
             className={
-              appointmentStatus === 'canceled' ? 'hidden' : 'cursor-pointer'
+              appointmentData.status === 'canceled' ||
+              appointmentData.status === 'completed'
+                ? 'hidden'
+                : 'cursor-pointer'
             }
             onSelect={() => {
               setHistoryDialogOpen(true);
@@ -72,7 +68,10 @@ export const AppointmentDropdown = () => {
           {/* Edit */}
           <DropdownMenuItem
             className={
-              appointmentStatus === 'canceled' ? 'hidden' : 'cursor-pointer'
+              appointmentData.status === 'canceled' ||
+              appointmentData.status === 'completed'
+                ? 'hidden'
+                : 'cursor-pointer'
             }
             onSelect={() => {
               setCreateAppointmentDialog(true);
@@ -85,28 +84,52 @@ export const AppointmentDropdown = () => {
 
           {/* Change status */}
           <DropdownMenuItem
-            className={'cursor-pointer'}
+            className={
+              appointmentData.status === 'completed'
+                ? 'hidden'
+                : 'cursor-pointer'
+            }
             onSelect={() => {
               setChangeAppointmentStatusDialog(true);
             }}
           >
-            {appointmentStatus === 'canceled' ? (
+            {appointmentData.status === 'canceled' ? (
               <CalendarCheck2 size={16} className='me-2' />
             ) : (
               <X size={16} className='me-2' />
             )}
-            {appointmentStatus === 'canceled' ? 'Reagendar' : 'Cancelar'}
+            {appointmentData.status === 'canceled' ? 'Reagendar' : 'Cancelar'}
           </DropdownMenuItem>
 
           {/* Delete */}
           <DropdownMenuItem
-            className='cursor-pointer'
+            className={
+              appointmentData.status === 'completed'
+                ? 'hidden'
+                : 'cursor-pointer'
+            }
             onSelect={() => {
               setDeleteAppointmentDialog(true);
             }}
           >
             <Trash size={16} className='me-2' />
             Eliminar
+          </DropdownMenuItem>
+
+          {/* View History */}
+          <DropdownMenuItem
+            className={
+              appointmentData.status === 'canceled' ||
+              appointmentData.status === 'pending'
+                ? 'hidden'
+                : 'cursor-pointer'
+            }
+            onSelect={() => {
+              console.log('View History');
+            }}
+          >
+            <ClipboardList size={16} className='me-2' />
+            Ver Historial
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
