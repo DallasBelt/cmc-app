@@ -13,7 +13,7 @@ import { Toaster } from '@/components/ui/sonner';
 
 import { List, SignOut } from '@phosphor-icons/react';
 
-import { AvatarMenu, ModeToggle, NavMenu } from '@/components';
+import { AvatarMenu, NavMenu, ThemeToggle } from '@/components';
 import { useTheme } from '@/components/theme-provider';
 import navbarLogo from '@/assets/navbar-logo.svg';
 
@@ -74,7 +74,7 @@ export const Root = () => {
         </div>
 
         <div className={isCompleteInfo ? 'flex gap-1' : 'flex gap-5'}>
-          <ModeToggle />
+          <ThemeToggle />
 
           <div className={isCompleteInfo ? 'flex' : 'hidden'}>
             <Button variant='ghost' size='icon' onClick={handleSignOut}>
