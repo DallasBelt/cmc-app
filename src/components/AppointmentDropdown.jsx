@@ -15,10 +15,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  HistoryDialog,
+  MedicalRecordDialog,
 } from '@/components';
 
 import { useAppointmentStore } from '@/store';
+import { set } from 'date-fns';
 
 export const AppointmentDropdown = () => {
   const {
@@ -32,7 +33,7 @@ export const AppointmentDropdown = () => {
     setEditAppointment,
   } = useAppointmentStore();
 
-  const [historyDialogOpen, setHistoryDialogOpen] = useState(false);
+  const [medicalRecordDialogOpen, setMedicalRecordDialogOpen] = useState(false);
 
   return (
     <>
@@ -58,7 +59,7 @@ export const AppointmentDropdown = () => {
                 : 'cursor-pointer'
             }
             onSelect={() => {
-              setHistoryDialogOpen(true);
+              setMedicalRecordDialogOpen(true);
             }}
           >
             <Stethoscope size={16} className='me-2' />
@@ -116,7 +117,7 @@ export const AppointmentDropdown = () => {
             Eliminar
           </DropdownMenuItem>
 
-          {/* View History */}
+          {/* View Medical Record */}
           <DropdownMenuItem
             className={
               appointmentData.status === 'canceled' ||
@@ -125,7 +126,7 @@ export const AppointmentDropdown = () => {
                 : 'cursor-pointer'
             }
             onSelect={() => {
-              console.log('View History');
+              console.log('View Medical Record');
             }}
           >
             <ClipboardList size={16} className='me-2' />
@@ -134,9 +135,9 @@ export const AppointmentDropdown = () => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <HistoryDialog
-        open={historyDialogOpen}
-        onOpenChange={setHistoryDialogOpen}
+      <MedicalRecordDialog
+        open={medicalRecordDialogOpen}
+        onOpenChange={setMedicalRecordDialogOpen}
       />
       <AppointmentDialog />
       <ChangeAppointmentStatusDialog />

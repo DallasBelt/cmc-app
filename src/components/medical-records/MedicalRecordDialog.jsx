@@ -3,10 +3,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  HistoryForm,
+  MedicalRecordForm,
 } from '@/components';
 
-export const HistoryDialog = ({ open, onOpenChange }) => {
+export const MedicalRecordDialog = ({ open, onOpenChange }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -19,7 +19,7 @@ export const HistoryDialog = ({ open, onOpenChange }) => {
         <DialogHeader>
           <DialogTitle className='text-3xl'>Historia Clínica</DialogTitle>
         </DialogHeader>
-        <HistoryForm />
+        <MedicalRecordForm />
       </DialogContent>
     </Dialog>
   );

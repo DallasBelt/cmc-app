@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { createHistory } from '@/api/history';
+import { createMedicalRecord, getMedicalRecords } from '@/api/medical-record';
 
 // import {
 //   createPatient,
@@ -11,23 +11,30 @@ import { createHistory } from '@/api/history';
 // } from '@/api/patient';
 // import { usePatientStore } from '@/store';
 
-export const useHistory = () => {
+export const useMedicalRecords = () => {
   const queryClient = useQueryClient();
 
   // const setCreatePatientDialog = usePatientStore(
   //   (state) => state.setCreatePatientDialog
   // );
 
-  const createHistoryMutation = useMutation({
-    mutationFn: createHistory,
+  const createMedicalRecordMutation = useMutation({
+    mutationFn: createMedicalRecord,
     onSuccess: () => {
-      queryClient.invalidateQueries(['history']);
+      queryClient.invalidateQueries(['medical-records']);
       toast.success('¡Entrada creada exitósamente!');
     },
     onError: (error) => {
       console.error(error);
       toast.error('Error al crear entrada.');
     },
+  });
+
+  const medicalRecordsQuery = useQuery({
+    queryKey: ['medical-records'],
+    queryFn: getMedicalRecords,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 
   // const patientsQuery = useQuery({
@@ -63,7 +70,8 @@ export const useHistory = () => {
   // });
 
   return {
-    createHistoryMutation,
+    createMedicalRecordMutation,
+    medicalRecordsQuery,
     // patientsQuery,
     // deletePatientMutation,
     // updatePatientMutation,

@@ -15,14 +15,15 @@ import {
 import {
   DeletePatientDialog,
   EditPatientDialog,
-  ViewHistoryDialog,
+  ViewMedicalRecordDialog,
 } from '@/components';
 import { usePatientStore } from '@/store';
+import { set } from 'date-fns';
 
 export const PatientsDropdown = ({ row }) => {
   const isAssistant = sessionStorage.getItem('roles').includes('assistant');
 
-  const [historyDialogOpen, setHistoryDialogOpen] = useState(false);
+  const [medicalRecordDialogOpen, setMedicalRecordDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -45,7 +46,7 @@ export const PatientsDropdown = ({ row }) => {
           {isAssistant ? (
             ''
           ) : (
-            <DropdownMenuItem onSelect={() => setHistoryDialogOpen(true)}>
+            <DropdownMenuItem onSelect={() => setMedicalRecordDialogOpen(true)}>
               <ClipboardList size={16} className='me-2' />
               Ver historial
             </DropdownMenuItem>
@@ -71,9 +72,9 @@ export const PatientsDropdown = ({ row }) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <ViewHistoryDialog
-        open={historyDialogOpen}
-        onOpenChange={setHistoryDialogOpen}
+      <ViewMedicalRecordDialog
+        open={medicalRecordDialogOpen}
+        onOpenChange={setMedicalRecordDialogOpen}
       />
 
       <EditPatientDialog

@@ -1,7 +1,24 @@
 import { z } from 'zod';
 
-export const historySchema = z.object({
-  bloodPressure: z.string(),
+export const medicalRecordSchema = z.object({
+  bloodPressure: z
+    .string()
+    .trim()
+    .refine(
+      (val) => {
+        if (!val) return true;
+        const [systolic, diastolic] = val.split('/');
+        return (
+          systolic &&
+          diastolic &&
+          !isNaN(Number(systolic)) &&
+          !isNaN(Number(diastolic))
+        );
+      },
+      {
+        message: 'El formato debe ser sistólica/diastólica (ej: 120/80)',
+      }
+    ),
   oxygenSaturation: z.string(),
   bodyTemperature: z.string(),
   heartRate: z.string(),

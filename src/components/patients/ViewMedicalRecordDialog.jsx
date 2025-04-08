@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-export const ViewHistoryDialog = ({ open, onOpenChange }) => {
+export const ViewMedicalRecordDialog = ({ open, onOpenChange }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>

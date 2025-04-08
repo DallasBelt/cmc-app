@@ -14,18 +14,18 @@ import {
   Textarea,
 } from '@/components';
 
-import { useAppointments, useHistory } from '@/hooks';
-import { historySchema } from '@/schemas';
+import { useAppointments, useMedicalRecords } from '@/hooks';
+import { medicalRecordSchema } from '@/schemas';
 import { useAppointmentStore } from '@/store';
 
-export const HistoryForm = () => {
-  const { createHistoryMutation } = useHistory();
+export const MedicalRecordForm = () => {
+  const { createMedicalRecordMutation } = useMedicalRecords();
   const { updateAppointmentMutation } = useAppointments();
 
   const { appointmentData } = useAppointmentStore();
 
   const form = useForm({
-    resolver: zodResolver(historySchema),
+    resolver: zodResolver(medicalRecordSchema),
     defaultValues: {
       bloodPressure: '',
       oxygenSaturation: '',
@@ -45,22 +45,20 @@ export const HistoryForm = () => {
   });
 
   const onSubmit = (values) => {
-    const newHistoryEntry = {
+    const newMedicalRecordEntry = {
       ...values,
-      bloodPressure:
-        values.bloodPressure &&
-        `${values.bloodPressure.systolic}/${values.bloodPressure.diastolic} mmHg`,
+      bloodPressure: values.bloodPressure && `${values.bloodPressure} mmHg`,
       oxygenSaturation:
         values.oxygenSaturation && `${values.oxygenSaturation}%`,
       bodyTemperature: values.bodyTemperature && `${values.bodyTemperature}ºC`,
-      heartRate: values.heartRate && `${values.heartRate} bpm`,
+      heartRate: values.heartRate && `${values.heartRate} lpm`,
       respiratoryRate:
-        values.respiratoryRate && `${values.respiratoryRate} lmp`,
+        values.respiratoryRate && `${values.respiratoryRate} rpm`,
       weight: values.weight && `${values.weight} kg`,
       height: values.height && `${values.height} cm`,
     };
 
-    createHistoryMutation.mutate(newHistoryEntry);
+    createMedicalRecordMutation.mutate(newMedicalRecordEntry);
     updateAppointmentMutation.mutate({
       id: appointmentData.id,
       appointment: {
@@ -89,33 +87,15 @@ export const HistoryForm = () => {
                   <FormItem className='flex-1'>
                     <FormLabel>Presión arterial</FormLabel>
                     <FormControl>
-                      <div className='flex items-center gap-2 w-full'>
+                      <div className='relative flex items-center gap-2 w-full'>
                         <Input
-                          type='number'
-                          placeholder='Sist.'
-                          className='flex-1'
-                          value={field.value?.systolic || ''}
-                          onChange={(e) =>
-                            field.onChange({
-                              ...field.value,
-                              systolic: e.target.value,
-                            })
-                          }
+                          placeholder='120/80'
+                          {...field}
+                          className='pr-16' // Deja espacio para el span
                         />
-                        <span>/</span>
-                        <Input
-                          type='number'
-                          placeholder='Diast.'
-                          className='flex-1'
-                          value={field.value?.diastolic || ''}
-                          onChange={(e) =>
-                            field.onChange({
-                              ...field.value,
-                              diastolic: e.target.value,
-                            })
-                          }
-                        />
-                        <span>mmHg</span>
+                        <span className='absolute right-2 text-gray-500'>
+                          mmHg
+                        </span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -130,9 +110,15 @@ export const HistoryForm = () => {
                   <FormItem className='flex-1'>
                     <FormLabel>Saturación de Oxígeno</FormLabel>
                     <FormControl>
-                      <div className='flex items-center gap-2 w-full'>
-                        <Input type='number' className='flex-1' {...field} />
-                        <span>%SpO₂</span>
+                      <div className='relative flex items-center gap-2 w-full'>
+                        <Input
+                          type='number'
+                          {...field}
+                          className='pr-16' // Deja espacio para el span
+                        />
+                        <span className='absolute right-2 text-gray-500'>
+                          SpO₂
+                        </span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -149,9 +135,15 @@ export const HistoryForm = () => {
                   <FormItem className='flex-1'>
                     <FormLabel>Temperatura</FormLabel>
                     <FormControl>
-                      <div className='flex items-center gap-2 w-full'>
-                        <Input type='number' className='flex-1' {...field} />
-                        <span>ºC</span>
+                      <div className='relative flex items-center gap-2 w-full'>
+                        <Input
+                          type='number'
+                          {...field}
+                          className='pr-16' // Deja espacio para el span
+                        />
+                        <span className='absolute right-2 text-gray-500'>
+                          ºC
+                        </span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -166,9 +158,15 @@ export const HistoryForm = () => {
                   <FormItem className='flex-1'>
                     <FormLabel>Frecuencia cardiaca</FormLabel>
                     <FormControl>
-                      <div className='flex items-center gap-2 w-full'>
-                        <Input type='number' className='flex-1' {...field} />
-                        <span>bpm</span>
+                      <div className='relative flex items-center gap-2 w-full'>
+                        <Input
+                          type='number'
+                          {...field}
+                          className='pr-16' // Deja espacio para el span
+                        />
+                        <span className='absolute right-2 text-gray-500'>
+                          lpm
+                        </span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -183,9 +181,15 @@ export const HistoryForm = () => {
                   <FormItem className='flex-1'>
                     <FormLabel>Frecuencia respiratoria</FormLabel>
                     <FormControl>
-                      <div className='flex items-center gap-2 w-full'>
-                        <Input type='number' className='flex-1' {...field} />
-                        <span>rpm</span>
+                      <div className='relative flex items-center gap-2 w-full'>
+                        <Input
+                          type='number'
+                          {...field}
+                          className='pr-16' // Deja espacio para el span
+                        />
+                        <span className='absolute right-2 text-gray-500'>
+                          rpm
+                        </span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -205,9 +209,15 @@ export const HistoryForm = () => {
                   <FormItem className='flex-1'>
                     <FormLabel>Peso</FormLabel>
                     <FormControl>
-                      <div className='flex items-center gap-2 w-full'>
-                        <Input type='number' className='flex-1' {...field} />
-                        <span>kg</span>
+                      <div className='relative flex items-center gap-2 w-full'>
+                        <Input
+                          type='number'
+                          {...field}
+                          className='pr-16' // Deja espacio para el span
+                        />
+                        <span className='absolute right-2 text-gray-500'>
+                          kg
+                        </span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -222,9 +232,15 @@ export const HistoryForm = () => {
                   <FormItem className='flex-1'>
                     <FormLabel>Estatura</FormLabel>
                     <FormControl>
-                      <div className='flex items-center gap-2 w-full'>
-                        <Input type='number' className='flex-1' {...field} />
-                        <span>cm</span>
+                      <div className='relative flex items-center gap-2 w-full'>
+                        <Input
+                          type='number'
+                          {...field}
+                          className='pr-16' // Deja espacio para el span
+                        />
+                        <span className='absolute right-2 text-gray-500'>
+                          cm
+                        </span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -333,13 +349,12 @@ export const HistoryForm = () => {
           <div className='pt-5 md:flex md:justify-center'>
             <Button
               type='submit'
-              // disabled={createAppointmentMutation.isPending}
+              disabled={createMedicalRecordMutation.isPending}
               className='w-full md:w-fit'
             >
-              {/* {editAppointment ? 'Guardar cambios' : 'Crear cita'} */}
-              {/* {createAppointmentMutation.isPending && (
+              {createMedicalRecordMutation.isPending && (
                 <Loader2 className='me-2 animate-spin' />
-              )} */}
+              )}
               Crear entrada
             </Button>
           </div>
