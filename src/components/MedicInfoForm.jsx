@@ -1,36 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { RotatingLines } from 'react-loader-spinner';
-import { toast } from 'sonner';
 
-import { cn } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
+  Button,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import {
+  Input,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+  ToggleGroup,
+  ToggleGroupItem,
+} from '@/components';
 
-import { medicInfoSchema } from '@/schemas/medicSchema';
-import { days } from '@/constants/days';
-import { specialties } from '@/constants/specialties';
+import { cn } from '@/lib/utils';
+
+import { useMedicInfo } from '@/hooks';
+import { medicInfoSchema } from '@/schemas';
+import { days, specialties } from '@/constants';
 
 export const MedicInfoForm = () => {
   setDefaultOptions({ locale: es });
@@ -43,6 +43,8 @@ export const MedicInfoForm = () => {
   const [initialMedicValues, setInitialMedicValues] = useState(null);
   const [fieldDisabled, setFieldDisabled] = useState(false);
 
+  const { createMedicInfoMutation } = useMedicInfo();
+
   const form = useForm({
     resolver: zodResolver(medicInfoSchema),
     defaultValues: {
@@ -54,137 +56,10 @@ export const MedicInfoForm = () => {
     },
   });
 
-  useEffect(() => {
-    const fetchMedicInfo = async () => {
-      try {
-        // Check auth
-        const token = sessionStorage.getItem('token');
-        if (!token) {
-          toast.error('Oops!', {
-            description: 'Error de autenticación.',
-          });
-          return;
-        }
-
-        const res = await fetch('http://localhost:3000/api/v1/medic-info', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!res.ok) {
-          throw new Error('Error en la solicitud');
-        }
-
-        const data = await res.json();
-
-        const medicData = {
-          registry: data?.registry || '',
-          speciality: data?.speciality || [],
-          days: data?.days || [],
-          checkIn: data?.checkIn || '',
-          checkOut: data?.checkOut || '',
-        };
-
-        setInitialMedicValues(medicData);
-        form.reset(medicData);
-        setFieldDisabled(true);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchMedicInfo();
-  }, [form]);
+  const { isDirty } = form.formState;
 
   const onSubmit = async (values) => {
-    try {
-      setIsSubmitting(true);
-
-      // Check auth
-      const token = sessionStorage.getItem('token');
-      if (!token) {
-        toast.error('Oops!', {
-          description: 'Error de autenticación.',
-        });
-        return;
-      }
-
-      if (!initialMedicValues) {
-        // New entry
-        const res = await fetch('http://localhost:3000/api/v1/medic-info', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(values),
-        });
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          console.log(errorData);
-          throw new Error();
-        }
-
-        toast.success('¡Enhorabuena!', {
-          description: 'Información guardada con éxito.',
-        });
-
-        setInitialMedicValues(values);
-        setFieldDisabled(true);
-
-        if (isCompleteInfo) {
-          setTimeout(() => {
-            navigate('/');
-          }, 2000);
-        }
-      } else {
-        // Update
-
-        // Taking out the 'registry' property
-        const { registry, ...rest } = values;
-
-        // Compare if the values have changed
-        const currentValues = form.getValues();
-
-        const hasChanges =
-          JSON.stringify(currentValues) !== JSON.stringify(initialMedicValues);
-
-        if (!hasChanges) {
-          toast.warning('Oops!', {
-            description: 'No se detectaron cambios.',
-          });
-          return;
-        }
-
-        const res = await fetch('http://localhost:3000/api/v1/user-info', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(rest),
-        });
-
-        if (!res.ok) {
-          throw new Error('Error en la solicitud');
-        }
-
-        toast.success('¡Enhorabuena!', {
-          description: 'Información actualizada con éxito.',
-        });
-
-        // Set new current values after editing
-        setInitialMedicValues(currentValues);
-      }
-    } catch (error) {
-      toast.error('Oops...', {
-        description: 'Error al guardar la información.',
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    console.log(values);
   };
 
   return (
@@ -207,44 +82,28 @@ export const MedicInfoForm = () => {
         <FormField
           control={form.control}
           name='speciality'
-          render={() => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Especialidad</FormLabel>
-              <div className='px-2 md:grid md:grid-cols-3 md:gap-2'>
-                {specialties.map((item) => (
-                  <FormField
-                    key={item.id}
-                    control={form.control}
-                    name='speciality'
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={item.id}
-                          className='flex flex-row items-start space-x-3 space-y-0'
-                        >
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(item.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, item.id])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== item.id
-                                      )
-                                    );
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className='text-sm font-normal'>
-                            {item.label}
-                          </FormLabel>
-                        </FormItem>
-                      );
-                    }}
-                  />
-                ))}
-              </div>
+              <FormControl>
+                <ToggleGroup
+                  type='multiple'
+                  variant='outline'
+                  className='flex flex-col md:flex-row md:flex-wrap md:gap-2'
+                  value={field.value || []}
+                  onValueChange={field.onChange}
+                >
+                  {specialties.map((item) => (
+                    <ToggleGroupItem
+                      key={item.id}
+                      value={item.id}
+                      className='w-full md:w-auto data-[state=on]:bg-primary data-[state=on]:text-white border rounded-md px-4 py-2 text-sm text-center transition-colors'
+                    >
+                      {item.label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -253,44 +112,28 @@ export const MedicInfoForm = () => {
         <FormField
           control={form.control}
           name='days'
-          render={() => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Días de trabajo</FormLabel>
-              <div className='px-2 md:grid md:grid-cols-3 md:gap-2'>
-                {days.map((item) => (
-                  <FormField
-                    key={item.id}
-                    control={form.control}
-                    name='days'
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={item.id}
-                          className='flex flex-row items-start space-x-3 space-y-0'
-                        >
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(item.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, item.id])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== item.id
-                                      )
-                                    );
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className='text-sm font-normal'>
-                            {item.label}
-                          </FormLabel>
-                        </FormItem>
-                      );
-                    }}
-                  />
-                ))}
-              </div>
+              <FormControl>
+                <ToggleGroup
+                  type='multiple'
+                  variant='outline'
+                  className='flex flex-col md:flex-row md:flex-wrap md:gap-2'
+                  value={field.value || []}
+                  onValueChange={field.onChange}
+                >
+                  {days.map((item) => (
+                    <ToggleGroupItem
+                      key={item.id}
+                      value={item.id}
+                      className='w-full md:w-auto data-[state=on]:bg-primary data-[state=on]:text-white border rounded-md px-4 py-2 text-sm text-center transition-colors'
+                    >
+                      {item.label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -371,22 +214,12 @@ export const MedicInfoForm = () => {
         <div className='pt-5 md:flex md:justify-center'>
           <Button
             type='submit'
-            disabled={isSubmitting}
+            disabled={createMedicInfoMutation.isPending}
             className='w-full md:w-fit'
           >
-            Guardar
-            {isSubmitting && (
-              <span className='ms-2'>
-                <RotatingLines
-                  visible={true}
-                  height='20'
-                  width='20'
-                  strokeColor='#FFF'
-                  strokeWidth={5}
-                  animationDuration='0.75'
-                  ariaLabel='rotating-lines-loading'
-                />
-              </span>
+            Guardar cambios
+            {createMedicInfoMutation.isPending && (
+              <Loader2 className='me-2 animate-spin' />
             )}
           </Button>
         </div>

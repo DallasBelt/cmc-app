@@ -31,7 +31,6 @@ import {
 
 import { useAppointments } from '@/hooks';
 import { useAppointmentStore } from '@/store';
-
 import { newAppointmentSchema } from '@/schemas';
 
 export const AppointmentForm = () => {
