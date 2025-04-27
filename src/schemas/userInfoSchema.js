@@ -4,7 +4,7 @@ import {
   cedulaValidator,
   rucValidator,
   passportValidator,
-} from '@/utils/customValidators';
+} from '@/utils/idValidators';
 
 export const userInfoSchema = z
   .object({

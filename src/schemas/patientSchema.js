@@ -1,10 +1,6 @@
 import { z } from 'zod';
 import { isValidPhoneNumber } from 'react-phone-number-input';
-import {
-  cedulaValidator,
-  rucValidator,
-  passportValidator,
-} from '@/utils/customValidators';
+import { cedulaValidator, rucValidator, passportValidator } from '@/utils';
 
 export const newPatientSchema = z
   .object({
