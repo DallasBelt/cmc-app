@@ -4,4 +4,5 @@ export * from './useMedicInfo';
 export * from './useMedicalRecords';
 export * from './usePatients';
 export * from './useScheduler';
+export * from './useUserInfo';
 export * from './useUsers';

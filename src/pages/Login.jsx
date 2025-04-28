@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 
 import { Toaster } from '@/components/ui/sonner';
-import { LoginForm, RegistrationDialog } from '@/components';
+import { LoginForm, RegistrationDialog } from '@/components/auth';
 
-import { useTheme } from '@/components/theme-provider';
+import { useTheme } from '@/components/theme/ThemeProvider';
 import LoginLight from '@/assets/login-light.svg';
 import LoginDark from '@/assets/login-dark.svg';
 

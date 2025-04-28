@@ -26,8 +26,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SearchPatients,
-} from '@/components';
+} from '@/components/ui';
+
+import { SearchPatients } from '@/components/patients';
 
 import { useAppointments } from '@/hooks';
 import { useAppointmentStore } from '@/store';

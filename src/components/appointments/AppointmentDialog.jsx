@@ -1,10 +1,11 @@
 import {
-  AppointmentForm,
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components';
+} from '@/components/ui';
+
+import { AppointmentForm } from '@/components/appointments';
 
 import { useAppointmentStore } from '@/store';
 

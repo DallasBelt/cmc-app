@@ -9,9 +9,11 @@ import esLocale from '@fullcalendar/core/locales/es';
 import { setDefaultOptions, startOfToday } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import { AppointmentDropdown, EventContent } from '@/components';
+import { AppointmentDropdown } from '@/components/appointments';
+import { EventContent } from '@/components/calendar';
+import { useTheme } from '@/components/theme/ThemeProvider';
+
 import { useAppointments, useScheduler } from '@/hooks';
-import { useTheme } from '@/components/theme-provider';
 
 export function Scheduler() {
   setDefaultOptions({ locale: es }); // FullCalendar language

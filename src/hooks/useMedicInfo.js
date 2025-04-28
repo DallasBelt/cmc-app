@@ -10,7 +10,7 @@ export const useMedicInfo = () => {
     mutationFn: createMedicInfo,
     onSuccess: () => {
       queryClient.invalidateQueries(['medicInfo']);
-      toast.success('¡Información médica creada exitósamente!');
+      toast.success('Información médica creada exitósamente.');
     },
     onError: (error) => {
       console.error(error);

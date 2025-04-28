@@ -26,8 +26,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  PhoneInput,
-} from '@/components';
+} from '@/components/ui';
+
+import { PhoneInput } from '@/components/interaction';
 
 import { newPatientSchema, editPatientSchema } from '@/schemas/patientSchema';
 

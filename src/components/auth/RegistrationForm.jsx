@@ -4,15 +4,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import {
+  Button,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+  Input,
+} from '@/components/ui';
 
 import { useAuth } from '@/hooks';
 import { registrationSchema } from '@/schemas';

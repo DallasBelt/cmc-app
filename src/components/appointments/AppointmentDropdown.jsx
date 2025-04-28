@@ -9,17 +9,20 @@ import {
 } from 'lucide-react';
 
 import {
-  AppointmentDialog,
-  ChangeAppointmentStatusDialog,
-  DeleteAppointmentDialog,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  MedicalRecordDialog,
-} from '@/components';
+} from '@/components/ui';
+
+import {
+  AppointmentDialog,
+  ChangeAppointmentStatusDialog,
+  DeleteAppointmentDialog,
+} from '@/components/appointments';
+
+import { MedicalRecordDialog } from '@/components/medical-records';
 
 import { useAppointmentStore } from '@/store';
-import { set } from 'date-fns';
 
 export const AppointmentDropdown = () => {
   const {

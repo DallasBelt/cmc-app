@@ -4,18 +4,18 @@ import { useForm } from 'react-hook-form';
 
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import {
+  Button,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+  Input,
+} from '@/components/ui';
 
 import { useAuth } from '@/hooks';
-import { loginSchema } from '@/schemas/loginSchema';
+import { loginSchema } from '@/schemas';
 
 export const LoginForm = () => {
   const { loginMutation } = useAuth();

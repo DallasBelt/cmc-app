@@ -1,9 +1,9 @@
 import { differenceInYears } from 'date-fns';
 import { ArrowDownUp } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui';
 
-import { PatientsDropdown } from '@/components';
+import { PatientsDropdown } from '@/components/patients';
 
 export const patientsColumns = [
   {

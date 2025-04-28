@@ -1,7 +1,15 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Card,
+  CardContent,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui';
 
-import { AssistantInfoForm, MedicInfoForm, UserInfoForm } from '@/components';
+import { AssistantInfoForm } from '@/components/assistants';
+import { MedicInfoForm } from '@/components/medic-info/MedicInfoForm';
+import { UserInfoForm } from '@/components/user-info/UserInfoForm';
 
 export const Profile = () => {
   const role = sessionStorage.getItem('roles');

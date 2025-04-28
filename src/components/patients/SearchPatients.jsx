@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 import { usePatients } from '@/hooks';
-import { useTheme } from '@/components/theme-provider';
+import { useTheme } from '@/components/theme/ThemeProvider';
 
 export const SearchPatients = ({ onSelectPatient }) => {
   const { effectiveTheme } = useTheme();

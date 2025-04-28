@@ -3,8 +3,9 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  MedicalRecordForm,
-} from '@/components';
+} from '@/components/ui';
+
+import { MedicalRecordForm } from '@/components/medical-records';
 
 export const MedicalRecordDialog = ({ open, onOpenChange }) => {
   return (

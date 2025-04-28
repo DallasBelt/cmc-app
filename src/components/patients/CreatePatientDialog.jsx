@@ -7,9 +7,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@/components/ui';
 
-import { CreatePatientForm } from '@/components';
+import { CreatePatientForm } from '@/components/patients';
 import { usePatientStore } from '@/store';
 
 export const CreatePatientDialog = () => {

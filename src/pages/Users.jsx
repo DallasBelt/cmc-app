@@ -1,6 +1,6 @@
 import { Loader2 } from 'lucide-react';
 
-import { DataTable } from '@/components';
+import { DataTable } from '@/components/tables/DataTable';
 
 import { useUsers } from '@/hooks';
 import { usersColumns } from '@/config';

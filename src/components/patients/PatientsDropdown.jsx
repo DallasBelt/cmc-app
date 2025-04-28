@@ -2,23 +2,23 @@ import { useState } from 'react';
 
 import { ClipboardList, Ellipsis, Pencil, Trash } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import {
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui';
 
 import {
   DeletePatientDialog,
   EditPatientDialog,
   ViewMedicalRecordDialog,
-} from '@/components';
+} from '@/components/patients';
+
 import { usePatientStore } from '@/store';
-import { set } from 'date-fns';
 
 export const PatientsDropdown = ({ row }) => {
   const isAssistant = sessionStorage.getItem('roles').includes('assistant');

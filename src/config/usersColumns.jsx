@@ -1,8 +1,8 @@
 import { ArrowUpDown } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui';
 
-import { UsersDropdown } from '@/components';
+import { UsersDropdown } from '@/components/users';
 
 export const usersColumns = [
   {

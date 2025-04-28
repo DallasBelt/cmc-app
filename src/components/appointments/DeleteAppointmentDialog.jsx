@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   Button,
-} from '@/components';
+} from '@/components/ui';
 
 import { useAppointments } from '@/hooks';
 import { useAppointmentStore } from '@/store';

@@ -12,7 +12,7 @@ import {
   Input,
   Label,
   Textarea,
-} from '@/components';
+} from '@/components/ui';
 
 import { useAppointments, useMedicalRecords } from '@/hooks';
 import { medicalRecordSchema } from '@/schemas';

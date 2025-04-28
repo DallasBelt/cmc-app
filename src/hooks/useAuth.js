@@ -17,6 +17,7 @@ export const useAuth = () => {
     onSuccess: (data) => {
       sessionStorage.setItem('id', data.id);
       sessionStorage.setItem('roles', data.roles);
+      sessionStorage.setItem('isInfoComplete', data.isInfoComplete);
       sessionStorage.setItem('token', data.token);
 
       if (data.roles.includes('user')) {

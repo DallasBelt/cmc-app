@@ -23,7 +23,7 @@ import {
   SelectValue,
   ToggleGroup,
   ToggleGroupItem,
-} from '@/components';
+} from '@/components/ui';
 
 import { useMedicInfo } from '@/hooks';
 import { medicInfoSchema } from '@/schemas';
@@ -34,21 +34,13 @@ import { cn } from '@/lib/utils';
 export const MedicInfoForm = () => {
   setDefaultOptions({ locale: es });
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const isCompleteInfo = location.pathname === '/complete-info';
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [initialMedicValues, setInitialMedicValues] = useState(null);
-  const [fieldDisabled, setFieldDisabled] = useState(false);
-
   const { createMedicInfoMutation } = useMedicInfo();
 
   const form = useForm({
     resolver: zodResolver(medicInfoSchema),
     defaultValues: {
       registry: '',
-      speciality: [],
+      speciality: '',
       schedules: [{ checkIn: '', checkOut: '', days: [] }],
     },
   });
@@ -72,69 +64,53 @@ export const MedicInfoForm = () => {
   const { isDirty } = form.formState;
 
   const onSubmit = async (values) => {
-    const medicInfo = {
-      registry: values.registry,
-      speciality: values.speciality,
-    };
-
-    const medicSchedules = [
-      ...values.schedules.map((schedule) => ({
-        checkIn: schedule.checkIn,
-        checkOut: schedule.checkOut,
-        days: schedule.days,
-      })),
-    ];
-    console.log(medicInfo);
-    console.log(medicSchedules);
-    // createMedicInfoMutation.mutate(values);
+    console.log(values);
+    createMedicInfoMutation.mutate(values);
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-        <FormField
-          control={form.control}
-          name='registry'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Registro médico</FormLabel>
-              <FormControl>
-                <Input type='text' {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className='flex flex-col gap-2.5 md:flex-row'>
+          <FormField
+            control={form.control}
+            name='registry'
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormLabel>Registro médico</FormLabel>
+                <FormControl>
+                  <Input type='text' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name='speciality'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Especialidad</FormLabel>
-              <FormControl>
-                <ToggleGroup
-                  type='multiple'
-                  variant='outline'
-                  className='flex flex-wrap gap-2'
-                  value={field.value || []}
-                  onValueChange={field.onChange}
-                >
-                  {specialties.map((item) => (
-                    <ToggleGroupItem
-                      key={item.id}
-                      value={item.id}
-                      className='data-[state=on]:bg-primary data-[state=on]:text-white'
-                    >
-                      {item.label}
-                    </ToggleGroupItem>
-                  ))}
-                </ToggleGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name='speciality'
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormLabel>Especialidad</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder='Seleccionar...' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {specialties.map((item) => (
+                      <SelectItem key={item.id} value={item.id}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         {fields.map((schedule, index) => (
           <div
@@ -167,7 +143,7 @@ export const MedicInfoForm = () => {
                     <ToggleGroup
                       type='multiple'
                       variant='outline'
-                      className='flex justify-between flex-wrap gap-2'
+                      className='flex flex-col md:flex-row flex-wrap gap-2'
                       value={field.value || []}
                       onValueChange={field.onChange}
                     >
@@ -175,7 +151,7 @@ export const MedicInfoForm = () => {
                         <ToggleGroupItem
                           key={day.id}
                           value={day.id}
-                          className='data-[state=on]:bg-primary data-[state=on]:text-white'
+                          className='data-[state=on]:bg-primary data-[state=on]:text-white w-full md:w-fit'
                         >
                           {day.label}
                         </ToggleGroupItem>
@@ -200,7 +176,7 @@ export const MedicInfoForm = () => {
                           <SelectValue placeholder='Seleccionar...' />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className='max-h-40 overflow-y-auto'>
+                      <SelectContent className='max-h-80 overflow-y-auto'>
                         {generateTimeOptions().map((time) => (
                           <SelectItem key={time} value={time}>
                             {time}
@@ -235,7 +211,7 @@ export const MedicInfoForm = () => {
                             <SelectValue placeholder='Seleccionar...' />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className='max-h-60 overflow-y-auto'>
+                        <SelectContent className='max-h-80 overflow-y-auto'>
                           {options.map((time) => (
                             <SelectItem key={time} value={time}>
                               {time}

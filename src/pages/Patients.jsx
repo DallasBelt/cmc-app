@@ -1,6 +1,7 @@
 import { Loader2 } from 'lucide-react';
 
-import { CreatePatientDialog, DataTable } from '@/components';
+import { CreatePatientDialog } from '@/components/patients';
+import { DataTable } from '@/components/tables/DataTable';
 
 import { usePatients } from '@/hooks';
 import { patientsColumns } from '@/config/patientsColumns';

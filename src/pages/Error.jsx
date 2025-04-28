@@ -12,7 +12,7 @@ export const Error = () => {
       <h1 className='text-6xl'>😵‍💫 Oops!</h1>
       <p className='text-3xl'>Lo sentimos, ha ocurrido un error inesperado.</p>
       <p className='text-2xl'>
-        <i>{error.statusText || error.message}</i>
+        <i>{error?.statusText || error?.message}</i>
       </p>
       <Link
         to='/'

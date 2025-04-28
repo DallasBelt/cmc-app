@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
-import { Scheduler } from '@/components';
+import { Scheduler } from '@/components/calendar/Scheduler';
 import { useToastStore } from '@/store';
 
 const chartConfig = {
@@ -25,9 +25,7 @@ const chartData = [
 ];
 
 export const Index = () => {
-  const showToast = useToastStore((state) => state.showToast);
-  const toastMessage = useToastStore((state) => state.toastMessage);
-  const setToast = useToastStore((state) => state.setToast);
+  const { showToast, toastMessage, setToast } = useToastStore();
   const isAdmin = sessionStorage.getItem('roles').includes('admin');
   const isAssistant = sessionStorage.getItem('roles').includes('assistant');
 

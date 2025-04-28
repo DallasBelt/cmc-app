@@ -17,7 +17,7 @@ import {
   PublicRoute,
   RoleBasedRoute,
   CheckUserInfoRoute,
-} from '@/components/ProtectedRoutes';
+} from '@/components/protected-routes';
 
 export const routes = [
   {
@@ -36,16 +36,17 @@ export const routes = [
             <Index />
           </CheckUserInfoRoute>
         ),
-        errorElement: <div>Oops! Hubo un error.</div>,
+        errorElement: <div>Oops!</div>,
       },
       {
         path: 'users',
         element: (
-          <RoleBasedRoute allowedRoles={['admin']}>
-            <Users />
-          </RoleBasedRoute>
+          <CheckUserInfoRoute>
+            <RoleBasedRoute allowedRoles={['admin']}>
+              <Users />
+            </RoleBasedRoute>
+          </CheckUserInfoRoute>
         ),
-        errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
         path: 'patients',
@@ -56,7 +57,6 @@ export const routes = [
             </RoleBasedRoute>
           </CheckUserInfoRoute>
         ),
-        errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
         path: 'appointments',
@@ -67,7 +67,6 @@ export const routes = [
             </RoleBasedRoute>
           </CheckUserInfoRoute>
         ),
-        errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
         path: 'stats',
@@ -78,7 +77,6 @@ export const routes = [
             </RoleBasedRoute>
           </CheckUserInfoRoute>
         ),
-        errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
         path: 'profile',
@@ -89,7 +87,6 @@ export const routes = [
             </RoleBasedRoute>
           </CheckUserInfoRoute>
         ),
-        errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
         path: 'complete-info',
@@ -98,15 +95,10 @@ export const routes = [
             <CompleteInfo />
           </RoleBasedRoute>
         ),
-        errorElement: <div>Oops! Hubo un error.</div>,
       },
       {
         path: '/unauthorized',
-        element: (
-          <div className='min-h-80 flex justify-center items-center text-3xl'>
-            <p>🚫 No tiene permiso para acceder a esta página</p>
-          </div>
-        ),
+        element: <div>🚫 No tiene permiso para acceder</div>,
       },
     ],
   },

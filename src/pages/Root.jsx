@@ -1,29 +1,28 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import { Button } from '@/components/ui/button';
 import {
+  Button,
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
-import { Toaster } from '@/components/ui/sonner';
+  Toaster,
+} from '@/components/ui';
 
-import { List, SignOut } from '@phosphor-icons/react';
+import { Menu, LogOut } from 'lucide-react';
 
-import { AvatarMenu, NavMenu, ThemeToggle } from '@/components';
-import { useTheme } from '@/components/theme-provider';
+import { AvatarMenu, NavMenu, ThemeToggle } from '@/components/interaction';
+import { useTheme } from '@/components/theme/ThemeProvider';
 import navbarLogo from '@/assets/navbar-logo.svg';
 
 export const Root = () => {
-  const { effectiveTheme } = useTheme();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
+  const { effectiveTheme } = useTheme();
 
-  const isCompleteInfo = location.pathname === '/complete-info';
+  const isInfoComplete = sessionStorage.getItem('isInfoComplete');
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const handleCloseSheet = () => {
     setIsSheetOpen(false);
@@ -49,14 +48,14 @@ export const Root = () => {
       />
 
       <nav className='px-24 sticky top-0 z-50 flex items-center justify-between gap-5 h-20 backdrop-filter backdrop-blur-lg bg-opacity-30'>
-        <Link to='/' className={isCompleteInfo ? 'flex' : 'hidden md:flex'}>
+        <Link to='/' className={!isInfoComplete ? 'flex' : 'hidden md:flex'}>
           <img src={navbarLogo} className='w-12' />
         </Link>
 
-        <div className={isCompleteInfo ? 'hidden' : 'flex'}>
+        <div className={!isInfoComplete ? 'hidden' : 'flex'}>
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger className='flex md:hidden'>
-              <List size={24} weight='bold' />
+              <Menu size={24} weight='bold' />
             </SheetTrigger>
             <SheetContent side='left'>
               <SheetHeader className='mb-5'>
@@ -68,21 +67,21 @@ export const Root = () => {
         </div>
 
         <div
-          className={isCompleteInfo ? 'hidden' : 'hidden md:flex md:mr-auto'}
+          className={!isInfoComplete ? 'hidden' : 'hidden md:flex md:mr-auto'}
         >
           <NavMenu />
         </div>
 
-        <div className={isCompleteInfo ? 'flex gap-1' : 'flex gap-5'}>
+        <div className={!isInfoComplete ? 'flex gap-1' : 'flex gap-5'}>
           <ThemeToggle />
 
-          <div className={isCompleteInfo ? 'flex' : 'hidden'}>
+          <div className={!isInfoComplete ? 'flex' : 'hidden'}>
             <Button variant='ghost' size='icon' onClick={handleSignOut}>
-              <SignOut size={24} className='me-1' />
+              <LogOut size={24} className='me-1' />
             </Button>
           </div>
 
-          <div className={isCompleteInfo ? 'hidden' : 'hidden md:flex'}>
+          <div className={!isInfoComplete ? 'hidden' : 'hidden md:flex'}>
             <AvatarMenu />
           </div>
         </div>
