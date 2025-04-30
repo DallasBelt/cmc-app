@@ -1,5 +1,5 @@
 export * from './Appointments';
-export * from './CompleteInfo';
+export * from './CompleteProfile';
 export * from './Error';
 export * from './ForgotPassword';
 export * from './Index';

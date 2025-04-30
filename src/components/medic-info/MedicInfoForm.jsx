@@ -31,14 +31,14 @@ import { days, specialties } from '@/constants';
 import { generateTimeOptions } from '@/utils';
 import { cn } from '@/lib/utils';
 
-export const MedicInfoForm = () => {
+export const MedicInfoForm = ({ onComplete }) => {
   setDefaultOptions({ locale: es });
 
-  const { createMedicInfoMutation } = useMedicInfo();
+  const { createMedicInfoMutation, medicInfoQuery } = useMedicInfo();
 
   const form = useForm({
     resolver: zodResolver(medicInfoSchema),
-    defaultValues: {
+    defaultValues: medicInfoQuery.data ?? {
       registry: '',
       speciality: '',
       schedules: [{ checkIn: '', checkOut: '', days: [] }],
@@ -65,7 +65,13 @@ export const MedicInfoForm = () => {
 
   const onSubmit = async (values) => {
     console.log(values);
-    createMedicInfoMutation.mutate(values);
+    createMedicInfoMutation.mutate(values, {
+      onSuccess: () => {
+        if (onComplete) {
+          onComplete();
+        }
+      },
+    });
   };
 
   return (

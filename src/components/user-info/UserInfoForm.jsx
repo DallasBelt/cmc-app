@@ -35,14 +35,14 @@ import { useUserInfo } from '@/hooks';
 import { userInfoSchema } from '@/schemas/userInfoSchema';
 import { cn } from '@/lib/utils';
 
-export const UserInfoForm = () => {
+export const UserInfoForm = ({ onComplete }) => {
   setDefaultOptions({ locale: es });
 
-  const { createUserInfoMutation } = useUserInfo();
+  const { createUserInfoMutation, userInfoQuery } = useUserInfo();
 
   const form = useForm({
     resolver: zodResolver(userInfoSchema),
-    defaultValues: {
+    defaultValues: userInfoQuery.data ?? {
       dniType: '',
       dni: '',
       firstName: '',
@@ -56,7 +56,18 @@ export const UserInfoForm = () => {
   const { isDirty } = form.formState;
 
   const onSubmit = async (values) => {
-    createUserInfoMutation.mutate(values);
+    const newUserInfo = {
+      ...values,
+      dob: format(values.dob, 'dd-MM-yyyy'),
+    };
+
+    createUserInfoMutation.mutate(newUserInfo, {
+      onSuccess: () => {
+        if (onComplete) {
+          onComplete();
+        }
+      },
+    });
   };
 
   return (

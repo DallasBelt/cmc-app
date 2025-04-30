@@ -1,6 +1,6 @@
 import {
   Appointments,
-  CompleteInfo,
+  CompleteProfile,
   Error,
   ForgotPassword,
   Index,
@@ -16,7 +16,7 @@ import {
   PrivateRoute,
   PublicRoute,
   RoleBasedRoute,
-  CheckUserInfoRoute,
+  IsProfileCompleteRoute,
 } from '@/components/protected-routes';
 
 export const routes = [
@@ -32,67 +32,67 @@ export const routes = [
       {
         index: true,
         element: (
-          <CheckUserInfoRoute>
+          <IsProfileCompleteRoute>
             <Index />
-          </CheckUserInfoRoute>
+          </IsProfileCompleteRoute>
         ),
         errorElement: <div>Oops!</div>,
       },
       {
         path: 'users',
         element: (
-          <CheckUserInfoRoute>
-            <RoleBasedRoute allowedRoles={['admin']}>
+          <RoleBasedRoute allowedRoles={['admin']}>
+            <IsProfileCompleteRoute>
               <Users />
-            </RoleBasedRoute>
-          </CheckUserInfoRoute>
+            </IsProfileCompleteRoute>
+          </RoleBasedRoute>
         ),
       },
       {
         path: 'patients',
         element: (
-          <CheckUserInfoRoute>
+          <IsProfileCompleteRoute>
             <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
               <Patients />
             </RoleBasedRoute>
-          </CheckUserInfoRoute>
+          </IsProfileCompleteRoute>
         ),
       },
       {
         path: 'appointments',
         element: (
-          <CheckUserInfoRoute>
+          <IsProfileCompleteRoute>
             <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
               <Appointments />
             </RoleBasedRoute>
-          </CheckUserInfoRoute>
+          </IsProfileCompleteRoute>
         ),
       },
       {
         path: 'stats',
         element: (
-          <CheckUserInfoRoute>
+          <IsProfileCompleteRoute>
             <RoleBasedRoute allowedRoles={['admin', 'medic', 'assistant']}>
               <Statistics />
             </RoleBasedRoute>
-          </CheckUserInfoRoute>
+          </IsProfileCompleteRoute>
         ),
       },
       {
         path: 'profile',
         element: (
-          <CheckUserInfoRoute>
+          <IsProfileCompleteRoute>
             <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
               <Profile />
             </RoleBasedRoute>
-          </CheckUserInfoRoute>
+          </IsProfileCompleteRoute>
         ),
       },
       {
-        path: 'complete-info',
+        path: 'complete-profile',
         element: (
           <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
-            <CompleteInfo />
+            <CompleteProfile />
           </RoleBasedRoute>
         ),
       },
