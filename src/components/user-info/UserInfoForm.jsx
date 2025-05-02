@@ -1,10 +1,12 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { format, setDefaultOptions } from 'date-fns';
+import { format, parseISO, setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { CalendarDays, Loader2 } from 'lucide-react';
+
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -38,36 +40,58 @@ import { cn } from '@/lib/utils';
 export const UserInfoForm = ({ onComplete }) => {
   setDefaultOptions({ locale: es });
 
-  const { createUserInfoMutation, userInfoQuery } = useUserInfo();
+  const { createUserInfoMutation, userInfoQuery, updateUserInfoMutation } =
+    useUserInfo();
 
   const form = useForm({
     resolver: zodResolver(userInfoSchema),
-    defaultValues: userInfoQuery.data ?? {
-      dniType: '',
-      dni: '',
-      firstName: '',
-      lastName: '',
-      dob: null,
-      phone: '',
-      address: '',
-    },
+    defaultValues: userInfoQuery.data
+      ? {
+          ...userInfoQuery.data,
+          dob: userInfoQuery.data.dob ? parseISO(userInfoQuery.data.dob) : null,
+        }
+      : {
+          dniType: '',
+          dni: '',
+          firstName: '',
+          lastName: '',
+          dob: null,
+          phone: '',
+          address: '',
+        },
   });
 
   const { isDirty } = form.formState;
 
   const onSubmit = async (values) => {
-    const newUserInfo = {
-      ...values,
-      dob: format(values.dob, 'dd-MM-yyyy'),
-    };
+    if (userInfoQuery.data) {
+      if (!isDirty) {
+        toast.info('No se detectaron cambios.');
+        return;
+      }
 
-    createUserInfoMutation.mutate(newUserInfo, {
-      onSuccess: () => {
-        if (onComplete) {
-          onComplete();
-        }
-      },
-    });
+      const { dni, dniType, dob, ...rest } = values;
+
+      const updatedUserInfo = {
+        ...rest,
+        dob: format(dob, 'dd-MM-yyyy'),
+      };
+
+      updateUserInfoMutation.mutate(updatedUserInfo);
+    } else {
+      const newUserInfo = {
+        ...values,
+        dob: format(values.dob, 'dd-MM-yyyy'),
+      };
+
+      createUserInfoMutation.mutate(newUserInfo, {
+        onSuccess: () => {
+          if (onComplete) {
+            onComplete();
+          }
+        },
+      });
+    }
   };
 
   return (
@@ -184,8 +208,8 @@ export const UserInfoForm = ({ onComplete }) => {
                       date > new Date() || date < new Date('1900-01-01')
                     }
                     captionLayout='dropdown'
-                    hideNavigation
-                    toYear={new Date().getFullYear() - 18}
+                    defaultMonth={field.value || undefined}
+                    toYear={new Date().getFullYear()}
                     fromYear={new Date().getFullYear() - 70}
                     locale={es}
                     initialFocus

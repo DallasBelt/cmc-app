@@ -207,7 +207,7 @@ export const CreatePatientForm = () => {
             control={form.control}
             name='dob'
             render={({ field }) => (
-              <FormItem className='flex flex-col'>
+              <FormItem className='flex flex-col gap-1'>
                 <FormLabel className='mt-1'>Fecha de nacimiento</FormLabel>
                 <Popover modal={true}>
                   <PopoverTrigger asChild>
