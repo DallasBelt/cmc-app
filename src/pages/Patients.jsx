@@ -1,10 +1,9 @@
 import { Loader2 } from 'lucide-react';
 
 import { CreatePatientDialog } from '@/components/patients';
-import { DataTable } from '@/components/tables/DataTable';
+import { PatientsTable } from '@/components/tables/';
 
 import { usePatients } from '@/hooks';
-import { patientsColumns } from '@/config/patientsColumns';
 
 export const Patients = () => {
   const { patientsQuery } = usePatients();
@@ -31,7 +30,7 @@ export const Patients = () => {
         </div>
       ) : (
         <div className='flex flex-col gap-5'>
-          <DataTable columns={patientsColumns} data={data} />
+          <PatientsTable data={data} />
         </div>
       )}
     </>

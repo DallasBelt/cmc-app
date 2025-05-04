@@ -1,9 +1,8 @@
 import { Loader2 } from 'lucide-react';
 
-import { DataTable } from '@/components/tables/DataTable';
+import { UsersTable } from '@/components/tables/';
 
 import { useUsers } from '@/hooks';
-import { usersColumns } from '@/config';
 
 export const Users = () => {
   const { usersQuery } = useUsers();
@@ -18,7 +17,7 @@ export const Users = () => {
         </div>
       ) : (
         <div className='flex flex-col gap-5'>
-          <DataTable columns={usersColumns} data={data} />
+          <UsersTable data={data} />
         </div>
       )}
     </>
