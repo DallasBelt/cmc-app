@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -45,21 +46,24 @@ export const UserInfoForm = ({ onComplete }) => {
 
   const form = useForm({
     resolver: zodResolver(userInfoSchema),
-    defaultValues: userInfoQuery.data
-      ? {
-          ...userInfoQuery.data,
-          dob: userInfoQuery.data.dob ? parseISO(userInfoQuery.data.dob) : null,
-        }
-      : {
-          dniType: '',
-          dni: '',
-          firstName: '',
-          lastName: '',
-          dob: null,
-          phone: '',
-          address: '',
-        },
+    defaultValues: {
+      dniType: '',
+      dni: '',
+      firstName: '',
+      lastName: '',
+      dob: null,
+      phone: '',
+      address: '',
+    },
   });
+  useEffect(() => {
+    if (userInfoQuery.data) {
+      form.reset({
+        ...userInfoQuery.data,
+        dob: userInfoQuery.data.dob ? parseISO(userInfoQuery.data.dob) : null,
+      });
+    }
+  }, [userInfoQuery.data]);
 
   const { isDirty } = form.formState;
 
