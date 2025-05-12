@@ -1,12 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { completeProfile, login, register } from '@/api/auth';
+import { login, register } from '@/api/auth';
 import { useRegistrationStore, useToastStore } from '@/store';
 
 export const useAuth = () => {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const setToast = useToastStore((state) => state.setToast);
   const setRegistrationDialog = useRegistrationStore(
@@ -18,7 +17,6 @@ export const useAuth = () => {
     onSuccess: (data) => {
       sessionStorage.setItem('id', data.id);
       sessionStorage.setItem('roles', data.roles);
-      sessionStorage.setItem('isProfileComplete', data.isProfileComplete);
       sessionStorage.setItem('token', data.token);
 
       if (data.roles.includes('user')) {
@@ -69,25 +67,8 @@ export const useAuth = () => {
     },
   });
 
-  const completeProfileMutation = useMutation({
-    mutationFn: completeProfile,
-    onSuccess: () => {
-      toast.success('Perfil completado exitosamente.');
-      queryClient.invalidateQueries(['user']);
-      sessionStorage.setItem('isProfileComplete', true);
-      setTimeout(() => {
-        navigate('/');
-      }, 1500);
-    },
-    onError: (error) => {
-      console.error(error);
-      toast.error('No se pudo completar el perfil.');
-    },
-  });
-
   return {
     loginMutation,
     registerMutation,
-    completeProfileMutation,
   };
 };

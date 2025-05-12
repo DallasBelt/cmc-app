@@ -56,6 +56,7 @@ export const UserInfoForm = ({ onComplete }) => {
       address: '',
     },
   });
+
   useEffect(() => {
     if (userInfoQuery.data) {
       form.reset({

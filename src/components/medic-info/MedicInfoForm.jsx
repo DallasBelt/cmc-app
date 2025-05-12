@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -64,7 +63,34 @@ export const MedicInfoForm = ({ onComplete }) => {
   const { isDirty } = form.formState;
 
   const onSubmit = async (values) => {
-    console.log(values);
+    if (medicInfoQuery.data) {
+      if (!isDirty) {
+        toast.info('No se detectaron cambios.');
+        return;
+      }
+
+      const { dni, dniType, dob, ...rest } = values;
+
+      const updatedUserInfo = {
+        ...rest,
+        dob: format(dob, 'dd-MM-yyyy'),
+      };
+
+      updateUserInfoMutation.mutate(updatedUserInfo);
+    } else {
+      const newUserInfo = {
+        ...values,
+        dob: format(values.dob, 'dd-MM-yyyy'),
+      };
+
+      createUserInfoMutation.mutate(newUserInfo, {
+        onSuccess: () => {
+          if (onComplete) {
+            onComplete();
+          }
+        },
+      });
+    }
     createMedicInfoMutation.mutate(values, {
       onSuccess: () => {
         if (onComplete) {
