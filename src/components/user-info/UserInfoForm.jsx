@@ -38,7 +38,7 @@ import { useUserInfo } from '@/hooks';
 import { userInfoSchema } from '@/schemas/userInfoSchema';
 import { cn } from '@/lib/utils';
 
-export const UserInfoForm = ({ onComplete }) => {
+export const UserInfoForm = () => {
   setDefaultOptions({ locale: es });
 
   const { createUserInfoMutation, userInfoQuery, updateUserInfoMutation } =
@@ -89,14 +89,18 @@ export const UserInfoForm = ({ onComplete }) => {
         dob: format(values.dob, 'dd-MM-yyyy'),
       };
 
-      createUserInfoMutation.mutate(newUserInfo, {
-        onSuccess: () => {
-          if (onComplete) {
-            onComplete();
-          }
-        },
-      });
+      createUserInfoMutation.mutate(newUserInfo);
     }
+  };
+
+  // Llamamos a trigger para validar el formulario cuando el usuario haga clic en 'Siguiente'
+  const handleNextStep = async () => {
+    const isValid = await trigger(); // Validar el formulario
+    if (!isValid) {
+      return; // Si no es válido, no dejamos avanzar al siguiente paso
+    }
+    // Si es válido, se puede enviar el formulario o proceder con el paso siguiente
+    onSubmit(form.getValues()); // O realizar cualquier otra acción necesaria
   };
 
   return (
@@ -268,7 +272,7 @@ export const UserInfoForm = ({ onComplete }) => {
             disabled={createUserInfoMutation.isPending}
             className='w-full md:w-fit'
           >
-            Guardar cambios
+            Guardar
             {createUserInfoMutation.isPending && (
               <Loader2 className='ml-2 animate-spin' />
             )}

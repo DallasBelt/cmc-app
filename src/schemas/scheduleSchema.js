@@ -1,6 +1,7 @@
 import { z } from 'zod';
+import { getScheduleIssues } from '@/utils/scheduleValidators';
 
-export const scheduleSchema = z
+const scheduleSchema = z
   .object({
     checkIn: z
       .string()
@@ -21,4 +22,34 @@ export const scheduleSchema = z
   .refine((data) => data.checkIn < data.checkOut, {
     message: 'La hora de salida debe ser mayor que la de entrada',
     path: ['checkOut'],
+  });
+
+export const schedulesArraySchema = z
+  .object({
+    schedules: z
+      .array(scheduleSchema)
+      .min(1, { message: 'Debe registrar al menos un horario' }),
+  })
+  .superRefine((data, ctx) => {
+    const { hasDuplicates, hasOverlaps } = getScheduleIssues(data.schedules);
+
+    if (hasDuplicates && hasOverlaps) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Hay horarios duplicados y traslapados.',
+        path: ['schedules'],
+      });
+    } else if (hasDuplicates) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Hay horarios duplicados.',
+        path: ['schedules'],
+      });
+    } else if (hasOverlaps) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Hay horarios que se traslapan.',
+        path: ['schedules'],
+      });
+    }
   });

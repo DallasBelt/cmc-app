@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
-
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-import { Loader2, PlusCircle, Trash2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+
 import {
   Button,
   Form,
@@ -20,45 +21,31 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  ToggleGroup,
-  ToggleGroupItem,
 } from '@/components/ui';
 
 import { useMedicInfo } from '@/hooks';
 import { medicInfoSchema } from '@/schemas';
-import { days, specialties } from '@/constants';
-import { generateTimeOptions } from '@/utils';
-import { cn } from '@/lib/utils';
+import { specialties } from '@/constants';
 
-export const MedicInfoForm = ({ onComplete }) => {
+export const MedicInfoForm = () => {
   setDefaultOptions({ locale: es });
 
-  const { createMedicInfoMutation, medicInfoQuery } = useMedicInfo();
+  const { createMedicInfoMutation, medicInfoQuery, updateMedicInfoMutation } =
+    useMedicInfo();
 
   const form = useForm({
     resolver: zodResolver(medicInfoSchema),
-    defaultValues: medicInfoQuery.data ?? {
+    defaultValues: {
       registry: '',
       speciality: '',
-      schedules: [{ checkIn: '', checkOut: '', days: [] }],
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: 'schedules',
-  });
-
   useEffect(() => {
-    fields.forEach((_, index) => {
-      const checkIn = form.getValues(`schedules.${index}.checkIn`);
-      const checkOut = form.getValues(`schedules.${index}.checkOut`);
-
-      if (checkIn && checkOut && checkOut <= checkIn) {
-        form.setValue(`schedules.${index}.checkOut`, '');
-      }
-    });
-  }, [fields, form]);
+    if (medicInfoQuery.data) {
+      form.reset(medicInfoQuery.data);
+    }
+  }, [medicInfoQuery.data]);
 
   const { isDirty } = form.formState;
 
@@ -69,35 +56,10 @@ export const MedicInfoForm = ({ onComplete }) => {
         return;
       }
 
-      const { dni, dniType, dob, ...rest } = values;
-
-      const updatedUserInfo = {
-        ...rest,
-        dob: format(dob, 'dd-MM-yyyy'),
-      };
-
-      updateUserInfoMutation.mutate(updatedUserInfo);
+      updateMedicInfoMutation.mutate(values);
     } else {
-      const newUserInfo = {
-        ...values,
-        dob: format(values.dob, 'dd-MM-yyyy'),
-      };
-
-      createUserInfoMutation.mutate(newUserInfo, {
-        onSuccess: () => {
-          if (onComplete) {
-            onComplete();
-          }
-        },
-      });
+      createMedicInfoMutation.mutate(values);
     }
-    createMedicInfoMutation.mutate(values, {
-      onSuccess: () => {
-        if (onComplete) {
-          onComplete();
-        }
-      },
-    });
   };
 
   return (
@@ -142,142 +104,6 @@ export const MedicInfoForm = ({ onComplete }) => {
               </FormItem>
             )}
           />
-        </div>
-
-        {fields.map((schedule, index) => (
-          <div
-            key={schedule.id}
-            className='border p-4 rounded-md space-y-2 bg-muted/50'
-          >
-            <div className='flex justify-between items-center'>
-              <FormLabel className='text-base font-medium'>
-                Horario {index + 1}
-              </FormLabel>
-              {index !== 0 && (
-                <Button
-                  type='button'
-                  variant='ghost'
-                  size='icon'
-                  onClick={() => remove(index)}
-                >
-                  <Trash2 className='w-4 h-4 text-red-500' />
-                </Button>
-              )}
-            </div>
-
-            <FormField
-              control={form.control}
-              name={`schedules.${index}.days`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Días</FormLabel>
-                  <FormControl>
-                    <ToggleGroup
-                      type='multiple'
-                      variant='outline'
-                      className='flex flex-col md:flex-row flex-wrap gap-2'
-                      value={field.value || []}
-                      onValueChange={field.onChange}
-                    >
-                      {days.map((day) => (
-                        <ToggleGroupItem
-                          key={day.id}
-                          value={day.id}
-                          className='data-[state=on]:bg-primary data-[state=on]:text-white w-full md:w-fit'
-                        >
-                          {day.label}
-                        </ToggleGroupItem>
-                      ))}
-                    </ToggleGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className='flex flex-col md:flex-row gap-2'>
-              <FormField
-                control={form.control}
-                name={`schedules.${index}.checkIn`}
-                render={({ field }) => (
-                  <FormItem className='w-full'>
-                    <FormLabel>Hora de entrada</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder='Seleccionar...' />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className='max-h-80 overflow-y-auto'>
-                        {generateTimeOptions().map((time) => (
-                          <SelectItem key={time} value={time}>
-                            {time}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name={`schedules.${index}.checkOut`}
-                render={({ field }) => {
-                  const checkInValue = form.watch(`schedules.${index}.checkIn`);
-                  const options = generateTimeOptions(6, 20, 15, checkInValue);
-
-                  return (
-                    <FormItem className='w-full'>
-                      <FormLabel>Hora de salida</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        disabled={!checkInValue}
-                      >
-                        <FormControl>
-                          <SelectTrigger
-                            className={cn(!checkInValue && 'opacity-50')}
-                          >
-                            <SelectValue placeholder='Seleccionar...' />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className='max-h-80 overflow-y-auto'>
-                          {options.map((time) => (
-                            <SelectItem key={time} value={time}>
-                              {time}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-            </div>
-            {form.formState.errors.schedules?.root?.message && (
-              <p className='text-sm text-red-500 text-center'>
-                {form.formState.errors.schedules.root.message}
-              </p>
-            )}
-          </div>
-        ))}
-
-        <div className='flex justify-center'>
-          <Button
-            type='button'
-            variant='outline'
-            className='flex gap-2 items-center'
-            disabled={fields.length >= 5}
-            onClick={() => {
-              append({ checkIn: '', checkOut: '', days: [] });
-            }}
-          >
-            <PlusCircle className='w-4 h-4 text-green-500' />
-            Agregar horario
-          </Button>
         </div>
 
         <div className='pt-5 flex justify-center'>

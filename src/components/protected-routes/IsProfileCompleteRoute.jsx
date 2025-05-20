@@ -15,8 +15,9 @@ export const IsProfileCompleteRoute = ({ children }) => {
 
   const isUserInfoComplete = userInfoQuery.data;
   const isMedicInfoComplete = medicInfoQuery.data;
+  const isScheduleComplete = medicInfoQuery.data?.schedule?.length > 0;
 
-  if (!isUserInfoComplete || !isMedicInfoComplete) {
+  if (!isUserInfoComplete || !isMedicInfoComplete || !isScheduleComplete) {
     setToast(true, 'Debe completar sus datos antes de usar la aplicación.');
     return <Navigate to='/complete-profile' replace />;
   }
