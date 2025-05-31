@@ -8,7 +8,7 @@ import { Button } from '@/components/ui';
 
 import { UserInfoForm } from '@/components/user-info/UserInfoForm';
 import { MedicInfoForm } from '@/components/medic-info/MedicInfoForm';
-import { SchedulesForm } from '@/components/schedules/SchedulesForm';
+import { SchedulesForm } from '@/components/schedule/ScheduleForm';
 
 import { userInfoSchema } from '@/schemas/userInfoSchema';
 

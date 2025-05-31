@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { toast } from 'sonner';
-
 import { Loader2, PlusCircle, Trash2 } from 'lucide-react';
+
 import {
   Button,
   Form,
@@ -25,99 +24,134 @@ import {
   ToggleGroupItem,
 } from '@/components/ui';
 
-import { useSchedules } from '@/hooks';
-import { schedulesArraySchema } from '@/schemas';
+import { useSchedule } from '@/hooks';
+import { scheduleSchema } from '@/schemas';
 import { days } from '@/constants';
 import { generateTimeOptions } from '@/utils';
+import { areDaysEqual } from '@/utils/validateShifts';
 import { cn } from '@/lib/utils';
 
-export const SchedulesForm = () => {
+export const ScheduleForm = () => {
   setDefaultOptions({ locale: es });
 
-  const MAX_SCHEDULES = 5;
+  const MAX_SHIFTS = 5;
 
-  const { createScheduleMutation, schedulesQuery } = useSchedules();
+  const { createScheduleMutation, scheduleQuery, updateScheduleMutation } =
+    useSchedule();
 
   const form = useForm({
-    resolver: zodResolver(schedulesArraySchema),
+    resolver: zodResolver(scheduleSchema),
     defaultValues: {
-      schedules: [{ checkIn: '', checkOut: '', days: [] }],
+      shifts: [{ checkIn: '', checkOut: '', days: [] }],
     },
   });
 
   const { fields, append, remove } = useFieldArray({
-    name: 'schedules',
+    name: 'shifts',
     control: form.control,
   });
 
+  const fetchExistingSchedule = () => {
+    const schedule = scheduleQuery.data?.[0];
+
+    if (!schedule || !Array.isArray(schedule.shifts)) return null;
+
+    return schedule.shifts.map((shift) => ({
+      checkIn: shift.checkIn,
+      checkOut: shift.checkOut,
+      days: shift.days || [],
+    }));
+  };
+
+  useEffect(() => {
+    const schedule = fetchExistingSchedule();
+    form.setValue(
+      'shifts',
+      schedule || [{ checkIn: '', checkOut: '', days: [] }]
+    );
+  }, [scheduleQuery.data, form]);
+
   useEffect(() => {
     fields.forEach((_, index) => {
-      const checkIn = form.getValues(`schedules.${index}.checkIn`);
-      const checkOut = form.getValues(`schedules.${index}.checkOut`);
-
+      const checkIn = form.getValues(`shifts.${index}.checkIn`);
+      const checkOut = form.getValues(`shifts.${index}.checkOut`);
       if (checkIn && checkOut && checkOut <= checkIn) {
-        form.setValue(`schedules.${index}.checkOut`, '');
+        form.setValue(`shifts.${index}.checkOut`, '');
       }
     });
   }, [fields, form]);
 
-  const handleAppend = () => {
-    if (fields.length < MAX_SCHEDULES) {
+  const handleAppendShift = () => {
+    if (fields.length < MAX_SHIFTS) {
       append({ checkIn: '', checkOut: '', days: [] });
     } else {
-      toast.error('No se puede agregar más de 5 horarios.');
+      toast.error('No se puede agregar más de 5 turnos.');
     }
   };
 
-  const handleRemove = (index) => {
+  const handleRemoveShift = (index) => {
     if (index === 0) {
-      toast.error('No se puede eliminar el primer horario.');
+      toast.error('No se puede eliminar el primer turno.');
       return;
     }
     remove(index);
   };
 
-  // useEffect(() => {
-  //   if (schedulesQuery.data) {
-  //     form.reset(schedulesQuery.data);
-  //   }
-  // }, [schedulesQuery.data]);
-
-  const { isDirty } = form.formState;
-
   const onSubmit = async (values) => {
-    console.log(values.schedules);
-    // if (schedulesQuery.data) {
-    //   if (!isDirty) {
-    //     toast.info('No se detectaron cambios.');
-    //     return;
-    //   }
+    const existingScheduleId = scheduleQuery.data?.[0]?.id;
 
-    //   updateMedicInfoMutation.mutate(values);
-    // } else {
-    //   createScheduleMutation.mutate(values);
-    // }
-    createScheduleMutation.mutate(values);
+    // If there's no schedule, create a new one
+    if (!existingScheduleId) {
+      createScheduleMutation.mutate({ shifts: values.shifts });
+      return;
+    }
+
+    // Define current and new schedules for comparison
+    const currentSchedule = scheduleQuery.data?.[0]?.shifts ?? [];
+    const newShifts = values.shifts;
+
+    // Compare the current schedule with the one in the form
+    const areEqual =
+      currentSchedule.length === newShifts.length &&
+      currentSchedule.every((currentShift, index) => {
+        const newShift = newShifts[index];
+        return (
+          currentShift.checkIn === newShift.checkIn &&
+          currentShift.checkOut === newShift.checkOut &&
+          areDaysEqual(currentShift.days, newShift.days)
+        );
+      });
+
+    if (areEqual) {
+      toast.info('No se detectaron cambios.');
+      return;
+    }
+
+    // If changes are detected, update the schedule
+    updateScheduleMutation.mutate({
+      id: existingScheduleId,
+      shifts: values.shifts,
+    });
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-        {fields.map((schedule, index) => (
+        {fields.map((shift, index) => (
           <div
-            key={schedule.id}
+            key={shift.id}
             className='border p-4 rounded-md space-y-2 bg-muted/50'
           >
             <div className='flex justify-between items-center'>
               <FormLabel className='text-base font-medium'>
-                Horario {index + 1}
+                Turno {index + 1}
               </FormLabel>
               {index !== 0 && (
                 <Button
                   type='button'
                   variant='ghost'
                   size='icon'
-                  onClick={() => handleRemove(index)}
+                  onClick={() => handleRemoveShift(index)}
                 >
                   <Trash2 className='w-4 h-4 text-red-500' />
                 </Button>
@@ -126,7 +160,7 @@ export const SchedulesForm = () => {
 
             <FormField
               control={form.control}
-              name={`schedules.${index}.days`}
+              name={`shifts.${index}.days`}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Días</FormLabel>
@@ -157,7 +191,7 @@ export const SchedulesForm = () => {
             <div className='flex flex-col md:flex-row gap-2'>
               <FormField
                 control={form.control}
-                name={`schedules.${index}.checkIn`}
+                name={`shifts.${index}.checkIn`}
                 render={({ field }) => (
                   <FormItem className='w-full'>
                     <FormLabel>Hora de entrada</FormLabel>
@@ -182,9 +216,9 @@ export const SchedulesForm = () => {
 
               <FormField
                 control={form.control}
-                name={`schedules.${index}.checkOut`}
+                name={`shifts.${index}.checkOut`}
                 render={({ field }) => {
-                  const checkInValue = form.watch(`schedules.${index}.checkIn`);
+                  const checkInValue = form.watch(`shifts.${index}.checkIn`);
                   const options = generateTimeOptions(6, 20, 15, checkInValue);
 
                   return (
@@ -216,9 +250,10 @@ export const SchedulesForm = () => {
                 }}
               />
             </div>
-            {form.formState.errors.schedules?.root?.message && (
+
+            {form.formState.errors.shifts?.root?.message && (
               <p className='text-sm text-red-500 text-center'>
-                {form.formState.errors.schedules.root.message}
+                {form.formState.errors.shifts.root.message}
               </p>
             )}
           </div>
@@ -229,11 +264,11 @@ export const SchedulesForm = () => {
             type='button'
             variant='outline'
             className='flex gap-2 items-center'
-            disabled={fields.length >= MAX_SCHEDULES}
-            onClick={handleAppend}
+            disabled={fields.length >= MAX_SHIFTS}
+            onClick={handleAppendShift}
           >
             <PlusCircle className='w-4 h-4 text-green-500' />
-            Agregar horario
+            Agregar otro turno
           </Button>
         </div>
 

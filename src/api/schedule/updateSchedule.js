@@ -1,14 +1,14 @@
-export const createSchedule = async (schedule) => {
+export const updateSchedule = async ({ id, shifts }) => {
   const token = sessionStorage.getItem('token');
-  if (!token) throw new Error('Error de autenticación.');
+  if (!token) throw new Error('Authentication error.');
 
-  const res = await fetch('http://localhost:3000/api/v1/schedule', {
-    method: 'POST',
+  const res = await fetch(`http://localhost:3000/api/v1/schedule/${id}`, {
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(schedule),
+    body: JSON.stringify({ shifts }),
   });
 
   const data = await res.json();

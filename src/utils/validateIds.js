@@ -1,4 +1,4 @@
-export function cedulaValidator(id) {
+export function validateCedula(id) {
   if (id.length !== 10) {
     return false;
   }
@@ -26,7 +26,7 @@ export function cedulaValidator(id) {
   return calculatedVerificationDigit === verificationDigit;
 }
 
-export function rucValidator(id) {
+export function validateRuc(id) {
   // Must have 13 digits
   if (id.length !== 13) {
     return false;
@@ -42,10 +42,10 @@ export function rucValidator(id) {
   }
 
   // Validate cedula
-  return cedulaValidator(cedula);
+  return validateCedula(cedula);
 }
 
-export const passportValidator = (passportNumber) => {
+export const validatePassport = (passportNumber) => {
   const lengthValid = passportNumber.length >= 6 && passportNumber.length <= 9;
   const formatValid = /^[A-Z0-9]+$/.test(passportNumber);
   return lengthValid && formatValid;

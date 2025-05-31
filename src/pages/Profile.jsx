@@ -10,7 +10,7 @@ import {
 import { AssistantInfoForm } from '@/components/assistants';
 import { MedicInfoForm } from '@/components/medic-info/MedicInfoForm';
 import { UserInfoForm } from '@/components/user-info/UserInfoForm';
-import { SchedulesForm } from '@/components/schedules/SchedulesForm';
+import { ScheduleForm } from '@/components/schedule/ScheduleForm';
 
 export const Profile = () => {
   const role = sessionStorage.getItem('roles');
@@ -23,7 +23,7 @@ export const Profile = () => {
           <TabsTrigger value={role === 'medic' ? 'medicInfo' : 'assistantInfo'}>
             Datos Profesionales
           </TabsTrigger>
-          <TabsTrigger value='schedules'>Horarios</TabsTrigger>
+          <TabsTrigger value='schedule'>Horario</TabsTrigger>
         </TabsList>
         <TabsContent value='userInfo'>
           <Card>
@@ -41,10 +41,10 @@ export const Profile = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value='schedules'>
+        <TabsContent value='schedule'>
           <Card>
             <CardContent className='p-5'>
-              <SchedulesForm />
+              <ScheduleForm />
             </CardContent>
           </Card>
         </TabsContent>

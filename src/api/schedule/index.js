@@ -1,2 +1,3 @@
 export * from './createSchedule';
-export * from './getSchedules';
+export * from './getSchedule';
+export * from './updateSchedule';

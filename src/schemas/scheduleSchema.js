@@ -1,7 +1,17 @@
 import { z } from 'zod';
-import { getScheduleIssues } from '@/utils/scheduleValidators';
+import { validateShifts } from '@/utils';
 
-const scheduleSchema = z
+const validDays = z.enum([
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+  'sunday',
+]);
+
+const shiftSchema = z
   .object({
     checkIn: z
       .string()
@@ -17,39 +27,41 @@ const scheduleSchema = z
         message: 'Formato inválido (HH:mm)',
       }),
 
-    days: z.array(z.string()).min(1, { message: 'Seleccione al menos un día' }),
+    days: z.array(validDays).min(1, { message: 'Seleccione al menos un día' }),
   })
   .refine((data) => data.checkIn < data.checkOut, {
     message: 'La hora de salida debe ser mayor que la de entrada',
     path: ['checkOut'],
   });
 
-export const schedulesArraySchema = z
+export const scheduleSchema = z
   .object({
-    schedules: z
-      .array(scheduleSchema)
-      .min(1, { message: 'Debe registrar al menos un horario' }),
+    shifts: z
+      .array(shiftSchema)
+      .min(1, { message: 'Debe registrar al menos un turno.' }),
   })
   .superRefine((data, ctx) => {
-    const { hasDuplicates, hasOverlaps } = getScheduleIssues(data.schedules);
+    const { hasDuplicateShifts, hasOverlappedShifts } = validateShifts(
+      data.shifts
+    );
 
-    if (hasDuplicates && hasOverlaps) {
+    if (hasDuplicateShifts && hasOverlappedShifts) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'Hay horarios duplicados y traslapados.',
-        path: ['schedules'],
+        message: 'Hay turnos duplicados y traslapados.',
+        path: ['shifts'],
       });
-    } else if (hasDuplicates) {
+    } else if (hasDuplicateShifts) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'Hay horarios duplicados.',
-        path: ['schedules'],
+        message: 'Hay turnos duplicados.',
+        path: ['shifts'],
       });
-    } else if (hasOverlaps) {
+    } else if (hasOverlappedShifts) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'Hay horarios que se traslapan.',
-        path: ['schedules'],
+        message: 'Hay turnos que se traslapan.',
+        path: ['shifts'],
       });
     }
   });

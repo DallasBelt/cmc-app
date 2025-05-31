@@ -1,3 +1,3 @@
 export * from './generateTimeOptions';
-export * from './idValidators';
-export * from './scheduleValidators';
+export * from './validateIds';
+export * from './validateShifts';

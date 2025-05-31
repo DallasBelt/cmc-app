@@ -1,5 +1,5 @@
-export const getSchedules = async () => {
-  const res = await fetch('http://localhost:3000/api/v1/schedules', {
+export const getSchedule = async () => {
+  const res = await fetch('http://localhost:3000/api/v1/schedule', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

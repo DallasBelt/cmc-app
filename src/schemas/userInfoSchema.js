@@ -1,10 +1,6 @@
 import { z } from 'zod';
 import { isValidPhoneNumber } from 'react-phone-number-input';
-import {
-  cedulaValidator,
-  rucValidator,
-  passportValidator,
-} from '@/utils/idValidators';
+import { validateCedula, validateRuc, validatePassport } from '@/utils';
 
 export const userInfoSchema = z
   .object({
@@ -27,19 +23,19 @@ export const userInfoSchema = z
     address: z.string().min(1, { message: 'Dirección requerida' }),
   })
   .superRefine((data, ctx) => {
-    if (data.dniType === 'cedula' && !cedulaValidator(data.dni)) {
+    if (data.dniType === 'cedula' && !validateCedula(data.dni)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Nº de documento inválido para cédula',
         path: ['dni'],
       });
-    } else if (data.dniType === 'ruc' && !rucValidator(data.dni)) {
+    } else if (data.dniType === 'ruc' && !validateRuc(data.dni)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Nº de documento inválido para RUC',
         path: ['dni'],
       });
-    } else if (data.dniType === 'passport' && !passportValidator(data.dni)) {
+    } else if (data.dniType === 'passport' && !validatePassport(data.dni)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Nº de documento inválido para pasaporte',
