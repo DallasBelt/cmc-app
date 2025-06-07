@@ -4,6 +4,8 @@ import { toast } from 'sonner';
 import { Scheduler } from '@/components/calendar/Scheduler';
 import { useToastStore } from '@/store';
 
+console.log('Index.jsx');
+
 const chartConfig = {
   patients: {
     label: 'Pacientes',

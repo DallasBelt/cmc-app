@@ -32,8 +32,8 @@ export const CreatePatientDialog = () => {
         }}
         className='w-full md:max-w-fit'
       >
-        <UserPlus2 size={24} className='mr-2' />
-        Nuevo paciente
+        <UserPlus2 />
+        Crear paciente
       </Button>
 
       <Dialog open={createPatientDialog} onOpenChange={setCreatePatientDialog}>

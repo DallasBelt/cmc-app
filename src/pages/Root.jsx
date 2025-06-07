@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import {
   Button,
@@ -21,8 +21,10 @@ export const Root = () => {
   const navigate = useNavigate();
   const { effectiveTheme } = useTheme();
 
-  const isProfileComplete = sessionStorage.getItem('isProfileComplete');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  const location = useLocation();
+  const isOnCompleteProfilePage = location.pathname === '/complete-profile';
 
   const handleCloseSheet = () => {
     setIsSheetOpen(false);
@@ -50,12 +52,12 @@ export const Root = () => {
       <nav className='px-24 sticky top-0 z-50 flex items-center justify-between gap-5 h-20 backdrop-filter backdrop-blur-lg bg-opacity-30'>
         <Link
           to='/'
-          className={isProfileComplete !== 'true' ? 'flex' : 'hidden md:flex'}
+          className={isOnCompleteProfilePage ? 'flex' : 'hidden md:flex'}
         >
           <img src={navbarLogo} className='w-12' />
         </Link>
 
-        <div className={isProfileComplete !== 'true' ? 'hidden' : 'flex'}>
+        <div className={isOnCompleteProfilePage ? 'hidden' : 'flex'}>
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger className='flex md:hidden'>
               <Menu size={24} weight='bold' />
@@ -71,29 +73,23 @@ export const Root = () => {
 
         <div
           className={
-            isProfileComplete !== 'true'
-              ? 'hidden'
-              : 'hidden md:flex md:mr-auto'
+            isOnCompleteProfilePage ? 'hidden' : 'hidden md:flex md:mr-auto'
           }
         >
           <NavMenu />
         </div>
 
-        <div
-          className={isProfileComplete !== 'true' ? 'flex gap-1' : 'flex gap-5'}
-        >
+        <div className={isOnCompleteProfilePage ? 'flex gap-1' : 'flex gap-5'}>
           <ThemeToggle />
 
-          <div className={isProfileComplete !== 'true' ? 'flex' : 'hidden'}>
+          <div className={isOnCompleteProfilePage ? 'flex' : 'hidden'}>
             <Button variant='ghost' size='icon' onClick={handleSignOut}>
               <LogOut size={24} className='me-1' />
             </Button>
           </div>
 
           <div
-            className={
-              isProfileComplete !== 'true' ? 'hidden' : 'hidden md:flex'
-            }
+            className={isOnCompleteProfilePage ? 'hidden' : 'hidden md:flex'}
           >
             <AvatarMenu />
           </div>
