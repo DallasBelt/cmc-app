@@ -19,7 +19,7 @@ export const UsersDropdown = ({ row }) => {
 
   const email = row.original.email;
   const state = row.original.isActive;
-  const role = row.original.roles.toString();
+  const role = row.original.role.toString();
 
   const handleRoleChange = (newRole) => {
     if (newRole === role) {
@@ -41,7 +41,7 @@ export const UsersDropdown = ({ row }) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          disabled={row.original.roles.toString() === 'admin'}
+          disabled={row.original.role.toString() === 'admin'}
           variant='ghost'
           className='h-8 w-8 p-0'
         >

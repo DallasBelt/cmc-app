@@ -37,8 +37,8 @@ export const Statistics = () => {
   const showToast = useToastStore((state) => state.showToast);
   const toastMessage = useToastStore((state) => state.toastMessage);
   const setToast = useToastStore((state) => state.setToast);
-  const isAdmin = sessionStorage.getItem('roles').includes('admin');
-  const isAssistant = sessionStorage.getItem('roles').includes('assistant');
+  const isAdmin = sessionStorage.getItem('role') === 'admin';
+  const isAssistant = sessionStorage.getItem('role') === 'assistant';
 
   useEffect(() => {
     if (showToast) {

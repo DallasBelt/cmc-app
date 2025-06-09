@@ -21,7 +21,7 @@ import {
 import { usePatientStore } from '@/store';
 
 export const PatientsDropdown = ({ row }) => {
-  const isAssistant = sessionStorage.getItem('roles').includes('assistant');
+  const isAssistant = sessionStorage.getItem('role') === 'assistant';
 
   const [medicalRecordDialogOpen, setMedicalRecordDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);

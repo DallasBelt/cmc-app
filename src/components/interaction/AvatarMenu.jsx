@@ -14,7 +14,7 @@ export const AvatarMenu = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isCompleteInfo = location.pathname === '/complete-info';
-  const isAdmin = sessionStorage.getItem('roles').includes('admin');
+  const isAdmin = sessionStorage.getItem('role') === 'admin';
 
   const handleSignOut = () => {
     // Remove sessionStorage items

@@ -16,12 +16,12 @@ export const useAuth = () => {
     mutationFn: login,
     onSuccess: (data) => {
       sessionStorage.setItem('id', data.id);
-      sessionStorage.setItem('roles', data.roles);
+      sessionStorage.setItem('role', data.role);
       sessionStorage.setItem('token', data.token);
 
-      if (data.roles.includes('user')) {
+      if (data.role.includes('user')) {
         sessionStorage.clear();
-        toast.error('Esperando activación.');
+        toast.error('Usuario sin rol asignado.');
         return;
       }
 

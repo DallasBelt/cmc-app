@@ -28,8 +28,8 @@ const chartData = [
 
 export const Index = () => {
   const { showToast, toastMessage, setToast } = useToastStore();
-  const isAdmin = sessionStorage.getItem('roles').includes('admin');
-  const isAssistant = sessionStorage.getItem('roles').includes('assistant');
+  const isAdmin = sessionStorage.getItem('role') === 'admin';
+  const isAssistant = sessionStorage.getItem('role') === 'assistant';
 
   useEffect(() => {
     if (showToast) {

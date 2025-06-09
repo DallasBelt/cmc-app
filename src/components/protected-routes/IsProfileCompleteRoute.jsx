@@ -4,7 +4,7 @@ import { useUserInfo, useMedicInfo, useSchedule } from '@/hooks';
 import { useToastStore } from '@/store';
 
 export const IsProfileCompleteRoute = ({ children }) => {
-  const role = sessionStorage.getItem('roles');
+  const role = sessionStorage.getItem('role');
   const setToast = useToastStore((state) => state.setToast);
 
   const { userInfoQuery } = useUserInfo();

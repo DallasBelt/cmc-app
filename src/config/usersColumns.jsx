@@ -40,7 +40,7 @@ export const usersColumns = [
     cell: ({ row }) => (row.original.isActive ? 'Activo' : 'Inactivo'),
   },
   {
-    accessorKey: 'roles',
+    accessorKey: 'role',
     header: ({ column }) => {
       return (
         <Button
@@ -54,22 +54,19 @@ export const usersColumns = [
       );
     },
     cell: ({ row }) => {
-      return row.original.roles
-        .map((role) => {
-          switch (role) {
-            case 'admin':
-              return 'Administrador';
-            case 'user':
-              return 'Usuario';
-            case 'medic':
-              return 'Médico';
-            case 'assistant':
-              return 'Asistente';
-            default:
-              return 'Rol desconocido';
-          }
-        })
-        .join(', ');
+      const role = row.original.role;
+      switch (role) {
+        case 'admin':
+          return 'Administrador';
+        case 'user':
+          return 'Usuario';
+        case 'medic':
+          return 'Médico';
+        case 'assistant':
+          return 'Asistente';
+        default:
+          return 'Rol desconocido';
+      }
     },
   },
   {

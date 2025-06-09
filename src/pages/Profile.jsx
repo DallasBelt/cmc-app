@@ -13,7 +13,7 @@ import { UserInfoForm } from '@/components/user-info/UserInfoForm';
 import { ScheduleForm } from '@/components/schedule/ScheduleForm';
 
 export const Profile = () => {
-  const role = sessionStorage.getItem('roles');
+  const role = sessionStorage.getItem('role');
 
   return (
     <div className='flex justify-center'>

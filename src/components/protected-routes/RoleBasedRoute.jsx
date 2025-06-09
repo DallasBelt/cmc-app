@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom';
 
 export const RoleBasedRoute = ({ children, allowedRoles }) => {
   const token = sessionStorage.getItem('token');
-  const role = sessionStorage.getItem('roles');
+  const role = sessionStorage.getItem('role');
 
   if (!token) {
     return <Navigate to='/login' replace />;

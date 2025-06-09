@@ -12,8 +12,7 @@ import { Separator } from '@/components/ui/separator';
 
 export const NavMenu = ({ onLinkClick }) => {
   const navigate = useNavigate();
-  const roles = sessionStorage.getItem('roles');
-  const isAdmin = roles && roles.includes('admin');
+  const isAdmin = sessionStorage.getItem('role') === 'admin';
 
   const handleSignOut = () => {
     // Remove sessionStorage elements
