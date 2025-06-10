@@ -8,4 +8,5 @@ export * from './Patients';
 export * from './Profile';
 export * from './Root';
 export * from './Statistics';
+export * from './Unauthorized';
 export * from './Users';

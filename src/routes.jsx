@@ -9,6 +9,7 @@ import {
   Profile,
   Root,
   Statistics,
+  Unauthorized,
   Users,
 } from '@/pages';
 
@@ -41,11 +42,11 @@ export const routes = [
       {
         path: 'users',
         element: (
-          <RoleBasedRoute allowedRoles={['admin']}>
-            <IsProfileCompleteRoute>
+          <IsProfileCompleteRoute>
+            <RoleBasedRoute allowedRoles={['admin']}>
               <Users />
-            </IsProfileCompleteRoute>
-          </RoleBasedRoute>
+            </RoleBasedRoute>
+          </IsProfileCompleteRoute>
         ),
       },
       {
@@ -97,8 +98,8 @@ export const routes = [
         ),
       },
       {
-        path: '/unauthorized',
-        element: <div>🚫 No tiene permiso para acceder</div>,
+        path: 'unauthorized',
+        element: <Unauthorized />,
       },
     ],
   },
