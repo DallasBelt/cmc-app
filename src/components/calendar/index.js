@@ -1,2 +1,2 @@
 export * from './EventContent';
-export * from './Scheduler';
+export * from './Calendar';

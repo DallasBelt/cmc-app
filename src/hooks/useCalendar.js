@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 
 import { useAppointmentStore, usePatientStore } from '@/store';
 
-export const useScheduler = () => {
+export const useCalendar = () => {
   const {
     setAppointmentDropdown,
     setAppointmentDropdownPosition,

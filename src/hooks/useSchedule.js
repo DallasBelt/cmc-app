@@ -3,6 +3,14 @@ import { toast } from 'sonner';
 
 import { createSchedule, getSchedule, updateSchedule } from '@/api/schedule';
 
+import {
+  getAvailableTimes,
+  getHiddenDays,
+  getSlotMinTime,
+  getSlotMaxTime,
+  isAllowedClick as isAllowedClickUtil,
+} from '@/utils';
+
 export const useSchedule = () => {
   const queryClient = useQueryClient();
 
@@ -35,9 +43,16 @@ export const useSchedule = () => {
     },
   });
 
+  const schedule = scheduleQuery.data || [];
+
   return {
     createScheduleMutation,
     scheduleQuery,
     updateScheduleMutation,
+    hiddenDays: getHiddenDays(schedule),
+    availableTimes: getAvailableTimes(schedule),
+    slotMinTime: getSlotMinTime(schedule),
+    slotMaxTime: getSlotMaxTime(schedule),
+    isAllowedClick: (date) => isAllowedClickUtil(schedule, date),
   };
 };

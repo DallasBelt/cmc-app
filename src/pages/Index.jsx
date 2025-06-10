@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
-import { Scheduler } from '@/components/calendar/Scheduler';
+import { Calendar } from '@/components/calendar/Calendar';
 import { useToastStore } from '@/store';
 
 const chartConfig = {
@@ -38,7 +38,7 @@ export const Index = () => {
 
   return (
     <div className={isAdmin ? 'hidden' : 'block'}>
-      <Scheduler />
+      <Calendar />
     </div>
   );
 };

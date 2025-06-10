@@ -13,15 +13,18 @@ import { AppointmentDropdown } from '@/components/appointments';
 import { EventContent } from '@/components/calendar';
 import { useTheme } from '@/components/theme/ThemeProvider';
 
-import { useAppointments, useScheduler } from '@/hooks';
+import { useAppointments, useCalendar, useSchedule } from '@/hooks';
 
-export function Scheduler() {
+export function Calendar() {
   setDefaultOptions({ locale: es }); // FullCalendar language
   const { effectiveTheme } = useTheme(); // App theme
 
+  const { hiddenDays, slotMinTime, slotMaxTime, isAllowedClick } =
+    useSchedule();
+
   const { appointmentsQuery } = useAppointments();
   const { getEventClassNames, handleDateClick, handleEventClick } =
-    useScheduler();
+    useCalendar();
 
   const appointments =
     appointmentsQuery.data?.data.map((e) => ({
@@ -56,13 +59,19 @@ export function Scheduler() {
         eventClick={handleEventClick}
         eventClassNames={getEventClassNames}
         eventContent={(eventInfo) => <EventContent eventInfo={eventInfo} />}
-        dateClick={handleDateClick}
-        slotMinTime='07:00:00'
-        slotMaxTime='19:30:00'
         height='auto'
-        hiddenDays={[0]}
         validRange={{
           start: startOfToday(),
+        }}
+        hiddenDays={hiddenDays}
+        slotMinTime={slotMinTime}
+        slotMaxTime={slotMaxTime}
+        dateClick={(info) => {
+          if (!isAllowedClick(info.date)) {
+            toast.error('Este horario no está disponible.');
+            return;
+          }
+          handleDateClick(info);
         }}
       />
 

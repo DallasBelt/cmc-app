@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -30,12 +31,14 @@ import {
 
 import { SearchPatients } from '@/components/patients';
 
-import { useAppointments } from '@/hooks';
+import { useAppointments, useSchedule } from '@/hooks';
 import { useAppointmentStore } from '@/store';
 import { newAppointmentSchema } from '@/schemas';
 
 export const AppointmentForm = () => {
   setDefaultOptions({ locale: es });
+
+  const { hiddenDays, availableTimes } = useSchedule();
 
   const {
     appointmentsQuery,
@@ -68,6 +71,19 @@ export const AppointmentForm = () => {
       patient: editAppointment ? appointmentToEdit.patient.id : '',
     },
   });
+
+  const startTime = form.watch('startTime')?.trim();
+  const endTime = form.watch('endTime')?.trim();
+
+  const startTimeOptions = availableTimes.slice(0, -1);
+  const endTimeOptions = availableTimes.filter((time) => time > startTime);
+
+  // Reset endTime if it's now invalid
+  useEffect(() => {
+    if (startTime && endTime && endTime <= startTime) {
+      form.setValue('endTime', '');
+    }
+  }, [startTime, endTime, form]);
 
   const { isDirty } = form.formState;
 
@@ -169,9 +185,12 @@ export const AppointmentForm = () => {
                       mode='single'
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < new Date() || date < new Date('1900-01-01')
-                      }
+                      disabled={(date) => {
+                        const day = date.getDay(); // 0–6
+                        const today = new Date();
+                        if (date < today) return true;
+                        return hiddenDays.includes(day);
+                      }}
                       locale={es}
                       initialFocus
                     />
@@ -201,26 +220,11 @@ export const AppointmentForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Array.from({ length: 12 }).flatMap((_, i) => {
-                        const hour = i + 7;
-                        const formattedHour =
-                          hour < 10 ? `0${hour}` : `${hour}`;
-
-                        return [
-                          <SelectItem
-                            value={`${formattedHour}:00`}
-                            key={`${formattedHour}:00`}
-                          >
-                            {`${formattedHour}:00`}
-                          </SelectItem>,
-                          <SelectItem
-                            value={`${formattedHour}:30`}
-                            key={`${formattedHour}:30`}
-                          >
-                            {`${formattedHour}:30`}
-                          </SelectItem>,
-                        ];
-                      })}
+                      {startTimeOptions.map((time) => (
+                        <SelectItem value={time} key={time}>
+                          {time}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -246,26 +250,11 @@ export const AppointmentForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Array.from({ length: 12 }).flatMap((_, i) => {
-                        const hour = i + 7;
-                        const formattedHour =
-                          hour < 10 ? `0${hour}` : `${hour}`;
-
-                        return [
-                          <SelectItem
-                            value={`${formattedHour}:00`}
-                            key={`${formattedHour}:00`}
-                          >
-                            {`${formattedHour}:00`}
-                          </SelectItem>,
-                          <SelectItem
-                            value={`${formattedHour}:30`}
-                            key={`${formattedHour}:30`}
-                          >
-                            {`${formattedHour}:30`}
-                          </SelectItem>,
-                        ];
-                      })}
+                      {endTimeOptions.map((time) => (
+                        <SelectItem value={time} key={time}>
+                          {time}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

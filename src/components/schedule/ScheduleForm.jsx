@@ -73,13 +73,15 @@ export const ScheduleForm = () => {
 
   useEffect(() => {
     fields.forEach((_, index) => {
-      const checkIn = form.getValues(`shifts.${index}.checkIn`);
-      const checkOut = form.getValues(`shifts.${index}.checkOut`);
+      const checkIn = form.watch(`shifts.${index}.checkIn`);
+      const checkOut = form.watch(`shifts.${index}.checkOut`);
       if (checkIn && checkOut && checkOut <= checkIn) {
-        form.setValue(`shifts.${index}.checkOut`, '');
+        form.resetField(`shifts.${index}.checkOut`, {
+          defaultValue: undefined,
+        });
       }
     });
-  }, [fields, form]);
+  }, [fields.map((_, i) => form.watch(`shifts.${i}.checkIn`)).join(',')]);
 
   const handleAppendShift = () => {
     if (fields.length < MAX_SHIFTS) {
@@ -197,7 +199,12 @@ export const ScheduleForm = () => {
                     <FormLabel>Hora de entrada</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger
+                          className={cn(
+                            'font-normal',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
                           <SelectValue placeholder='Seleccionar...' />
                         </SelectTrigger>
                       </FormControl>
@@ -225,13 +232,19 @@ export const ScheduleForm = () => {
                     <FormItem className='w-full'>
                       <FormLabel>Hora de salida</FormLabel>
                       <Select
-                        onValueChange={field.onChange}
+                        key={`checkOut-${index}-${field.value || 'empty'}`}
+                        onValueChange={(val) => {
+                          field.onChange(val);
+                        }}
                         value={field.value}
                         disabled={!checkInValue}
                       >
                         <FormControl>
                           <SelectTrigger
-                            className={cn(!checkInValue && 'opacity-50')}
+                            className={cn(
+                              'font-normal',
+                              !field.value && 'text-muted-foreground'
+                            )}
                           >
                             <SelectValue placeholder='Seleccionar...' />
                           </SelectTrigger>
