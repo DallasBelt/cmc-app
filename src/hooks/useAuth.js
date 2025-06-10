@@ -3,10 +3,11 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { login, register } from '@/api/auth';
-import { useRegistrationStore, useToastStore } from '@/store';
+import { useAuthStore, useRegistrationStore, useToastStore } from '@/store';
 
 export const useAuth = () => {
   const navigate = useNavigate();
+  const { setIsLoggingIn } = useAuthStore();
   const setToast = useToastStore((state) => state.setToast);
   const setRegistrationDialog = useRegistrationStore(
     (state) => state.setRegistrationDialog
@@ -48,6 +49,9 @@ export const useAuth = () => {
       if (error.status) {
         toast.error('Error al iniciar sesión.');
       }
+    },
+    onSettled: () => {
+      setIsLoggingIn(false);
     },
   });
 

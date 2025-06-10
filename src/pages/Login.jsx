@@ -3,12 +3,16 @@ import { Link } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { LoginForm, RegistrationDialog } from '@/components/auth';
 
+import { useAuthStore } from '@/store';
+
+import { cn } from '@/lib/utils';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import LoginLight from '@/assets/login-light.svg';
 import LoginDark from '@/assets/login-dark.svg';
 
 export const Login = () => {
   const { effectiveTheme } = useTheme();
+  const { isLoggingIn } = useAuthStore();
 
   return (
     <>
@@ -30,8 +34,16 @@ export const Login = () => {
           <LoginForm />
 
           <Link
-            to={'../forgot-password'}
-            className='text-center text-blue-500 cursor:pointer hover:underline'
+            to={isLoggingIn ? '#' : '../forgot-password'}
+            onClick={(e) => {
+              if (isLoggingIn) {
+                e.preventDefault();
+              }
+            }}
+            className={cn(
+              'text-center text-blue-500 hover:underline cursor-pointer',
+              isLoggingIn && 'opacity-50 pointer-events-none'
+            )}
           >
             ¿Olvidó su contraseña?
           </Link>

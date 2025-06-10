@@ -15,10 +15,12 @@ import {
 } from '@/components/ui';
 
 import { useAuth } from '@/hooks';
+import { useAuthStore } from '@/store';
 import { loginSchema } from '@/schemas';
 
 export const LoginForm = () => {
   const { loginMutation } = useAuth();
+  const { setIsLoggingIn } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -31,8 +33,8 @@ export const LoginForm = () => {
   });
 
   const onSubmit = async (values) => {
-    // Hide password field
     setShowPassword(false);
+    setIsLoggingIn(true);
     loginMutation.mutate(values);
   };
 
