@@ -54,7 +54,7 @@
     "react-hook-form": "^7.52.2",
     "react-loader-spinner": "^6.1.6",
     "react-phone-number-input": "^3.4.5",
-    "react-router-dom": "^6.26.0",
+    "react-router-dom": "^7.6.2",
     "react-search-box": "^3.0.0",
     "recharts": "^2.12.7",
     "sonner": "^1.5.0",
