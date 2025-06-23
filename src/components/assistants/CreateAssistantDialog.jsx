@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-const NewAssistantDialog = () => {
+export const CreateAssistantDialog = () => {
   return (
     <>
       <Dialog>
@@ -38,5 +38,3 @@ const NewAssistantDialog = () => {
     </>
   );
 };
-
-export default NewAssistantDialog;

@@ -1,3 +1,3 @@
-export * from './changeRole';
-export * from './changeState';
+export * from './assignRole';
+export * from './toggleStatus';
 export * from './getUsers';

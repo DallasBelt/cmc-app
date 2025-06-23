@@ -9,6 +9,7 @@ import {
 
 export const useMedicInfo = () => {
   const queryClient = useQueryClient();
+  const userId = sessionStorage.getItem('id');
 
   const createMedicInfoMutation = useMutation({
     mutationFn: createMedicInfo,
@@ -23,7 +24,7 @@ export const useMedicInfo = () => {
   });
 
   const medicInfoQuery = useQuery({
-    queryKey: ['medicInfo'],
+    queryKey: ['medicInfo', userId],
     queryFn: getMedicInfo,
   });
 

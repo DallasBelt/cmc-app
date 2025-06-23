@@ -13,12 +13,24 @@ import {
 
 export const useSchedule = () => {
   const queryClient = useQueryClient();
+  const userId = sessionStorage.getItem('id');
+
+  const scheduleQuery = useQuery({
+    queryKey: ['schedule', userId],
+    queryFn: getSchedule,
+  });
+
+  const schedule = scheduleQuery.data || [];
+
+  const isLoading = scheduleQuery.isLoading;
+  const hasSchedule = Array.isArray(schedule) && schedule.length > 0;
+  const isEmpty = Array.isArray(schedule) && schedule.length === 0;
 
   const createScheduleMutation = useMutation({
     mutationFn: createSchedule,
     onSuccess: () => {
       queryClient.invalidateQueries(['schedule']);
-      toast.success('Horario creado exitósamente.');
+      toast.success('Horario creado exitosamente.');
     },
     onError: (error) => {
       console.error(error);
@@ -26,16 +38,11 @@ export const useSchedule = () => {
     },
   });
 
-  const scheduleQuery = useQuery({
-    queryKey: ['schedule'],
-    queryFn: getSchedule,
-  });
-
   const updateScheduleMutation = useMutation({
     mutationFn: updateSchedule,
     onSuccess: () => {
       queryClient.invalidateQueries(['schedule']);
-      toast.success('Horario actualizado exitósamente.');
+      toast.success('Horario actualizado exitosamente.');
     },
     onError: (error) => {
       console.error(error);
@@ -43,16 +50,17 @@ export const useSchedule = () => {
     },
   });
 
-  const schedule = scheduleQuery.data || [];
-
   return {
     createScheduleMutation,
-    scheduleQuery,
     updateScheduleMutation,
-    hiddenDays: getHiddenDays(schedule),
-    availableTimes: getAvailableTimes(schedule),
-    slotMinTime: getSlotMinTime(schedule),
-    slotMaxTime: getSlotMaxTime(schedule),
-    isAllowedClick: (date) => isAllowedClickUtil(schedule, date),
+    scheduleQuery,
+    schedule,
+    isLoading,
+    isEmpty,
+    hiddenDays: hasSchedule ? getHiddenDays(schedule) : null,
+    availableTimes: hasSchedule ? getAvailableTimes(schedule) : [],
+    slotMinTime: hasSchedule ? getSlotMinTime(schedule) : null,
+    slotMaxTime: hasSchedule ? getSlotMaxTime(schedule) : null,
+    isAllowedClick: (date) => hasSchedule && isAllowedClickUtil(schedule, date),
   };
 };

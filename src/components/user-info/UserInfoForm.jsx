@@ -71,7 +71,7 @@ export const UserInfoForm = () => {
   const onSubmit = async (values) => {
     if (userInfoQuery.data) {
       if (!isDirty) {
-        toast.info('No se detectaron cambios.');
+        toast.warning('No se detectaron cambios.');
         return;
       }
 
@@ -91,16 +91,6 @@ export const UserInfoForm = () => {
 
       createUserInfoMutation.mutate(newUserInfo);
     }
-  };
-
-  // Llamamos a trigger para validar el formulario cuando el usuario haga clic en 'Siguiente'
-  const handleNextStep = async () => {
-    const isValid = await trigger(); // Validar el formulario
-    if (!isValid) {
-      return; // Si no es válido, no dejamos avanzar al siguiente paso
-    }
-    // Si es válido, se puede enviar el formulario o proceder con el paso siguiente
-    onSubmit(form.getValues()); // O realizar cualquier otra acción necesaria
   };
 
   return (
@@ -269,10 +259,13 @@ export const UserInfoForm = () => {
         <div className='pt-5 md:flex md:justify-center'>
           <Button
             type='submit'
-            disabled={createUserInfoMutation.isPending}
+            disabled={
+              createUserInfoMutation.isPending ||
+              updateUserInfoMutation.isPending
+            }
             className='w-full md:w-fit'
           >
-            Guardar
+            {userInfoQuery.data ? 'Actualizar' : 'Crear'}
             {createUserInfoMutation.isPending && (
               <Loader2 className='ml-2 animate-spin' />
             )}

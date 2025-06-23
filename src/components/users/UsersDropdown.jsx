@@ -15,33 +15,33 @@ import {
 import { useUsers } from '@/hooks';
 
 export const UsersDropdown = ({ row }) => {
-  const { changeRoleMutation, changeStateMutation } = useUsers();
+  const { assignRoleMutation, toggleStatusMutation } = useUsers();
 
   const email = row.original.email;
-  const state = row.original.isActive;
-  const role = row.original.role.toString();
+  const status = row.original.status;
+  const role = row.original.role;
 
   const handleRoleChange = (newRole) => {
     if (newRole === role) {
       toast.error('El usuario ya tiene ese rol.');
       return;
     }
-    changeRoleMutation.mutate({ email, role: newRole });
+    assignRoleMutation.mutate({ email, role: newRole });
   };
 
-  const handleStateChange = (newState) => {
-    if (newState === state) {
+  const handleToggleStatus = (newStatus) => {
+    if (newStatus === status) {
       toast.error('El usuario ya tiene ese estado.');
       return;
     }
-    changeStateMutation.mutate(email);
+    toggleStatusMutation.mutate(email);
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          disabled={row.original.role.toString() === 'admin'}
+          disabled={row.original.role === 'admin'}
           variant='ghost'
           className='h-8 w-8 p-0'
         >
@@ -49,8 +49,8 @@ export const UsersDropdown = ({ row }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56'>
-        <div className={state ? 'block' : 'hidden'}>
-          <DropdownMenuLabel>Cambiar Rol</DropdownMenuLabel>
+        <div className={role !== 'user' ? 'hidden' : 'block'}>
+          <DropdownMenuLabel>Asignar rol y activar</DropdownMenuLabel>
           <DropdownMenuRadioGroup value={role} onValueChange={handleRoleChange}>
             <DropdownMenuRadioItem className='cursor-pointer' value='medic'>
               Médico
@@ -59,19 +59,25 @@ export const UsersDropdown = ({ row }) => {
               Asistente
             </DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
-
-          <DropdownMenuSeparator />
         </div>
 
-        <DropdownMenuLabel>Cambiar Estado</DropdownMenuLabel>
-        <DropdownMenuRadioGroup value={state} onValueChange={handleStateChange}>
-          <DropdownMenuRadioItem className='cursor-pointer' value={true}>
-            Activo
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem className='cursor-pointer' value={false}>
-            Inactivo
-          </DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
+        <div className={status !== 'pending' ? 'block' : 'hidden'}>
+          <DropdownMenuLabel>Cambiar estado</DropdownMenuLabel>
+          <DropdownMenuRadioGroup
+            value={status}
+            onValueChange={handleToggleStatus}
+          >
+            <DropdownMenuRadioItem className='cursor-pointer' value={'active'}>
+              Activo
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem
+              className='cursor-pointer'
+              value={'inactive'}
+            >
+              Inactivo
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

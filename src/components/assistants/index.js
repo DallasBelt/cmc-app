@@ -1,2 +1,2 @@
 export * from './AssistantInfoForm';
-export * from './NewAssistantDialog';
+export * from './CreateAssistantDialog';

@@ -25,8 +25,7 @@ export const usePatients = () => {
       setCreatePatientDialog(false);
     },
     onError: (error) => {
-      console.error(error);
-      toast.error('Error al crear paciente.');
+      toast.error('Error al crear paciente.', { description: error.message });
     },
   });
 

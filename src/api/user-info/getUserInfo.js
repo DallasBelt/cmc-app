@@ -10,11 +10,13 @@ export const getUserInfo = async () => {
     },
   });
 
+  const data = await res.json();
+
   // Check for HTTP response errors
   if (!res.ok) {
-    throw new Error(`Error ${res.status}: ${res.statusText}`);
+    throw new Error(data?.message);
   }
 
   // Convert to JSON
-  return await res.json();
+  return await data;
 };

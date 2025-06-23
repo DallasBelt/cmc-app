@@ -11,5 +11,12 @@ export const createPatient = async (patient) => {
     body: JSON.stringify(patient),
   });
 
-  return await res.json();
+  const data = await res.json();
+
+  // Check for HTTP response errors
+  if (!res.ok) {
+    throw new Error(data?.message);
+  }
+
+  return data;
 };

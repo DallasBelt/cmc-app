@@ -1,4 +1,6 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+import { LogOut, RotateCcwKey, User2 } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -8,13 +10,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { SignOut, User } from '@phosphor-icons/react';
+import { useAuthStore } from '@/store';
 
 export const AvatarMenu = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const isCompleteInfo = location.pathname === '/complete-info';
   const isAdmin = sessionStorage.getItem('role') === 'admin';
+
+  const { setUpdatePasswordDialogOpen } = useAuthStore((state) => state);
 
   const handleSignOut = () => {
     // Remove sessionStorage items
@@ -22,6 +24,10 @@ export const AvatarMenu = () => {
 
     // Redirects to the login page
     navigate('/login');
+  };
+
+  const handleUpdatePassword = () => {
+    setUpdatePasswordDialogOpen(true);
   };
 
   return (
@@ -35,14 +41,22 @@ export const AvatarMenu = () => {
       <DropdownMenuContent align='end'>
         <DropdownMenuItem
           onSelect={() => navigate('/profile')}
-          className={isAdmin || isCompleteInfo ? 'hidden' : 'cursor-pointer'}
+          className={isAdmin ? 'hidden' : 'cursor-pointer'}
         >
-          <User size={24} className='me-1' />
+          <User2 size={20} className='me-1' />
           Perfil
         </DropdownMenuItem>
 
+        <DropdownMenuItem
+          onSelect={handleUpdatePassword}
+          className='cursor-pointer'
+        >
+          <RotateCcwKey size={20} className='me-1' />
+          Actualizar contraseña
+        </DropdownMenuItem>
+
         <DropdownMenuItem onSelect={handleSignOut} className='cursor-pointer'>
-          <SignOut size={24} className='me-1' />
+          <LogOut size={20} className='me-1' />
           Cerrar sesión
         </DropdownMenuItem>
       </DropdownMenuContent>

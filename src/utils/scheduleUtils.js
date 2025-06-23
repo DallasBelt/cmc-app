@@ -17,7 +17,9 @@ export function getHiddenDays(schedule) {
     new Set(
       schedule.flatMap((s) =>
         s.shifts.flatMap((shift) =>
-          shift.days.map((day) => weekdayMap[day.toLowerCase()])
+          shift.days
+            .map((day) => weekdayMap[day?.toLowerCase()])
+            .filter((dayNum) => Number.isInteger(dayNum))
         )
       )
     )

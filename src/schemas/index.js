@@ -6,4 +6,5 @@ export * from './medicalRecordSchema';
 export * from './patientSchema';
 export * from './registrationSchema';
 export * from './scheduleSchema';
+export * from './updatePasswordSchema';
 export * from './userInfoSchema';

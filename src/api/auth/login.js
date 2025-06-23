@@ -7,20 +7,13 @@ export const login = async (credentials) => {
     body: JSON.stringify(credentials),
   });
 
-  let data;
+  const data = await res.json();
 
-  try {
-    data = await res.json();
-  } catch {
-    data = null;
-  }
-
+  // Check for HTTP response errors
   if (!res.ok) {
-    throw {
-      status: res.status,
-      errorCode: data?.errorCode || null,
-    };
+    throw new Error(data?.message);
   }
 
-  return data;
+  // Convert to JSON
+  return await data;
 };

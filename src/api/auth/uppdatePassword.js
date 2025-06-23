@@ -1,10 +1,14 @@
-export const getUsers = async () => {
-  const res = await fetch('http://localhost:3000/api/v1/auth/all', {
-    method: 'GET',
+export const updatePassword = async ({ currentPassword, newPassword }) => {
+  const res = await fetch('http://localhost:3000/api/v1/auth/update-password', {
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${sessionStorage.getItem('token')}`,
     },
+    body: JSON.stringify({
+      currentPassword,
+      password: newPassword,
+    }),
   });
 
   const data = await res.json();

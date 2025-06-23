@@ -125,7 +125,7 @@ export const ScheduleForm = () => {
       });
 
     if (areEqual) {
-      toast.info('No se detectaron cambios.');
+      toast.warning('No se detectaron cambios.');
       return;
     }
 
@@ -291,10 +291,11 @@ export const ScheduleForm = () => {
             disabled={createScheduleMutation.isPending}
             className='w-full md:w-fit'
           >
-            Guardar cambios
-            {createScheduleMutation.isPending && (
-              <Loader2 className='ml-2 animate-spin' />
-            )}
+            {scheduleQuery.data ? 'Actualizar' : 'Crear'}
+            {createScheduleMutation.isPending ||
+              (updateScheduleMutation.isPending && (
+                <Loader2 className='ml-2 animate-spin' />
+              ))}
           </Button>
         </div>
       </form>

@@ -52,7 +52,7 @@ export const MedicInfoForm = () => {
   const onSubmit = async (values) => {
     if (medicInfoQuery.data) {
       if (!isDirty) {
-        toast.info('No se detectaron cambios.');
+        toast.warning('No se detectaron cambios.');
         return;
       }
 
@@ -109,10 +109,13 @@ export const MedicInfoForm = () => {
         <div className='pt-5 flex justify-center'>
           <Button
             type='submit'
-            disabled={createMedicInfoMutation.isPending}
+            disabled={
+              createMedicInfoMutation.isPending ||
+              updateMedicInfoMutation.isPending
+            }
             className='w-full md:w-fit'
           >
-            Guardar cambios
+            {medicInfoQuery.data ? 'Actualizar' : 'Crear'}
             {createMedicInfoMutation.isPending && (
               <Loader2 className='ml-2 animate-spin' />
             )}

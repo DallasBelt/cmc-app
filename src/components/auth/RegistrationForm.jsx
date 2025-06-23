@@ -131,7 +131,7 @@ export const RegistrationForm = () => {
         <div className='flex justify-center pt-3'>
           <Button
             type='submit'
-            className={'h-10 text-xl bg-green-500 hover:bg-green-400'}
+            className='h-10 text-xl bg-green-500 hover:bg-green-400'
             disabled={registerMutation.isPending}
           >
             {registerMutation.isPending && <Loader2 className='animate-spin' />}

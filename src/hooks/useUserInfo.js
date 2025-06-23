@@ -2,9 +2,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { createUserInfo, getUserInfo, updateUserInfo } from '@/api/user-info';
+import { se } from 'date-fns/locale';
 
 export const useUserInfo = () => {
   const queryClient = useQueryClient();
+  const userId = sessionStorage.getItem('id');
 
   const createUserInfoMutation = useMutation({
     mutationFn: createUserInfo,
@@ -14,12 +16,14 @@ export const useUserInfo = () => {
     },
     onError: (error) => {
       console.error(error);
-      toast.error('Error al crear información personal.');
+      toast.error('Error al crear información personal.', {
+        description: error.message,
+      });
     },
   });
 
   const userInfoQuery = useQuery({
-    queryKey: ['userInfo'],
+    queryKey: ['userInfo', userId],
     queryFn: getUserInfo,
   });
 

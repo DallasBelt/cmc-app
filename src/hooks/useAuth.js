@@ -2,16 +2,16 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { login, register } from '@/api/auth';
+import { login, register, updatePassword } from '@/api/auth';
 import { useAuthStore, useRegistrationStore, useToastStore } from '@/store';
 
 export const useAuth = () => {
   const navigate = useNavigate();
   const { setIsLoggingIn } = useAuthStore();
   const setToast = useToastStore((state) => state.setToast);
-  const setRegistrationDialog = useRegistrationStore(
-    (state) => state.setRegistrationDialog
-  );
+
+  const { setRegistrationDialog } = useRegistrationStore((state) => state);
+  const { setUpdatePasswordDialogOpen } = useAuthStore((state) => state);
 
   const loginMutation = useMutation({
     mutationFn: login,
@@ -20,35 +20,18 @@ export const useAuth = () => {
       sessionStorage.setItem('role', data.role);
       sessionStorage.setItem('token', data.token);
 
-      if (data.role.includes('user')) {
+      if (data.role === 'user') {
         sessionStorage.clear();
-        toast.error('Usuario sin rol asignado.');
+        toast.error('El usuario no tiene un rol asignado.');
         return;
       }
 
-      setToast(true, '¡Inicio de sesión exitoso!');
+      setToast(true, 'Inicio de sesión exitoso.');
       navigate('/');
     },
     onError: (error) => {
       console.error(error);
-      if (error.errorCode === 'USER_INACTIVE') {
-        toast.error('Usuario inactivo.');
-        return;
-      }
-
-      if (error.errorCode === 'USER_UNAUTHORIZED') {
-        toast.error('Usuario no autorizado.');
-        return;
-      }
-
-      if (error.errorCode === 'BAD_CREDENTIALS') {
-        toast.error('Revise sus credenciales.');
-        return;
-      }
-
-      if (error.status) {
-        toast.error('Error al iniciar sesión.');
-      }
+      toast.error('Error al iniciar sesión.', { description: error.message });
     },
     onSettled: () => {
       setIsLoggingIn(false);
@@ -71,8 +54,23 @@ export const useAuth = () => {
     },
   });
 
+  const updatePasswordMutation = useMutation({
+    mutationFn: updatePassword,
+    onSuccess: () => {
+      toast.success('Contraseña actualizada con éxito.');
+      setUpdatePasswordDialogOpen(false);
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error('Error al actualizar la contraseña.', {
+        description: error.message,
+      });
+    },
+  });
+
   return {
     loginMutation,
     registerMutation,
+    updatePasswordMutation,
   };
 };
