@@ -40,18 +40,13 @@ export const ChangeAppointmentStatusDialog = () => {
       >
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {`Se va a ${
-              appointmentData.status === 'canceled' ? 'reagendar' : 'cancelar'
-            } una cita`}
+            {`Se va a ${appointmentData.status === 'canceled' ? 'reagendar' : 'cancelar'} una cita`}
           </AlertDialogTitle>
           <AlertDialogDescription>¿Está seguro(a)?</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>No, volver</AlertDialogCancel>
-          <AlertDialogAction
-            asChild
-            className='bg-red-600 text-white hover:bg-red-500'
-          >
+          <AlertDialogAction asChild className='bg-red-600 text-white hover:bg-red-500'>
             <Button
               onClick={() => {
                 changeAppointmentStatusMutation.mutate({
@@ -64,9 +59,7 @@ export const ChangeAppointmentStatusDialog = () => {
               {changeAppointmentStatusMutation.isPending && (
                 <Loader2 className='me-2 animate-spin' />
               )}
-              {appointmentData.status === 'canceled'
-                ? 'Sí, reagendar'
-                : 'Sí, cancelar'}
+              {appointmentData.status === 'canceled' ? 'Sí, reagendar' : 'Sí, cancelar'}
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>

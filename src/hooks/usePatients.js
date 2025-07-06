@@ -1,21 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import {
-  createPatient,
-  deletePatient,
-  getPatients,
-  updatePatient,
-} from '@/api/patient';
+import { createPatient, deletePatient, getPatients, updatePatient } from '@/api/patient';
 
 import { usePatientStore } from '@/store';
 
 export const usePatients = () => {
   const queryClient = useQueryClient();
 
-  const setCreatePatientDialog = usePatientStore(
-    (state) => state.setCreatePatientDialog
-  );
+  const setCreatePatientDialog = usePatientStore((state) => state.setCreatePatientDialog);
 
   const createPatientMutation = useMutation({
     mutationFn: createPatient,

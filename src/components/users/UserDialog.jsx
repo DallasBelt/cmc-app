@@ -30,9 +30,7 @@ export const UserDialog = () => {
         >
           <DialogHeader>
             <DialogTitle className='text-xl'>Crear nuevo usuario</DialogTitle>
-            <DialogDescription>
-              Por favor, llene los datos solicitados.
-            </DialogDescription>
+            <DialogDescription>Por favor, llene los datos solicitados.</DialogDescription>
           </DialogHeader>
           <RegistrationForm />
         </DialogContent>

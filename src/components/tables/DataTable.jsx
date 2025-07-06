@@ -22,13 +22,22 @@ import {
   TableRow,
 } from '@/components/ui';
 
-export const DataTable = ({ columns, data, globalFilterFn, defaultSort }) => {
+export const DataTable = ({
+  columns,
+  data,
+  globalFilterFn,
+  defaultSort,
+  enableRowSelection = false,
+  rowSelection,
+  onRowSelectionChange,
+}) => {
   const [sorting, setSorting] = useState(defaultSort || []);
   const [globalFilter, setGlobalFilter] = useState('');
 
   const table = useReactTable({
     data,
     columns,
+    getRowId: (row) => row.id,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
@@ -39,7 +48,9 @@ export const DataTable = ({ columns, data, globalFilterFn, defaultSort }) => {
     state: {
       sorting,
       globalFilter,
+      rowSelection: enableRowSelection ? (rowSelection ?? {}) : {},
     },
+    onRowSelectionChange: enableRowSelection ? onRowSelectionChange : undefined,
     initialState: {
       pagination: {
         pageSize: 10,
@@ -57,7 +68,7 @@ export const DataTable = ({ columns, data, globalFilterFn, defaultSort }) => {
           className='w-full lg:max-w-sm'
         />
         <span className='text-sm text-muted-foreground'>
-          {table.getFilteredRowModel().rows.length} registros en total
+          {table.getFilteredRowModel().rows.length} registro(s) en total
         </span>
       </div>
 
@@ -70,10 +81,7 @@ export const DataTable = ({ columns, data, globalFilterFn, defaultSort }) => {
                   <TableHead key={header.id}>
                     {header.isPlaceholder
                       ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                      : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
               </TableRow>
@@ -85,10 +93,7 @@ export const DataTable = ({ columns, data, globalFilterFn, defaultSort }) => {
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -105,6 +110,12 @@ export const DataTable = ({ columns, data, globalFilterFn, defaultSort }) => {
       </div>
 
       <div className='flex justify-end'>
+        {enableRowSelection && (
+          <div className='text-muted-foreground flex-1 text-sm'>
+            {table.getFilteredSelectedRowModel().rows.length} de{' '}
+            {table.getFilteredRowModel().rows.length} fila(s) seleccionada(s).
+          </div>
+        )}
         <div className='flex gap-2'>
           <Button
             variant='outline'

@@ -23,11 +23,7 @@ const defineStepper = (...steps) => {
     const methods = useStepper();
 
     return (
-      <div
-        date-component='stepper'
-        className={cn('w-full', className)}
-        {...props}
-      >
+      <div date-component='stepper' className={cn('w-full', className)} {...props}>
         {typeof children === 'function' ? children({ methods }) : children}
       </div>
     );
@@ -46,13 +42,8 @@ const defineStepper = (...steps) => {
         ...props
       }) => {
         return (
-          <StepperContext.Provider
-            value={{ variant, labelOrientation, tracking }}
-          >
-            <Scoped
-              initialStep={props.initialStep}
-              initialMetadata={props.initialMetadata}
-            >
+          <StepperContext.Provider value={{ variant, labelOrientation, tracking }}>
+            <Scoped initialStep={props.initialStep} initialMetadata={props.initialMetadata}>
               <StepperContainer className={className} {...props}>
                 {children}
               </StepperContainer>
@@ -60,19 +51,10 @@ const defineStepper = (...steps) => {
           </StepperContext.Provider>
         );
       },
-      Navigation: ({
-        children,
-        'aria-label': ariaLabel = 'Stepper Navigation',
-        ...props
-      }) => {
+      Navigation: ({ children, 'aria-label': ariaLabel = 'Stepper Navigation', ...props }) => {
         const { variant } = useStepperProvider();
         return (
-          <nav
-            date-component='stepper-navigation'
-            aria-label={ariaLabel}
-            role='tablist'
-            {...props}
-          >
+          <nav date-component='stepper-navigation' aria-label={ariaLabel} role='tablist' {...props}>
             <ol
               date-component='stepper-navigation-list'
               className={classForNavigationList({ variant: variant })}
@@ -112,10 +94,7 @@ const defineStepper = (...steps) => {
                 className
               )}
             >
-              <CircleStepIndicator
-                currentStep={stepIndex + 1}
-                totalSteps={steps.length}
-              />
+              <CircleStepIndicator currentStep={stepIndex + 1} totalSteps={steps.length} />
               <div
                 date-component='stepper-step-content'
                 className='flex flex-col items-start gap-1'
@@ -158,11 +137,7 @@ const defineStepper = (...steps) => {
                 aria-setsize={steps.length}
                 aria-selected={isActive}
                 onKeyDown={(e) =>
-                  onStepKeyDown(
-                    e,
-                    utils.getNext(props.of),
-                    utils.getPrev(props.of)
-                  )
+                  onStepKeyDown(e, utils.getNext(props.of), utils.getPrev(props.of))
                 }
                 {...props}
               >
@@ -177,10 +152,7 @@ const defineStepper = (...steps) => {
                   disabled={props.disabled}
                 />
               )}
-              <div
-                date-component='stepper-step-content'
-                className='flex flex-col items-start'
-              >
+              <div date-component='stepper-step-content' className='flex flex-col items-start'>
                 {title}
                 {description}
               </div>
@@ -271,13 +243,7 @@ const Description = ({ children, className, asChild, ...props }) => {
   );
 };
 
-const StepperSeparator = ({
-  orientation,
-  isLast,
-  labelOrientation,
-  state,
-  disabled,
-}) => {
+const StepperSeparator = ({ orientation, isLast, labelOrientation, state, disabled }) => {
   if (isLast) {
     return null;
   }
@@ -294,12 +260,7 @@ const StepperSeparator = ({
   );
 };
 
-const CircleStepIndicator = ({
-  currentStep,
-  totalSteps,
-  size = 80,
-  strokeWidth = 6,
-}) => {
+const CircleStepIndicator = ({ currentStep, totalSteps, size = 80, strokeWidth = 6 }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const fillPercentage = (currentStep / totalSteps) * 100;
@@ -370,8 +331,7 @@ const classForSeparator = cva(
         vertical: 'h-full w-0.5',
       },
       labelOrientation: {
-        vertical:
-          'absolute left-[calc(50%+30px)] right-[calc(-50%+20px)] top-5 block shrink-0',
+        vertical: 'absolute left-[calc(50%+30px)] right-[calc(-50%+20px)] top-5 block shrink-0',
       },
     },
   }
@@ -426,8 +386,7 @@ const onStepKeyDown = (e, nextStep, prevStep) => {
       return;
     }
 
-    const isActive =
-      stepElement.parentElement?.getAttribute('data-state') !== 'inactive';
+    const isActive = stepElement.parentElement?.getAttribute('data-state') !== 'inactive';
     if (isActive || direction === 'prev') {
       stepElement.focus();
     }

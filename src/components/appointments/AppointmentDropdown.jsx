@@ -1,18 +1,7 @@
 import { useState } from 'react';
-import {
-  CalendarCheck2,
-  ClipboardList,
-  Pencil,
-  Stethoscope,
-  Trash,
-  X,
-} from 'lucide-react';
+import { CalendarCheck2, ClipboardList, Pencil, Stethoscope, Trash, X } from 'lucide-react';
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from '@/components/ui';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/components/ui';
 
 import {
   AppointmentDialog,
@@ -40,10 +29,7 @@ export const AppointmentDropdown = () => {
 
   return (
     <>
-      <DropdownMenu
-        open={appointmentDropdown}
-        onOpenChange={setAppointmentDropdown}
-      >
+      <DropdownMenu open={appointmentDropdown} onOpenChange={setAppointmentDropdown}>
         <DropdownMenuContent
           align='end'
           className='flex flex-col'
@@ -56,8 +42,7 @@ export const AppointmentDropdown = () => {
           {/* Attend */}
           <DropdownMenuItem
             className={
-              appointmentData.status === 'canceled' ||
-              appointmentData.status === 'completed'
+              appointmentData.status === 'canceled' || appointmentData.status === 'completed'
                 ? 'hidden'
                 : 'cursor-pointer'
             }
@@ -72,8 +57,7 @@ export const AppointmentDropdown = () => {
           {/* Edit */}
           <DropdownMenuItem
             className={
-              appointmentData.status === 'canceled' ||
-              appointmentData.status === 'completed'
+              appointmentData.status === 'canceled' || appointmentData.status === 'completed'
                 ? 'hidden'
                 : 'cursor-pointer'
             }
@@ -88,11 +72,7 @@ export const AppointmentDropdown = () => {
 
           {/* Change status */}
           <DropdownMenuItem
-            className={
-              appointmentData.status === 'completed'
-                ? 'hidden'
-                : 'cursor-pointer'
-            }
+            className={appointmentData.status === 'completed' ? 'hidden' : 'cursor-pointer'}
             onSelect={() => {
               setChangeAppointmentStatusDialog(true);
             }}
@@ -107,11 +87,7 @@ export const AppointmentDropdown = () => {
 
           {/* Delete */}
           <DropdownMenuItem
-            className={
-              appointmentData.status === 'completed'
-                ? 'hidden'
-                : 'cursor-pointer'
-            }
+            className={appointmentData.status === 'completed' ? 'hidden' : 'cursor-pointer'}
             onSelect={() => {
               setDeleteAppointmentDialog(true);
             }}
@@ -123,8 +99,7 @@ export const AppointmentDropdown = () => {
           {/* View Medical Record */}
           <DropdownMenuItem
             className={
-              appointmentData.status === 'canceled' ||
-              appointmentData.status === 'pending'
+              appointmentData.status === 'canceled' || appointmentData.status === 'pending'
                 ? 'hidden'
                 : 'cursor-pointer'
             }

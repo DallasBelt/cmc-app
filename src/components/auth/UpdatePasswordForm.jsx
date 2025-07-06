@@ -22,17 +22,14 @@ export const UpdatePasswordForm = () => {
 
   // Hide/Show current password button
   const [revealCurrentPassword, setRevealCurrentPassword] = useState(false);
-  const toggleCurrentPasswordReveal = () =>
-    setRevealCurrentPassword(!revealCurrentPassword);
+  const toggleCurrentPasswordReveal = () => setRevealCurrentPassword(!revealCurrentPassword);
 
   // Hide/Show new password button
   const [revealNewPassword, setRevealNewPassword] = useState(false);
-  const toggleRevealNewPassword = () =>
-    setRevealNewPassword(!revealNewPassword);
+  const toggleRevealNewPassword = () => setRevealNewPassword(!revealNewPassword);
 
   // Hide/Show confirm new password button
-  const [revealConfirmNewPassword, setRevealConfirmNewPassword] =
-    useState(false);
+  const [revealConfirmNewPassword, setRevealConfirmNewPassword] = useState(false);
   const toggleRevealConfirmNewPassword = () =>
     setRevealConfirmNewPassword(!revealConfirmNewPassword);
 
@@ -77,11 +74,7 @@ export const UpdatePasswordForm = () => {
                     onClick={toggleCurrentPasswordReveal}
                     className='cursor-pointer absolute right-3 text-slate-500'
                   >
-                    {revealCurrentPassword ? (
-                      <Eye size={24} />
-                    ) : (
-                      <EyeOff size={24} />
-                    )}
+                    {revealCurrentPassword ? <Eye size={24} /> : <EyeOff size={24} />}
                   </span>
                 </div>
               </FormControl>
@@ -107,11 +100,7 @@ export const UpdatePasswordForm = () => {
                     onClick={toggleRevealNewPassword}
                     className='cursor-pointer absolute right-3 text-slate-500'
                   >
-                    {revealNewPassword ? (
-                      <Eye size={24} />
-                    ) : (
-                      <EyeOff size={24} />
-                    )}
+                    {revealNewPassword ? <Eye size={24} /> : <EyeOff size={24} />}
                   </span>
                 </div>
               </FormControl>
@@ -137,11 +126,7 @@ export const UpdatePasswordForm = () => {
                     onClick={toggleRevealConfirmNewPassword}
                     className='cursor-pointer absolute right-3 text-slate-500'
                   >
-                    {revealConfirmNewPassword ? (
-                      <Eye size={24} />
-                    ) : (
-                      <EyeOff size={24} />
-                    )}
+                    {revealConfirmNewPassword ? <Eye size={24} /> : <EyeOff size={24} />}
                   </span>
                 </div>
               </FormControl>
@@ -152,9 +137,7 @@ export const UpdatePasswordForm = () => {
 
         <div className='flex justify-center pt-3'>
           <Button type='submit' disabled={updatePasswordMutation.isPending}>
-            {updatePasswordMutation.isPending && (
-              <Loader2 className='animate-spin' />
-            )}
+            {updatePasswordMutation.isPending && <Loader2 className='animate-spin' />}
             Actualizar contraseña
           </Button>
         </div>

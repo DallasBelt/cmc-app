@@ -36,14 +36,10 @@ const shiftSchema = z
 
 export const scheduleSchema = z
   .object({
-    shifts: z
-      .array(shiftSchema)
-      .min(1, { message: 'Debe registrar al menos un turno.' }),
+    shifts: z.array(shiftSchema).min(1, { message: 'Debe registrar al menos un turno.' }),
   })
   .superRefine((data, ctx) => {
-    const { hasDuplicateShifts, hasOverlappedShifts } = validateShifts(
-      data.shifts
-    );
+    const { hasDuplicateShifts, hasOverlappedShifts } = validateShifts(data.shifts);
 
     if (hasDuplicateShifts && hasOverlappedShifts) {
       ctx.addIssue({

@@ -13,7 +13,6 @@ export const createPatient = async (patient) => {
 
   const data = await res.json();
 
-  // Check for HTTP response errors
   if (!res.ok) {
     throw new Error(data?.message);
   }

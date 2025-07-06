@@ -7,6 +7,6 @@ export * from './Login';
 export * from './Patients';
 export * from './Profile';
 export * from './Root';
-export * from './Statistics';
+export * from './Reports';
 export * from './Unauthorized';
 export * from './Users';

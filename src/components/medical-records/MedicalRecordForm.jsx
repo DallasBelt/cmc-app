@@ -48,12 +48,10 @@ export const MedicalRecordForm = () => {
     const newMedicalRecordEntry = {
       ...values,
       bloodPressure: values.bloodPressure && `${values.bloodPressure} mmHg`,
-      oxygenSaturation:
-        values.oxygenSaturation && `${values.oxygenSaturation}%`,
+      oxygenSaturation: values.oxygenSaturation && `${values.oxygenSaturation}%`,
       bodyTemperature: values.bodyTemperature && `${values.bodyTemperature}ºC`,
       heartRate: values.heartRate && `${values.heartRate} lpm`,
-      respiratoryRate:
-        values.respiratoryRate && `${values.respiratoryRate} rpm`,
+      respiratoryRate: values.respiratoryRate && `${values.respiratoryRate} rpm`,
       weight: values.weight && `${values.weight} kg`,
       height: values.height && `${values.height} cm`,
     };
@@ -71,8 +69,7 @@ export const MedicalRecordForm = () => {
   return (
     <>
       <Label>
-        Paciente:{' '}
-        {`${appointmentData.patient.firstName} ${appointmentData.patient.lastName}`}
+        Paciente: {`${appointmentData.patient.firstName} ${appointmentData.patient.lastName}`}
       </Label>
       <Label>Identificación: {appointmentData.patient.dni}</Label>
       <Form {...form}>
@@ -93,9 +90,7 @@ export const MedicalRecordForm = () => {
                           {...field}
                           className='pr-16' // Deja espacio para el span
                         />
-                        <span className='absolute right-2 text-gray-500'>
-                          mmHg
-                        </span>
+                        <span className='absolute right-2 text-gray-500'>mmHg</span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -116,9 +111,7 @@ export const MedicalRecordForm = () => {
                           {...field}
                           className='pr-16' // Deja espacio para el span
                         />
-                        <span className='absolute right-2 text-gray-500'>
-                          SpO₂
-                        </span>
+                        <span className='absolute right-2 text-gray-500'>SpO₂</span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -141,9 +134,7 @@ export const MedicalRecordForm = () => {
                           {...field}
                           className='pr-16' // Deja espacio para el span
                         />
-                        <span className='absolute right-2 text-gray-500'>
-                          ºC
-                        </span>
+                        <span className='absolute right-2 text-gray-500'>ºC</span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -164,9 +155,7 @@ export const MedicalRecordForm = () => {
                           {...field}
                           className='pr-16' // Deja espacio para el span
                         />
-                        <span className='absolute right-2 text-gray-500'>
-                          lpm
-                        </span>
+                        <span className='absolute right-2 text-gray-500'>lpm</span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -187,9 +176,7 @@ export const MedicalRecordForm = () => {
                           {...field}
                           className='pr-16' // Deja espacio para el span
                         />
-                        <span className='absolute right-2 text-gray-500'>
-                          rpm
-                        </span>
+                        <span className='absolute right-2 text-gray-500'>rpm</span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -215,9 +202,7 @@ export const MedicalRecordForm = () => {
                           {...field}
                           className='pr-16' // Deja espacio para el span
                         />
-                        <span className='absolute right-2 text-gray-500'>
-                          kg
-                        </span>
+                        <span className='absolute right-2 text-gray-500'>kg</span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -238,9 +223,7 @@ export const MedicalRecordForm = () => {
                           {...field}
                           className='pr-16' // Deja espacio para el span
                         />
-                        <span className='absolute right-2 text-gray-500'>
-                          cm
-                        </span>
+                        <span className='absolute right-2 text-gray-500'>cm</span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -352,9 +335,7 @@ export const MedicalRecordForm = () => {
               disabled={createMedicalRecordMutation.isPending}
               className='w-full md:w-fit'
             >
-              {createMedicalRecordMutation.isPending && (
-                <Loader2 className='me-2 animate-spin' />
-              )}
+              {createMedicalRecordMutation.isPending && <Loader2 className='me-2 animate-spin' />}
               Crear entrada
             </Button>
           </div>

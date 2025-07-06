@@ -45,8 +45,8 @@ export const useCalendar = () => {
     return isCanceled
       ? ['rounded-lg bg-red-400 border-red-400 cursor-pointer']
       : isCompleted
-      ? ['rounded-lg bg-green-500 border-green-500 cursor-pointer']
-      : ['rounded-lg cursor-pointer'];
+        ? ['rounded-lg bg-green-500 border-green-500 cursor-pointer']
+        : ['rounded-lg cursor-pointer'];
   };
 
   return {

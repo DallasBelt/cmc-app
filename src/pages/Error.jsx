@@ -12,8 +12,8 @@ export const Error = () => {
         <Frown className='text-red-500' size={200} />
         <h1 className='text-4xl font-bold'>Hmm... Algo no está bien.</h1>
         <p className='text-lg max-w-md'>
-          Lo sentimos, ha ocurrido un error inesperado. Puede deberse a un
-          problema de conexión o a una página no válida.
+          Lo sentimos, ha ocurrido un error inesperado. Puede deberse a un problema de conexión o a
+          una página no válida.
         </p>
       </div>
 

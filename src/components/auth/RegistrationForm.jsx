@@ -26,8 +26,7 @@ export const RegistrationForm = () => {
 
   // Hide/Show confirm password button
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-  const togglePasswordConfirmVisibility = () =>
-    setShowPasswordConfirm(!showPasswordConfirm);
+  const togglePasswordConfirmVisibility = () => setShowPasswordConfirm(!showPasswordConfirm);
 
   const form = useForm({
     resolver: zodResolver(registrationSchema),
@@ -60,12 +59,7 @@ export const RegistrationForm = () => {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input
-                  type='email'
-                  placeholder='Correo electrónico'
-                  {...field}
-                  className='h-10'
-                />
+                <Input type='email' placeholder='Correo electrónico' {...field} className='h-10' />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -115,11 +109,7 @@ export const RegistrationForm = () => {
                     onClick={togglePasswordConfirmVisibility}
                     className='cursor-pointer absolute right-3 text-slate-500'
                   >
-                    {showPasswordConfirm ? (
-                      <Eye size={24} />
-                    ) : (
-                      <EyeOff size={24} />
-                    )}
+                    {showPasswordConfirm ? <Eye size={24} /> : <EyeOff size={24} />}
                   </span>
                 </div>
               </FormControl>

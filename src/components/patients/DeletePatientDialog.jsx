@@ -31,13 +31,8 @@ export const DeletePatientDialog = ({ row, open, onOpenChange }) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>No, cancelar</AlertDialogCancel>
-          <AlertDialogAction
-            asChild
-            className='bg-red-600 text-white hover:bg-red-500'
-          >
-            <Button
-              onClick={() => deletePatientMutation.mutate(row.original.id)}
-            >
+          <AlertDialogAction asChild className='bg-red-600 text-white hover:bg-red-500'>
+            <Button onClick={() => deletePatientMutation.mutate(row.original.id)}>
               Sí, borrar
               {deletePatientMutation.isPending && (
                 <span className='ms-2'>

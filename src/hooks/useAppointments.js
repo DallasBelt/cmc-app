@@ -25,12 +25,12 @@ export const useAppointments = () => {
     mutationFn: createAppointment,
     onSuccess: () => {
       queryClient.invalidateQueries(['appointments']);
-      toast.success('¡Cita creada exitósamente!');
+      toast.success('Cita creada exitósamente.');
       setCreateAppointmentDialog(false);
     },
     onError: (error) => {
       console.error(error);
-      toast.error('Error al crear cita.');
+      toast.error('Error al crear cita.', { description: error.message });
     },
   });
 
@@ -43,7 +43,7 @@ export const useAppointments = () => {
     mutationFn: deleteAppointment,
     onSuccess: () => {
       queryClient.invalidateQueries(['appointments']);
-      toast.info('La cita ha sido eliminada.');
+      toast.success('La cita ha sido eliminada.');
     },
     onError: (error) => {
       console.error(error);
@@ -56,10 +56,8 @@ export const useAppointments = () => {
     onSuccess: (newAppointmentStatus) => {
       queryClient.invalidateQueries(['appointments']);
       updateAppointmentField('status', newAppointmentStatus);
-      toast.info(
-        `La cita ha sido ${
-          newAppointmentStatus === 'canceled' ? 'cancelada' : 'reagendada'
-        }.`
+      toast.success(
+        `La cita ha sido ${newAppointmentStatus === 'canceled' ? 'cancelada' : 'reagendada'}.`
       );
     },
     onError: (error) => {
@@ -72,7 +70,7 @@ export const useAppointments = () => {
     mutationFn: updateAppointment,
     onSuccess: () => {
       queryClient.invalidateQueries(['appointments']);
-      toast.info('La cita ha sido actualizada.');
+      toast.success('La cita ha sido actualizada.');
       setCreateAppointmentDialog(false);
     },
     onError: (error) => {

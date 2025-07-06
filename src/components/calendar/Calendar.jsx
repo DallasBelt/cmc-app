@@ -17,23 +17,17 @@ import { EventContent } from '@/components/calendar';
 import { useTheme } from '@/components/theme/ThemeProvider';
 
 import { useAppointments, useCalendar, useSchedule } from '@/hooks';
+import { generateUnavailableBlocks } from '@/utils';
 
 export function Calendar() {
   setDefaultOptions({ locale: es });
   const { effectiveTheme } = useTheme();
 
-  const {
-    hiddenDays,
-    isAllowedClick,
-    isEmpty,
-    isLoading,
-    slotMaxTime,
-    slotMinTime,
-  } = useSchedule();
+  const { hiddenDays, isAllowedClick, isEmpty, isLoading, schedule, slotMaxTime, slotMinTime } =
+    useSchedule();
 
   const { appointmentsQuery } = useAppointments();
-  const { getEventClassNames, handleDateClick, handleEventClick } =
-    useCalendar();
+  const { getEventClassNames, handleDateClick, handleEventClick } = useCalendar();
 
   const appointments =
     appointmentsQuery.data?.data.map((e) => ({
@@ -50,31 +44,7 @@ export function Calendar() {
       },
     })) || [];
 
-  // const slotLaneClassNames = (slotInfo) => {
-  //   const slotDate = slotInfo.date; // Esto ya es un Date
-  //   if (!(slotDate instanceof Date)) {
-  //     console.warn('slotLaneClassNames: slotDate no es Date válido', slotDate);
-  //     return [];
-  //   }
-
-  //   console.log('schedule:', schedule);
-  //   console.log(
-  //     'slotDate:',
-  //     slotDate,
-  //     'instanceof Date?',
-  //     slotDate instanceof Date
-  //   );
-
-  //   const permitido = isAllowedClick(schedule, slotDate);
-
-  //   return permitido
-  //     ? []
-  //     : [
-  //         'bg-[repeating-linear-gradient(-45deg,_#f87171_0_4px,_transparent_4px,_transparent_8px)]',
-  //         'cursor-not-allowed',
-  //         'opacity-60',
-  //       ];
-  // };
+  const disabledTimeBlocks = generateUnavailableBlocks(schedule);
 
   if (isLoading) {
     return (
@@ -88,13 +58,8 @@ export function Calendar() {
     return (
       <div className='flex flex-col items-center justify-center h-[50vh] text-center'>
         <ClockAlert size={200} className='text-red-500 mb-4' />
-        <h1 className='text-3xl font-bold mb-2'>
-          Todavía no ha creado un horario.
-        </h1>
-        <Link
-          to='/profile'
-          className='text-blue-600 hover:underline text-lg transition-all'
-        >
+        <h1 className='text-3xl font-bold mb-2'>Todavía no ha creado un horario.</h1>
+        <Link to='/profile' className='text-blue-600 hover:underline text-lg transition-all'>
           Puede crearlo en su Perfil.
         </Link>
       </div>
@@ -115,7 +80,7 @@ export function Calendar() {
         }}
         weekends={true}
         firstDay={1}
-        events={appointments}
+        events={[...appointments, ...disabledTimeBlocks]}
         eventClick={handleEventClick}
         eventClassNames={getEventClassNames}
         eventContent={(eventInfo) => <EventContent eventInfo={eventInfo} />}
@@ -133,7 +98,7 @@ export function Calendar() {
         }}
         dateClick={(info) => {
           if (!isAllowedClick(info.date)) {
-            toast.error('Este horario no está disponible.');
+            toast.error('No disponible.');
             return;
           }
           handleDateClick(info);

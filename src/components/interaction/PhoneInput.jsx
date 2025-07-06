@@ -14,40 +14,30 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-import { CaretUpDown, Check } from '@phosphor-icons/react';
+import { Check, ChevronsUpDown } from 'lucide-react';
 
-const PhoneInput = React.forwardRef(
-  ({ className, onChange, ...props }, ref) => {
-    return (
-      <RPNInput.default
-        ref={ref}
-        className={cn('flex w-full', className)}
-        flagComponent={FlagComponent}
-        countrySelectComponent={CountrySelect}
-        defaultCountry='EC'
-        international={false}
-        inputComponent={InputComponent}
-        onChange={(value) => onChange?.(value || '')}
-        {...props}
-      />
-    );
-  }
-);
+const PhoneInput = React.forwardRef(({ className, onChange, ...props }, ref) => {
+  return (
+    <RPNInput.default
+      ref={ref}
+      className={cn('flex w-full', className)}
+      flagComponent={FlagComponent}
+      countrySelectComponent={CountrySelect}
+      defaultCountry='EC'
+      international={false}
+      inputComponent={InputComponent}
+      onChange={(value) => onChange?.(value || '')}
+      {...props}
+    />
+  );
+});
 PhoneInput.displayName = 'PhoneInput';
 
 const InputComponent = React.forwardRef(({ className, ...props }, ref) => (
-  <Input
-    className={cn('rounded-e-md rounded-s-none', className)}
-    {...props}
-    ref={ref}
-  />
+  <Input className={cn('rounded-e-md rounded-s-none', className)} {...props} ref={ref} />
 ));
 InputComponent.displayName = 'InputComponent';
 
@@ -69,11 +59,8 @@ const CountrySelect = ({ disabled, value, onChange, options }) => {
           disabled={disabled}
         >
           <FlagComponent country={value} countryName={value} />
-          <CaretUpDown
-            className={cn(
-              '-mr-2 h-4 w-4 opacity-50',
-              disabled ? 'hidden' : 'opacity-100'
-            )}
+          <ChevronsUpDown
+            className={cn('-mr-2 h-4 w-4 opacity-50', disabled ? 'hidden' : 'opacity-100')}
           />
         </Button>
       </PopoverTrigger>
@@ -92,10 +79,7 @@ const CountrySelect = ({ disabled, value, onChange, options }) => {
                       key={option.value}
                       onSelect={() => handleSelect(option.value)}
                     >
-                      <FlagComponent
-                        country={option.value}
-                        countryName={option.label}
-                      />
+                      <FlagComponent country={option.value} countryName={option.label} />
                       <span className='flex-1 text-sm'>{option.label}</span>
                       {option.value && (
                         <span className='text-foreground/50 text-sm'>

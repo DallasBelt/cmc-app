@@ -5,17 +5,26 @@ import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { useUsers } from '@/hooks';
+import { useUsers, useAssistants } from '@/hooks';
+import { useAssistantStore } from '@/store';
 
 export const UsersDropdown = ({ row }) => {
   const { assignRoleMutation, toggleStatusMutation } = useUsers();
+  const { assisgnAssistantMutation } = useAssistants();
+  const { setDialogOpen, setMedicId } = useAssistantStore();
 
   const email = row.original.email;
   const status = row.original.status;
@@ -37,47 +46,70 @@ export const UsersDropdown = ({ row }) => {
     toggleStatusMutation.mutate(email);
   };
 
+  const handleAssignAssistant = () => {
+    setDialogOpen(true);
+    setMedicId(row.original.id);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          disabled={row.original.role === 'admin'}
-          variant='ghost'
-          className='h-8 w-8 p-0'
-        >
+        <Button disabled={role === 'admin'} variant='ghost' className='h-8 w-8 p-0'>
           <Ellipsis size={24} className='h-4 w-4' />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='w-56'>
-        <div className={role !== 'user' ? 'hidden' : 'block'}>
-          <DropdownMenuLabel>Asignar rol y activar</DropdownMenuLabel>
-          <DropdownMenuRadioGroup value={role} onValueChange={handleRoleChange}>
-            <DropdownMenuRadioItem className='cursor-pointer' value='medic'>
-              Médico
-            </DropdownMenuRadioItem>
-            <DropdownMenuRadioItem className='cursor-pointer' value='assistant'>
-              Asistente
-            </DropdownMenuRadioItem>
-          </DropdownMenuRadioGroup>
-        </div>
-
-        <div className={status !== 'pending' ? 'block' : 'hidden'}>
-          <DropdownMenuLabel>Cambiar estado</DropdownMenuLabel>
-          <DropdownMenuRadioGroup
-            value={status}
-            onValueChange={handleToggleStatus}
+      <DropdownMenuContent align={'end'}>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger
+            disabled={role !== 'user'}
+            className={role !== 'user' ? 'opacity-50' : ''}
           >
-            <DropdownMenuRadioItem className='cursor-pointer' value={'active'}>
-              Activo
-            </DropdownMenuRadioItem>
-            <DropdownMenuRadioItem
-              className='cursor-pointer'
-              value={'inactive'}
-            >
-              Inactivo
-            </DropdownMenuRadioItem>
-          </DropdownMenuRadioGroup>
-        </div>
+            Rol
+          </DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              <DropdownMenuRadioGroup value={role} onValueChange={handleRoleChange}>
+                <DropdownMenuRadioItem className='cursor-pointer' value='medic'>
+                  Médico
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem className='cursor-pointer' value='assistant'>
+                  Asistente
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger
+            disabled={status === 'pending'}
+            className={status === 'pending' ? 'opacity-50' : ''}
+          >
+            Estado
+          </DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              <DropdownMenuRadioGroup value={status} onValueChange={handleToggleStatus}>
+                <DropdownMenuRadioItem className='cursor-pointer' value={'active'}>
+                  Activo
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem className='cursor-pointer' value={'inactive'}>
+                  Inactivo
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
+
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            disabled={role !== 'medic' || status === 'inactive'}
+            className='cursor-pointer'
+            onSelect={handleAssignAssistant}
+          >
+            Asistentes
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

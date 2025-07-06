@@ -8,12 +8,7 @@ export const medicalRecordSchema = z.object({
       (val) => {
         if (!val) return true;
         const [systolic, diastolic] = val.split('/');
-        return (
-          systolic &&
-          diastolic &&
-          !isNaN(Number(systolic)) &&
-          !isNaN(Number(diastolic))
-        );
+        return systolic && diastolic && !isNaN(Number(systolic)) && !isNaN(Number(diastolic));
       },
       {
         message: 'El formato debe ser sistólica/diastólica (ej: 120/80)',

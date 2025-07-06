@@ -13,15 +13,9 @@ import { CreatePatientForm } from '@/components/patients';
 import { usePatientStore } from '@/store';
 
 export const CreatePatientDialog = () => {
-  const createPatientDialog = usePatientStore(
-    (state) => state.createPatientDialog
-  );
-  const setCreatePatientDialog = usePatientStore(
-    (state) => state.setCreatePatientDialog
-  );
-  const setIsEditingPatient = usePatientStore(
-    (state) => state.setIsEditingPatient
-  );
+  const createPatientDialog = usePatientStore((state) => state.createPatientDialog);
+  const setCreatePatientDialog = usePatientStore((state) => state.setCreatePatientDialog);
+  const setIsEditingPatient = usePatientStore((state) => state.setIsEditingPatient);
 
   return (
     <>
@@ -45,9 +39,7 @@ export const CreatePatientDialog = () => {
         >
           <DialogHeader>
             <DialogTitle className='text-xl'>Crear nuevo paciente</DialogTitle>
-            <DialogDescription>
-              Por favor, llene los datos solicitados.
-            </DialogDescription>
+            <DialogDescription>Por favor, llene los datos solicitados.</DialogDescription>
           </DialogHeader>
           <CreatePatientForm />
         </DialogContent>

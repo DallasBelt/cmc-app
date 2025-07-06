@@ -93,11 +93,7 @@ export const LoginForm = () => {
           )}
         />
 
-        <Button
-          type='submit'
-          disabled={loginMutation.isPending}
-          className='w-full h-12 text-xl'
-        >
+        <Button type='submit' disabled={loginMutation.isPending} className='w-full h-12 text-xl'>
           {loginMutation.isPending && <Loader2 className='animate-spin' />}
           INICIAR SESIÓN
         </Button>

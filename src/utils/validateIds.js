@@ -19,8 +19,7 @@ export function validateCedula(id) {
     .map((digit, index) => parseInt(digit, 10) * coefficients[index])
     .reduce((sum, value) => sum + (value >= 10 ? value - 9 : value), 0);
 
-  const calculatedVerificationDigit =
-    weightedSum % 10 === 0 ? 0 : 10 - (weightedSum % 10);
+  const calculatedVerificationDigit = weightedSum % 10 === 0 ? 0 : 10 - (weightedSum % 10);
   const verificationDigit = parseInt(id.charAt(9), 10);
 
   return calculatedVerificationDigit === verificationDigit;

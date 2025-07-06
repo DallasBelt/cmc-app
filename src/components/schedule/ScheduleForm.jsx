@@ -36,8 +36,7 @@ export const ScheduleForm = () => {
 
   const MAX_SHIFTS = 5;
 
-  const { createScheduleMutation, scheduleQuery, updateScheduleMutation } =
-    useSchedule();
+  const { createScheduleMutation, scheduleQuery, updateScheduleMutation } = useSchedule();
 
   const form = useForm({
     resolver: zodResolver(scheduleSchema),
@@ -65,10 +64,7 @@ export const ScheduleForm = () => {
 
   useEffect(() => {
     const schedule = fetchExistingSchedule();
-    form.setValue(
-      'shifts',
-      schedule || [{ checkIn: '', checkOut: '', days: [] }]
-    );
+    form.setValue('shifts', schedule || [{ checkIn: '', checkOut: '', days: [] }]);
   }, [scheduleQuery.data, form]);
 
   useEffect(() => {
@@ -140,14 +136,9 @@ export const ScheduleForm = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
         {fields.map((shift, index) => (
-          <div
-            key={shift.id}
-            className='border p-4 rounded-md space-y-2 bg-muted/50'
-          >
+          <div key={shift.id} className='border p-4 rounded-md space-y-2 bg-muted/50'>
             <div className='flex justify-between items-center'>
-              <FormLabel className='text-base font-medium'>
-                Turno {index + 1}
-              </FormLabel>
+              <FormLabel className='text-base font-medium'>Turno {index + 1}</FormLabel>
               {index !== 0 && (
                 <Button
                   type='button'
@@ -200,10 +191,7 @@ export const ScheduleForm = () => {
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger
-                          className={cn(
-                            'font-normal',
-                            !field.value && 'text-muted-foreground'
-                          )}
+                          className={cn('font-normal', !field.value && 'text-muted-foreground')}
                         >
                           <SelectValue placeholder='Seleccionar...' />
                         </SelectTrigger>
@@ -241,10 +229,7 @@ export const ScheduleForm = () => {
                       >
                         <FormControl>
                           <SelectTrigger
-                            className={cn(
-                              'font-normal',
-                              !field.value && 'text-muted-foreground'
-                            )}
+                            className={cn('font-normal', !field.value && 'text-muted-foreground')}
                           >
                             <SelectValue placeholder='Seleccionar...' />
                           </SelectTrigger>
@@ -291,11 +276,11 @@ export const ScheduleForm = () => {
             disabled={createScheduleMutation.isPending}
             className='w-full md:w-fit'
           >
-            {scheduleQuery.data ? 'Actualizar' : 'Crear'}
+            {Array.isArray(scheduleQuery.data) && scheduleQuery.data.length > 0
+              ? 'Actualizar'
+              : 'Crear'}
             {createScheduleMutation.isPending ||
-              (updateScheduleMutation.isPending && (
-                <Loader2 className='ml-2 animate-spin' />
-              ))}
+              (updateScheduleMutation.isPending && <Loader2 className='ml-2 animate-spin' />)}
           </Button>
         </div>
       </form>

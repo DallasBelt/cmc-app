@@ -5,6 +5,5 @@ export const useAuthStore = create((set) => ({
   setIsLoggingIn: (state) => set({ isLoggingIn: state }),
 
   updatePasswordDialogOpen: false,
-  setUpdatePasswordDialogOpen: (state) =>
-    set({ updatePasswordDialogOpen: state }),
+  setUpdatePasswordDialogOpen: (state) => set({ updatePasswordDialogOpen: state }),
 }));

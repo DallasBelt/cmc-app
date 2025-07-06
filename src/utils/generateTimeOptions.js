@@ -1,9 +1,4 @@
-export function generateTimeOptions(
-  startHour = 6,
-  endHour = 20,
-  stepMinutes = 15,
-  minTime = null
-) {
+export function generateTimeOptions(startHour = 6, endHour = 20, stepMinutes = 15, minTime = null) {
   const times = [];
 
   for (let hour = startHour; hour <= endHour; hour++) {

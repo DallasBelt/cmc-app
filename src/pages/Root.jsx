@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
+import { Link, Outlet } from 'react-router-dom';
 import { Menu, LogOut } from 'lucide-react';
 
 import {
@@ -18,23 +17,16 @@ import { AvatarMenu, NavMenu, ThemeToggle } from '@/components/interaction';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import navbarLogo from '@/assets/navbar-logo.svg';
 
+import { useAuth } from '@/hooks';
+
 export const Root = () => {
-  const navigate = useNavigate();
   const { effectiveTheme } = useTheme();
-  const queryClient = useQueryClient();
+  const { logoutMutation } = useAuth();
 
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const handleCloseSheet = () => {
     setIsSheetOpen(false);
-  };
-
-  const handleSignOut = () => {
-    // Remove sessionStorage items
-    sessionStorage.clear();
-    queryClient.clear();
-    // Redirects to the login page
-    navigate('/login');
   };
 
   return (
@@ -75,7 +67,7 @@ export const Root = () => {
           <ThemeToggle />
 
           <div className='hidden'>
-            <Button variant='ghost' size='icon' onClick={handleSignOut}>
+            <Button variant='ghost' size='icon' onClick={() => logoutMutation.mutate()}>
               <LogOut size={24} className='me-1' />
             </Button>
           </div>

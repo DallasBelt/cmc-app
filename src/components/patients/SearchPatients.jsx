@@ -12,12 +12,16 @@ export const SearchPatients = ({ onSelectPatient }) => {
   const [inputValue, setInputValue] = useState('');
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
+  const medicId = sessionStorage.getItem('id');
   const { patientsQuery } = usePatients();
 
-  const patientList = Array.isArray(patientsQuery.data?.data)
-    ? patientsQuery.data.data
-    : [];
+  // Fallback if there's no data or it's not an array
+  const allPatients = Array.isArray(patientsQuery.data?.data) ? patientsQuery.data.data : [];
 
+  // Filter only patients that belong to the logged-in doctor
+  const patientList = allPatients.filter((patient) => patient.medic.id === medicId);
+
+  // Filter patients based on search input
   const filteredPatients = patientList.filter((patient) => {
     const searchValue = inputValue.toLowerCase();
     return (
@@ -31,19 +35,20 @@ export const SearchPatients = ({ onSelectPatient }) => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
-    setIsPopoverOpen(value.length > 0 && filteredPatients.length > 0); // Open Popover only if input is not empty and there are results
+    // Show the popover only if input is not empty and there are matching results
+    setIsPopoverOpen(value.length > 0 && filteredPatients.length > 0);
   };
 
   const clearInput = () => {
     setInputValue('');
-    setIsPopoverOpen(false); // Close Popover when input is cleared
+    setIsPopoverOpen(false);
     onSelectPatient('');
   };
 
   const handleSelectPatient = (patient) => {
     setInputValue(`${patient.firstName} ${patient.lastName}`);
-    setIsPopoverOpen(false); // Close Popover on selection
-    onSelectPatient(patient.id); // Pass the patient ID to the parent
+    setIsPopoverOpen(false);
+    onSelectPatient(patient.id);
   };
 
   return (
@@ -55,9 +60,7 @@ export const SearchPatients = ({ onSelectPatient }) => {
         className='pl-9'
         value={inputValue}
         onChange={handleInputChange}
-        onFocus={() =>
-          setIsPopoverOpen(inputValue.length > 0 && filteredPatients.length > 0)
-        }
+        onFocus={() => setIsPopoverOpen(inputValue.length > 0 && filteredPatients.length > 0)}
       />
       {inputValue && (
         <div className='absolute -right-1'>
@@ -70,15 +73,11 @@ export const SearchPatients = ({ onSelectPatient }) => {
       {isPopoverOpen && (
         <div
           className={`absolute top-full mt-1 border rounded-md w-full z-50 shadow-lg ${
-            effectiveTheme === 'dark'
-              ? 'bg-[#020817] text-white'
-              : 'bg-white text-black'
+            effectiveTheme === 'dark' ? 'bg-[#020817] text-white' : 'bg-white text-black'
           }`}
         >
           {patientsQuery.isPending && <p className='p-2'>Cargando...</p>}
-          {patientsQuery.error && (
-            <p className='p-2'>Error al cargar pacientes</p>
-          )}
+          {patientsQuery.error && <p className='p-2'>Error al cargar pacientes</p>}
           {filteredPatients.length ? (
             <ul className='list-none p-1'>
               {filteredPatients.map((patient) => (
@@ -86,9 +85,7 @@ export const SearchPatients = ({ onSelectPatient }) => {
                   key={patient.id}
                   onClick={() => handleSelectPatient(patient)}
                   className={`text-sm px-2 py-1 cursor-pointer hover:rounded-md ${
-                    effectiveTheme === 'dark'
-                      ? 'hover:bg-[#1e293b]'
-                      : 'hover:bg-[#f1f5f9]'
+                    effectiveTheme === 'dark' ? 'hover:bg-[#1e293b]' : 'hover:bg-[#f1f5f9]'
                   }`}
                 >
                   {patient.firstName} {patient.lastName}

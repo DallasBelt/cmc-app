@@ -237,16 +237,12 @@ export const AssistantInfoForm = () => {
                                 return checked
                                   ? field.onChange([...field.value, item.id])
                                   : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== item.id
-                                      )
+                                      field.value?.filter((value) => value !== item.id)
                                     );
                               }}
                             />
                           </FormControl>
-                          <FormLabel className='text-sm font-normal'>
-                            {item.label}
-                          </FormLabel>
+                          <FormLabel className='text-sm font-normal'>{item.label}</FormLabel>
                         </FormItem>
                       );
                     }}
@@ -268,10 +264,7 @@ export const AssistantInfoForm = () => {
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger
-                      className={cn(
-                        'font-normal',
-                        !field.value && 'text-muted-foreground'
-                      )}
+                      className={cn('font-normal', !field.value && 'text-muted-foreground')}
                     >
                       <SelectValue placeholder='Seleccionar...' />
                     </SelectTrigger>
@@ -279,8 +272,7 @@ export const AssistantInfoForm = () => {
                   <SelectContent>
                     {Array.from({ length: 12 }).map((_, i) => {
                       const hour = i + 8; // Start from 08:00
-                      const formattedHour =
-                        hour < 10 ? `0${hour}:00` : `${hour}:00`;
+                      const formattedHour = hour < 10 ? `0${hour}:00` : `${hour}:00`;
                       return (
                         <SelectItem value={formattedHour} key={hour}>
                           {formattedHour}
@@ -303,10 +295,7 @@ export const AssistantInfoForm = () => {
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger
-                      className={cn(
-                        'font-normal',
-                        !field.value && 'text-muted-foreground'
-                      )}
+                      className={cn('font-normal', !field.value && 'text-muted-foreground')}
                     >
                       <SelectValue placeholder='Seleccionar...' />
                     </SelectTrigger>
@@ -314,8 +303,7 @@ export const AssistantInfoForm = () => {
                   <SelectContent>
                     {Array.from({ length: 12 }).map((_, i) => {
                       const hour = i + 8; // Start from 08:00
-                      const formattedHour =
-                        hour < 10 ? `0${hour}:00` : `${hour}:00`;
+                      const formattedHour = hour < 10 ? `0${hour}:00` : `${hour}:00`;
                       return (
                         <SelectItem value={formattedHour} key={hour}>
                           {formattedHour}
@@ -331,11 +319,7 @@ export const AssistantInfoForm = () => {
         </div>
 
         <div className='pt-5 md:flex md:justify-center'>
-          <Button
-            type='submit'
-            disabled={isSubmitting}
-            className='w-full md:w-fit'
-          >
+          <Button type='submit' disabled={isSubmitting} className='w-full md:w-fit'>
             Guardar
             {isSubmitting && (
               <span className='ms-2'>

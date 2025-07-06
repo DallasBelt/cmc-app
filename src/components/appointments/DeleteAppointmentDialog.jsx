@@ -20,18 +20,13 @@ export const DeleteAppointmentDialog = () => {
 
   const { appointmentData } = useAppointmentStore();
 
-  const deleteAppointmentDialog = useAppointmentStore(
-    (state) => state.deleteAppointmentDialog
-  );
+  const deleteAppointmentDialog = useAppointmentStore((state) => state.deleteAppointmentDialog);
   const setDeleteAppointmentDialog = useAppointmentStore(
     (state) => state.setDeleteAppointmentDialog
   );
 
   return (
-    <AlertDialog
-      open={deleteAppointmentDialog}
-      onOpenChange={setDeleteAppointmentDialog}
-    >
+    <AlertDialog open={deleteAppointmentDialog} onOpenChange={setDeleteAppointmentDialog}>
       <AlertDialogContent
         className='max-w-xl max-h-[80%] overflow-y-auto'
         onInteractOutside={(e) => {
@@ -44,20 +39,13 @@ export const DeleteAppointmentDialog = () => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>No, volver</AlertDialogCancel>
-          <AlertDialogAction
-            asChild
-            className='bg-red-600 text-white hover:bg-red-500'
-          >
+          <AlertDialogAction asChild className='bg-red-600 text-white hover:bg-red-500'>
             <Button
-              onClick={() =>
-                deleteAppointmentMutation.mutate(appointmentData.id)
-              }
+              onClick={() => deleteAppointmentMutation.mutate(appointmentData.id)}
               disabled={deleteAppointmentMutation.isPending}
             >
-              {deleteAppointmentMutation.isPending && (
-                <Loader2 className='me-2 animate-spin' />
-              )}
-              Sí, borrar
+              {deleteAppointmentMutation.isPending && <Loader2 className='me-2 animate-spin' />}
+              Sí, eliminar
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>

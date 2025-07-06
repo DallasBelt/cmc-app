@@ -1,4 +1,5 @@
 export * from './useAppointments';
+export * from './useAssistants';
 export * from './useAuth';
 export * from './useCalendar';
 export * from './useMedicInfo';

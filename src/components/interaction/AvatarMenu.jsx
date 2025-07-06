@@ -10,21 +10,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { useAuth } from '@/hooks';
 import { useAuthStore } from '@/store';
 
 export const AvatarMenu = () => {
   const navigate = useNavigate();
+  const { logoutMutation } = useAuth();
   const isAdmin = sessionStorage.getItem('role') === 'admin';
 
   const { setUpdatePasswordDialogOpen } = useAuthStore((state) => state);
-
-  const handleSignOut = () => {
-    // Remove sessionStorage items
-    sessionStorage.clear();
-
-    // Redirects to the login page
-    navigate('/login');
-  };
 
   const handleUpdatePassword = () => {
     setUpdatePasswordDialogOpen(true);
@@ -47,15 +41,12 @@ export const AvatarMenu = () => {
           Perfil
         </DropdownMenuItem>
 
-        <DropdownMenuItem
-          onSelect={handleUpdatePassword}
-          className='cursor-pointer'
-        >
+        <DropdownMenuItem onSelect={handleUpdatePassword} className='cursor-pointer'>
           <RotateCcwKey size={20} className='me-1' />
           Actualizar contraseña
         </DropdownMenuItem>
 
-        <DropdownMenuItem onSelect={handleSignOut} className='cursor-pointer'>
+        <DropdownMenuItem onSelect={() => logoutMutation.mutate()} className='cursor-pointer'>
           <LogOut size={20} className='me-1' />
           Cerrar sesión
         </DropdownMenuItem>

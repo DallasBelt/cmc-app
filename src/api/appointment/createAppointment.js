@@ -11,12 +11,11 @@ export const createAppointment = async (appointment) => {
     body: JSON.stringify(appointment),
   });
 
-  if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.message || 'Error al crear la cita.');
-  }
-
   const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
 
   return data;
 };

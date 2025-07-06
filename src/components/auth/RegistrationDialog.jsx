@@ -22,20 +22,14 @@ export const RegistrationDialog = () => {
   const { isLoggingIn } = useAuthStore();
 
   // Control modal global state
-  const registrationDialog = useRegistrationStore(
-    (state) => state.registrationDialog
-  );
-  const setRegistrationDialog = useRegistrationStore(
-    (state) => state.setRegistrationDialog
-  );
+  const registrationDialog = useRegistrationStore((state) => state.registrationDialog);
+  const setRegistrationDialog = useRegistrationStore((state) => state.setRegistrationDialog);
 
   return (
     <>
       <Button
         disabled={isLoggingIn}
-        className={
-          !token && 'bg-green-500 hover:bg-green-400 mx-auto h-12 text-xl'
-        }
+        className={!token && 'bg-green-500 hover:bg-green-400 mx-auto h-12 text-xl'}
         onClick={() => setRegistrationDialog(true)}
       >
         <UserPlus2 size={24} className={!token ? 'hidden' : 'mr-2'} />
@@ -53,9 +47,7 @@ export const RegistrationDialog = () => {
             <DialogTitle className='text-xl'>
               {!token ? 'Registrarse' : 'Crear nuevo usuario'}
             </DialogTitle>
-            <DialogDescription>
-              Por favor, llene los datos solicitados.
-            </DialogDescription>
+            <DialogDescription>Por favor, llene los datos solicitados.</DialogDescription>
           </DialogHeader>
           <RegistrationForm />
         </DialogContent>

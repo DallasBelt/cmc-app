@@ -8,15 +8,11 @@ import { usePatients } from '@/hooks';
 export const Patients = () => {
   const { patientsQuery } = usePatients();
 
-  const patientList = Array.isArray(patientsQuery.data?.data)
-    ? patientsQuery.data.data
-    : [];
+  const patientList = Array.isArray(patientsQuery.data?.data) ? patientsQuery.data.data : [];
 
   // Show only the patients of the authenticated medic
   const data = patientList
-    ? patientList.filter(
-        (patient) => patient.medic.id === sessionStorage.getItem('id')
-      )
+    ? patientList.filter((patient) => patient.medic.id === sessionStorage.getItem('id'))
     : [];
 
   return (

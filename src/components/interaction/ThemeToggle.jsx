@@ -7,8 +7,7 @@ import { cn } from '@/lib/utils';
 export const ThemeToggle = () => {
   const { effectiveTheme, setTheme, theme } = useTheme();
 
-  const isDark =
-    theme === 'dark' || (theme === 'system' && effectiveTheme === 'dark');
+  const isDark = theme === 'dark' || (theme === 'system' && effectiveTheme === 'dark');
 
   const toggleTheme = () => {
     setTheme(isDark ? 'light' : 'dark');

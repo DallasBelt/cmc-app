@@ -8,16 +8,12 @@ import {
   Patients,
   Profile,
   Root,
-  Statistics,
+  Reports,
   Unauthorized,
   Users,
 } from '@/pages';
 
-import {
-  PrivateRoute,
-  PublicRoute,
-  RoleBasedRoute,
-} from '@/components/protected-routes';
+import { PrivateRoute, PublicRoute, RoleBasedRoute } from '@/components/protected-routes';
 
 export const routes = [
   {
@@ -60,10 +56,10 @@ export const routes = [
         ),
       },
       {
-        path: 'stats',
+        path: 'reports',
         element: (
           <RoleBasedRoute allowedRoles={['admin', 'medic', 'assistant']}>
-            <Statistics />
+            <Reports />
           </RoleBasedRoute>
         ),
       },

@@ -9,10 +9,7 @@ export const Unauthorized = () => {
       <p className='text-lg text-muted-foreground mb-6'>
         No tiene permiso para acceder a esta sección de la aplicación.
       </p>
-      <Link
-        to='/'
-        className='text-blue-600 hover:underline text-sm transition-all'
-      >
+      <Link to='/' className='text-blue-600 hover:underline text-sm transition-all'>
         ← Volver al inicio
       </Link>
     </div>

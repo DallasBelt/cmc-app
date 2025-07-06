@@ -90,12 +90,7 @@ export const CreatePatientForm = () => {
   return (
     <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit, (errors) =>
-            console.log(errors)
-          )}
-          className='space-y-2.5'
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2.5'>
           <div className='flex flex-col space-y-2.5 md:flex-row md:gap-2.5 md:space-y-0'>
             <FormField
               control={form.control}
@@ -133,16 +128,10 @@ export const CreatePatientForm = () => {
               render={({ field }) => (
                 <FormItem className='w-full'>
                   <FormLabel>Tipo de documento</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger
-                        className={cn(
-                          'font-normal',
-                          !field.value && 'text-muted-foreground'
-                        )}
+                        className={cn('font-normal', !field.value && 'text-muted-foreground')}
                       >
                         <SelectValue placeholder='Seleccionar...' />
                       </SelectTrigger>
@@ -219,15 +208,8 @@ export const CreatePatientForm = () => {
                           !field.value && 'text-muted-foreground'
                         )}
                       >
-                        {field.value ? (
-                          format(field.value, 'PPP')
-                        ) : (
-                          <span>Seleccionar...</span>
-                        )}
-                        <CalendarDays
-                          weight='bold'
-                          className='ml-auto h-4 w-4 opacity-50'
-                        />
+                        {field.value ? format(field.value, 'PPP') : <span>Seleccionar...</span>}
+                        <CalendarDays weight='bold' className='ml-auto h-4 w-4 opacity-50' />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -236,9 +218,7 @@ export const CreatePatientForm = () => {
                       mode='single'
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date('1900-01-01')
-                      }
+                      disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
                       captionLayout='dropdown'
                       defaultMonth={field.value || undefined}
                       toYear={new Date().getFullYear()}
@@ -296,9 +276,7 @@ export const CreatePatientForm = () => {
               className='w-full md:w-fit'
             >
               {isEditingPatient ? 'Guardar cambios' : 'Crear paciente'}
-              {createPatientMutation.isPending && (
-                <Loader2 className='me-2 animate-spin' />
-              )}
+              {createPatientMutation.isPending && <Loader2 className='me-2 animate-spin' />}
             </Button>
           </div>
         </form>

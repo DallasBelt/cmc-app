@@ -1,5 +1,14 @@
-import { NavLink, useNavigate } from 'react-router-dom';
-import { CalendarDays, House, LogOut, Pill, User2, Users2 } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+
+import {
+  CalendarDays,
+  ChartNoAxesCombined,
+  House,
+  LogOut,
+  Pill,
+  User2,
+  Users2,
+} from 'lucide-react';
 
 import {
   NavigationMenu,
@@ -10,17 +19,11 @@ import {
 } from '@/components/ui/navigation-menu';
 import { Separator } from '@/components/ui/separator';
 
+import { useAuth } from '@/hooks';
+
 export const NavMenu = ({ onLinkClick }) => {
-  const navigate = useNavigate();
+  const { logoutMutation } = useAuth();
   const isAdmin = sessionStorage.getItem('role') === 'admin';
-
-  const handleSignOut = () => {
-    // Remove sessionStorage elements
-    sessionStorage.clear();
-
-    // Redirects to the login page
-    navigate('/login');
-  };
 
   return (
     <NavigationMenu className='flex'>
@@ -29,9 +32,7 @@ export const NavMenu = ({ onLinkClick }) => {
           <NavLink
             to='/'
             className={({ isActive }) =>
-              isActive
-                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
-                : ''
+              isActive ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]' : ''
             }
             onClick={onLinkClick}
             end
@@ -51,9 +52,7 @@ export const NavMenu = ({ onLinkClick }) => {
           <NavLink
             to='/users'
             className={({ isActive }) =>
-              isActive
-                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
-                : ''
+              isActive ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]' : ''
             }
             onClick={onLinkClick}
           >
@@ -70,16 +69,14 @@ export const NavMenu = ({ onLinkClick }) => {
           }
         >
           <NavLink
-            to='/patients'
+            to='/appointments'
             className={({ isActive }) =>
-              isActive
-                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
-                : ''
+              isActive ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]' : ''
             }
             onClick={onLinkClick}
           >
-            <Pill size={24} className='me-2 inline md:hidden' />
-            Pacientes
+            <CalendarDays size={24} className='me-2 inline md:hidden' />
+            Citas
           </NavLink>
         </NavigationMenuItem>
 
@@ -91,31 +88,27 @@ export const NavMenu = ({ onLinkClick }) => {
           }
         >
           <NavLink
-            to='/appointments'
+            to='/patients'
             className={({ isActive }) =>
-              isActive
-                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
-                : ''
+              isActive ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]' : ''
             }
             onClick={onLinkClick}
           >
-            <CalendarDays size={24} className='me-2 inline md:hidden' />
-            Citas
+            <Pill size={24} className='me-2 inline md:hidden' />
+            Pacientes
           </NavLink>
         </NavigationMenuItem>
 
         <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb]'>
           <NavLink
-            to='/stats'
+            to='/reports'
             className={({ isActive }) =>
-              isActive
-                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
-                : ''
+              isActive ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]' : ''
             }
             onClick={onLinkClick}
           >
-            <CalendarDays size={24} className='me-2 inline md:hidden' />
-            Estadísticas
+            <ChartNoAxesCombined size={24} className='me-2 inline md:hidden' />
+            Reportes
           </NavLink>
         </NavigationMenuItem>
 
@@ -125,9 +118,7 @@ export const NavMenu = ({ onLinkClick }) => {
           <NavLink
             to='/profile'
             className={({ isActive }) =>
-              isActive
-                ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]'
-                : ''
+              isActive ? 'underline underline-offset-4 decoration-2 decoration-[#2563eb]' : ''
             }
             onClick={onLinkClick}
           >
@@ -137,7 +128,7 @@ export const NavMenu = ({ onLinkClick }) => {
         </NavigationMenuItem>
 
         <NavigationMenuItem className='hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#2563eb] cursor-pointer md:hidden'>
-          <NavigationMenuLink onSelect={handleSignOut}>
+          <NavigationMenuLink onSelect={() => logoutMutation.mutate()}>
             <LogOut size={24} className='me-2 inline md:hidden' />
             Salir
           </NavigationMenuLink>

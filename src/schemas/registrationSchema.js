@@ -16,22 +16,14 @@ export const registrationSchema = z
           const hasLowerCase = /[a-z]/.test(val);
           const hasNumber = /[0-9]/.test(val);
           const hasSymbol = /[!@#$%&*]/.test(val);
-          return (
-            hasMinLength &&
-            hasUpperCase &&
-            hasLowerCase &&
-            hasNumber &&
-            hasSymbol
-          );
+          return hasMinLength && hasUpperCase && hasLowerCase && hasNumber && hasSymbol;
         },
         {
           message:
             'Mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo !@#$%&*',
         }
       ),
-    confirmPassword: z
-      .string()
-      .min(1, { message: 'Confirmación de contraseña requerida' }),
+    confirmPassword: z.string().min(1, { message: 'Confirmación de contraseña requerida' }),
   })
   .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {

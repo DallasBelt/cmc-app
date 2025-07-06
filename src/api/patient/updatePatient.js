@@ -13,8 +13,6 @@ export const updatePatient = async ({ updatedPatientData, patientId }) => {
 
   if (!res.ok) {
     const errorData = await res.json();
-    throw new Error(
-      errorData.message || 'Error al actualizar información del paciente.'
-    );
+    throw new Error(errorData.message || 'Error al actualizar información del paciente.');
   }
 };

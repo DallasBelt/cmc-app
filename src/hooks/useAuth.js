@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { login, register, updatePassword } from '@/api/auth';
@@ -7,6 +7,7 @@ import { useAuthStore, useRegistrationStore, useToastStore } from '@/store';
 
 export const useAuth = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { setIsLoggingIn } = useAuthStore();
   const setToast = useToastStore((state) => state.setToast);
 
@@ -68,9 +69,26 @@ export const useAuth = () => {
     },
   });
 
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      sessionStorage.clear();
+      queryClient.clear(); // limpia todo el caché de react-query
+      return true;
+    },
+    onSuccess: () => {
+      setToast(true, 'Sesión cerrada correctamente.');
+      navigate('/login');
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error('Error al cerrar sesión.');
+    },
+  });
+
   return {
     loginMutation,
     registerMutation,
     updatePasswordMutation,
+    logoutMutation,
   };
 };

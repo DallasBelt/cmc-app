@@ -20,11 +20,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -41,8 +37,7 @@ import { cn } from '@/lib/utils';
 export const UserInfoForm = () => {
   setDefaultOptions({ locale: es });
 
-  const { createUserInfoMutation, userInfoQuery, updateUserInfoMutation } =
-    useUserInfo();
+  const { createUserInfoMutation, userInfoQuery, updateUserInfoMutation } = useUserInfo();
 
   const form = useForm({
     resolver: zodResolver(userInfoSchema),
@@ -133,13 +128,14 @@ export const UserInfoForm = () => {
             render={({ field }) => (
               <FormItem className='w-full'>
                 <FormLabel>Tipo de documento</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  disabled={userInfoQuery.data?.dniType !== undefined}
+                  onValueChange={field.onChange}
+                  value={field.value}
+                >
                   <FormControl>
                     <SelectTrigger
-                      className={cn(
-                        'font-normal',
-                        !field.value && 'text-muted-foreground'
-                      )}
+                      className={cn('font-normal', !field.value && 'text-muted-foreground')}
                     >
                       <SelectValue placeholder='Seleccionar...' />
                     </SelectTrigger>
@@ -158,6 +154,7 @@ export const UserInfoForm = () => {
           <FormField
             control={form.control}
             name='dni'
+            disabled={userInfoQuery.data?.dni !== undefined}
             render={({ field }) => (
               <FormItem className='w-full'>
                 <FormLabel>Nº de documento</FormLabel>
@@ -186,15 +183,8 @@ export const UserInfoForm = () => {
                         !field.value && 'text-muted-foreground'
                       )}
                     >
-                      {field.value ? (
-                        format(field.value, 'PPP')
-                      ) : (
-                        <span>Seleccionar...</span>
-                      )}
-                      <CalendarDays
-                        weight='bold'
-                        className='ml-auto h-4 w-4 opacity-50'
-                      />
+                      {field.value ? format(field.value, 'PPP') : <span>Seleccionar...</span>}
+                      <CalendarDays weight='bold' className='ml-auto h-4 w-4 opacity-50' />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
@@ -203,9 +193,7 @@ export const UserInfoForm = () => {
                     mode='single'
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date('1900-01-01')
-                    }
+                    disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
                     captionLayout='dropdown'
                     defaultMonth={field.value || undefined}
                     toYear={new Date().getFullYear()}
@@ -259,16 +247,11 @@ export const UserInfoForm = () => {
         <div className='pt-5 md:flex md:justify-center'>
           <Button
             type='submit'
-            disabled={
-              createUserInfoMutation.isPending ||
-              updateUserInfoMutation.isPending
-            }
+            disabled={createUserInfoMutation.isPending || updateUserInfoMutation.isPending}
             className='w-full md:w-fit'
           >
             {userInfoQuery.data ? 'Actualizar' : 'Crear'}
-            {createUserInfoMutation.isPending && (
-              <Loader2 className='ml-2 animate-spin' />
-            )}
+            {createUserInfoMutation.isPending && <Loader2 className='ml-2 animate-spin' />}
           </Button>
         </div>
       </form>

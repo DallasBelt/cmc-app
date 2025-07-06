@@ -1,11 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import {
-  createMedicInfo,
-  getMedicInfo,
-  updateMedicInfo,
-} from '@/api/medic-info';
+import { createMedicInfo, getMedicInfo, updateMedicInfo } from '@/api/medic-info';
 
 export const useMedicInfo = () => {
   const queryClient = useQueryClient();

@@ -1,5 +1,4 @@
 export const createUserInfo = async (userInfo) => {
-  console.log('userInfo', userInfo);
   const token = sessionStorage.getItem('token');
   if (!token) throw new Error('Error de autenticación.');
 

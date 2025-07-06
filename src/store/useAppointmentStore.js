@@ -3,8 +3,7 @@ import { create } from 'zustand';
 export const useAppointmentStore = create((set) => ({
   // New appointment modal
   createAppointmentDialog: false,
-  setCreateAppointmentDialog: (state) =>
-    set({ createAppointmentDialog: state }),
+  setCreateAppointmentDialog: (state) => set({ createAppointmentDialog: state }),
 
   // Appointment data
   appointmentData: {
@@ -28,18 +27,15 @@ export const useAppointmentStore = create((set) => ({
   appointmentDropdown: false,
   setAppointmentDropdown: (state) => set({ appointmentDropdown: state }),
   appointmentDropdownPosition: { top: 0, left: 0 },
-  setAppointmentDropdownPosition: (position) =>
-    set({ appointmentDropdownPosition: position }),
+  setAppointmentDropdownPosition: (position) => set({ appointmentDropdownPosition: position }),
 
   // Change appointment status dialog
   changeAppointmentStatusDialog: false,
-  setChangeAppointmentStatusDialog: (state) =>
-    set({ changeAppointmentStatusDialog: state }),
+  setChangeAppointmentStatusDialog: (state) => set({ changeAppointmentStatusDialog: state }),
 
   // Delete appointment dialog
   deleteAppointmentDialog: false,
-  setDeleteAppointmentDialog: (state) =>
-    set({ deleteAppointmentDialog: state }),
+  setDeleteAppointmentDialog: (state) => set({ deleteAppointmentDialog: state }),
 
   // Edit appointment flag
   editAppointment: false,

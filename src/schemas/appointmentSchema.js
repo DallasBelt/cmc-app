@@ -10,6 +10,7 @@ export const newAppointmentSchema = z
       }),
     startTime: z.string().min(1, { message: 'Hora inicial no válida' }),
     endTime: z.string().min(1, { message: 'Hora final no válida' }),
+    reason: z.string().nullable().optional(),
     patient: z.string().uuid({ message: 'Paciente no válido' }),
   })
   .refine(

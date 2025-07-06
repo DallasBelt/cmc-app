@@ -27,9 +27,7 @@ export const PatientsDropdown = ({ row }) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const setIsEditingPatient = usePatientStore(
-    (state) => state.setIsEditingPatient
-  );
+  const setIsEditingPatient = usePatientStore((state) => state.setIsEditingPatient);
   const setPatientData = usePatientStore((state) => state.setPatientData);
 
   return (
@@ -77,16 +75,9 @@ export const PatientsDropdown = ({ row }) => {
         onOpenChange={setMedicalRecordDialogOpen}
       />
 
-      <EditPatientDialog
-        open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
-      />
+      <EditPatientDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} />
 
-      <DeletePatientDialog
-        row={row}
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-      />
+      <DeletePatientDialog row={row} open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} />
     </>
   );
 };

@@ -30,8 +30,7 @@ import { specialties } from '@/constants';
 export const MedicInfoForm = () => {
   setDefaultOptions({ locale: es });
 
-  const { createMedicInfoMutation, medicInfoQuery, updateMedicInfoMutation } =
-    useMedicInfo();
+  const { createMedicInfoMutation, medicInfoQuery, updateMedicInfoMutation } = useMedicInfo();
 
   const form = useForm({
     resolver: zodResolver(medicInfoSchema),
@@ -69,6 +68,7 @@ export const MedicInfoForm = () => {
           <FormField
             control={form.control}
             name='registry'
+            disabled={medicInfoQuery.data?.registry !== undefined}
             render={({ field }) => (
               <FormItem className='w-full'>
                 <FormLabel>Registro médico</FormLabel>
@@ -86,7 +86,11 @@ export const MedicInfoForm = () => {
             render={({ field }) => (
               <FormItem className='w-full'>
                 <FormLabel>Especialidad</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  disabled={medicInfoQuery.data?.speciality !== undefined}
+                  onValueChange={field.onChange}
+                  value={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder='Seleccionar...' />
@@ -106,19 +110,14 @@ export const MedicInfoForm = () => {
           />
         </div>
 
-        <div className='pt-5 flex justify-center'>
+        <div className={medicInfoQuery.data ? 'hidden' : 'pt-5 flex justify-center'}>
           <Button
             type='submit'
-            disabled={
-              createMedicInfoMutation.isPending ||
-              updateMedicInfoMutation.isPending
-            }
+            disabled={createMedicInfoMutation.isPending || updateMedicInfoMutation.isPending}
             className='w-full md:w-fit'
           >
             {medicInfoQuery.data ? 'Actualizar' : 'Crear'}
-            {createMedicInfoMutation.isPending && (
-              <Loader2 className='ml-2 animate-spin' />
-            )}
+            {createMedicInfoMutation.isPending && <Loader2 className='ml-2 animate-spin' />}
           </Button>
         </div>
       </form>
