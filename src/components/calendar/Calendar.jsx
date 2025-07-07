@@ -41,6 +41,7 @@ export function Calendar() {
         patient: e.patient,
         status: e.status,
         updatedAt: e.updatedAt,
+        reason: e.reason,
       },
     })) || [];
 
@@ -104,11 +105,6 @@ export function Calendar() {
           handleDateClick(info);
         }}
       />
-
-      {appointmentsQuery.error &&
-        toast.error('Oops...', {
-          description: 'Error en la solicitud.',
-        })}
 
       <AppointmentDropdown />
     </div>

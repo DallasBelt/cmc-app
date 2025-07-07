@@ -60,7 +60,7 @@ export const AppointmentForm = () => {
           ? ''
           : appointmentData.startTime,
       endTime: editAppointment ? format(appointmentToEdit.endTime, 'HH:mm') : '',
-      reason: '',
+      reason: editAppointment ? appointmentToEdit.reason : '',
       patient: editAppointment ? appointmentToEdit.patient.id : '',
     },
   });

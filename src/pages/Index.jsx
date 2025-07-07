@@ -25,8 +25,7 @@ export const Index = () => {
     case 'medic':
       return <MedicDashboard />;
     case 'assistant':
-      // return <AssistantDashboard />;
-      return <div>Assistant Dashboard</div>;
+      return <MedicDashboard />;
     default:
       return <Navigate to='/unauthorized' replace />;
   }

@@ -2,13 +2,25 @@ import { CalendarCheck, CalendarClock, CalendarX, UsersRound } from 'lucide-reac
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { useAppointments, usePatients } from '@/hooks';
+import { useAppointments, useAssistants, usePatients } from '@/hooks';
 
 export const MedicDashboard = () => {
-  const medicId = sessionStorage.getItem('id');
+  const currentUserId = sessionStorage.getItem('id');
+  const currentRole = sessionStorage.getItem('role');
 
   const { patientsQuery } = usePatients();
   const { appointmentsQuery } = useAppointments();
+  const { assistantsQuery } = useAssistants();
+
+  let medicId = null;
+
+  if (currentRole === 'medic') {
+    medicId = currentUserId;
+  } else if (currentRole === 'assistant') {
+    const assistants = assistantsQuery.data ?? [];
+    const assigned = assistants.find((a) => a.id === currentUserId);
+    medicId = assigned?.medicId ?? null;
+  }
 
   const patients = (patientsQuery.data?.data ?? []).filter(
     (patient) => patient.medic.id === medicId
