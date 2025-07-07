@@ -22,6 +22,7 @@ import { generateUnavailableBlocks } from '@/utils';
 export function Calendar() {
   setDefaultOptions({ locale: es });
   const { effectiveTheme } = useTheme();
+  const currentRole = sessionStorage.getItem('role');
 
   const { hiddenDays, isAllowedClick, isEmpty, isLoading, schedule, slotMaxTime, slotMinTime } =
     useSchedule();
@@ -59,10 +60,16 @@ export function Calendar() {
     return (
       <div className='flex flex-col items-center justify-center h-[50vh] text-center'>
         <ClockAlert size={200} className='text-red-500 mb-4' />
-        <h1 className='text-3xl font-bold mb-2'>Todavía no ha creado un horario.</h1>
-        <Link to='/profile' className='text-blue-600 hover:underline text-lg transition-all'>
-          Puede crearlo en su Perfil.
-        </Link>
+        <h1 className='text-3xl font-bold mb-2'>
+          {currentRole === 'assistant'
+            ? 'El médico asignado aún no tiene un horario.'
+            : 'Todavía no ha creado un horario.'}
+        </h1>
+        {currentRole !== 'assistant' && (
+          <Link to='/profile' className='text-blue-600 hover:underline text-lg transition-all'>
+            Puede crearlo en su Perfil.
+          </Link>
+        )}
       </div>
     );
   }

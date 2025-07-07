@@ -2,10 +2,24 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { createMedicInfo, getMedicInfo, updateMedicInfo } from '@/api/medic-info';
+import { useAssistants } from '@/hooks';
 
 export const useMedicInfo = () => {
   const queryClient = useQueryClient();
-  const userId = sessionStorage.getItem('id');
+  const currentUserId = sessionStorage.getItem('id');
+  const currentRole = sessionStorage.getItem('role');
+
+  const { assistantsQuery } = useAssistants();
+
+  const medicId = (() => {
+    if (currentRole === 'medic') return currentUserId;
+    if (currentRole === 'assistant') {
+      const assistants = assistantsQuery.data ?? [];
+      const assigned = assistants.find((a) => a.id === currentUserId);
+      return assigned?.medicId ?? null;
+    }
+    return null;
+  })();
 
   const createMedicInfoMutation = useMutation({
     mutationFn: createMedicInfo,
@@ -20,7 +34,7 @@ export const useMedicInfo = () => {
   });
 
   const medicInfoQuery = useQuery({
-    queryKey: ['medicInfo', userId],
+    queryKey: ['medicInfo'],
     queryFn: getMedicInfo,
   });
 
@@ -37,6 +51,7 @@ export const useMedicInfo = () => {
   });
 
   return {
+    medicId,
     createMedicInfoMutation,
     medicInfoQuery,
     updateMedicInfoMutation,

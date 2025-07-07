@@ -80,7 +80,6 @@ export const CreatePatientForm = () => {
       const newPatient = {
         ...values,
         dob: format(values.dob, 'dd-MM-yyyy'),
-        medicId: sessionStorage.getItem('id'),
       };
 
       createPatientMutation.mutate(newPatient);

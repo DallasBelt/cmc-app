@@ -38,7 +38,7 @@ export const PatientsDropdown = ({ row }) => {
             <Ellipsis size={24} className='h-4 w-4' />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align='end' className='flex flex-col'>
+        <DropdownMenuContent align='end' className='flex flex-col select-none'>
           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {isAssistant ? (
@@ -60,13 +60,15 @@ export const PatientsDropdown = ({ row }) => {
             <Pencil size={16} className='me-2' /> Editar
           </DropdownMenuItem>
 
-          <DropdownMenuItem
-            onSelect={() => {
-              setDeleteDialogOpen(true);
-            }}
-          >
-            <Trash size={16} className='me-2' /> Eliminar
-          </DropdownMenuItem>
+          {!isAssistant && (
+            <DropdownMenuItem
+              onSelect={() => {
+                setDeleteDialogOpen(true);
+              }}
+            >
+              <Trash size={16} className='me-2' /> Eliminar
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 

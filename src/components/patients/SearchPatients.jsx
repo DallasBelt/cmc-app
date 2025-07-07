@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Search, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { usePatients } from '@/hooks';
+import { useMedicInfo, usePatients } from '@/hooks';
 import { useTheme } from '@/components/theme/ThemeProvider';
 
 export const SearchPatients = ({ onSelectPatient }) => {
@@ -12,8 +13,8 @@ export const SearchPatients = ({ onSelectPatient }) => {
   const [inputValue, setInputValue] = useState('');
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const medicId = sessionStorage.getItem('id');
   const { patientsQuery } = usePatients();
+  const { medicId } = useMedicInfo();
 
   // Fallback if there's no data or it's not an array
   const allPatients = Array.isArray(patientsQuery.data?.data) ? patientsQuery.data.data : [];
@@ -99,4 +100,8 @@ export const SearchPatients = ({ onSelectPatient }) => {
       )}
     </div>
   );
+};
+
+SearchPatients.propTypes = {
+  onSelectPatient: PropTypes.func.isRequired,
 };

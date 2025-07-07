@@ -14,6 +14,8 @@ import { MedicalRecordDialog } from '@/components/medical-records';
 import { useAppointmentStore } from '@/store';
 
 export const AppointmentDropdown = () => {
+  const isAssistant = sessionStorage.getItem('role') === 'assistant';
+
   const {
     appointmentData,
     appointmentDropdown,
@@ -40,19 +42,21 @@ export const AppointmentDropdown = () => {
           }}
         >
           {/* Attend */}
-          <DropdownMenuItem
-            className={
-              appointmentData.status === 'canceled' || appointmentData.status === 'completed'
-                ? 'hidden'
-                : 'cursor-pointer'
-            }
-            onSelect={() => {
-              setMedicalRecordDialogOpen(true);
-            }}
-          >
-            <Stethoscope size={16} className='me-2' />
-            Atender
-          </DropdownMenuItem>
+          {!isAssistant && (
+            <DropdownMenuItem
+              className={
+                appointmentData.status === 'canceled' || appointmentData.status === 'completed'
+                  ? 'hidden'
+                  : 'cursor-pointer'
+              }
+              onSelect={() => {
+                setMedicalRecordDialogOpen(true);
+              }}
+            >
+              <Stethoscope size={16} className='me-2' />
+              Atender
+            </DropdownMenuItem>
+          )}
 
           {/* Edit */}
           <DropdownMenuItem

@@ -35,8 +35,7 @@ import { useAppointments, useSchedule } from '@/hooks';
 import { useAppointmentStore } from '@/store';
 import { newAppointmentSchema } from '@/schemas';
 
-import { getAvailableTimesForDay } from '@/utils/scheduleUtils'; // Make sure this import path is correct
-
+import { getAvailableTimesForDay } from '@/utils/scheduleUtils';
 export const AppointmentForm = () => {
   setDefaultOptions({ locale: es });
 
