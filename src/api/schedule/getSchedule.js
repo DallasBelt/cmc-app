@@ -7,11 +7,11 @@ export const getSchedule = async () => {
     },
   });
 
-  // Check for HTTP response errors
+  const data = await res.json();
+
   if (!res.ok) {
-    throw new Error(`${res.status} (${res.statusText}).`);
+    throw new Error(data?.message);
   }
 
-  // Convert to JSON
-  return await res.json();
+  return data;
 };

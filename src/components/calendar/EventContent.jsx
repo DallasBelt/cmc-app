@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { cn } from '@/lib/utils';
 
 export const EventContent = ({ eventInfo }) => {
@@ -10,4 +11,17 @@ export const EventContent = ({ eventInfo }) => {
       <span className='italic'>{eventInfo.event.extendedProps.reason}</span>
     </div>
   );
+};
+
+EventContent.propTypes = {
+  eventInfo: PropTypes.shape({
+    event: PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      extendedProps: PropTypes.shape({
+        status: PropTypes.string,
+        reason: PropTypes.string,
+      }),
+    }),
+    timeText: PropTypes.string.isRequired,
+  }).isRequired,
 };

@@ -13,11 +13,9 @@ export const updateSchedule = async ({ id, shifts }) => {
 
   const data = await res.json();
 
-  // Check for HTTP response errors
   if (!res.ok) {
-    throw new Error(`${res.status} ${data.message}`);
+    throw new Error(data?.message);
   }
 
-  // Convert to JSON
   return data;
 };

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { CalendarCheck2, ClipboardList, Pencil, Stethoscope, Trash, X } from 'lucide-react';
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/components/ui';
@@ -12,6 +11,7 @@ import {
 import { MedicalRecordDialog } from '@/components/medical-records';
 
 import { useAppointmentStore } from '@/store';
+import { useMedicalRecordStore } from '@/store/useMedicalRecordStore';
 
 export const AppointmentDropdown = () => {
   const isAssistant = sessionStorage.getItem('role') === 'assistant';
@@ -27,7 +27,7 @@ export const AppointmentDropdown = () => {
     setEditAppointment,
   } = useAppointmentStore();
 
-  const [medicalRecordDialogOpen, setMedicalRecordDialogOpen] = useState(false);
+  const { setDialogOpen } = useMedicalRecordStore();
 
   return (
     <>
@@ -50,7 +50,7 @@ export const AppointmentDropdown = () => {
                   : 'cursor-pointer'
               }
               onSelect={() => {
-                setMedicalRecordDialogOpen(true);
+                setDialogOpen(true);
               }}
             >
               <Stethoscope size={16} className='me-2' />
@@ -117,10 +117,7 @@ export const AppointmentDropdown = () => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <MedicalRecordDialog
-        open={medicalRecordDialogOpen}
-        onOpenChange={setMedicalRecordDialogOpen}
-      />
+      <MedicalRecordDialog />
       <AppointmentDialog />
       <ChangeAppointmentStatusDialog />
       <DeleteAppointmentDialog />

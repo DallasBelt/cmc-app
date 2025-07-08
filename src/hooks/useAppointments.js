@@ -23,10 +23,25 @@ export const useAppointments = () => {
 
   const createAppointmentMutation = useMutation({
     mutationFn: createAppointment,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries(['appointments']);
-      toast.success('Cita creada exitósamente.');
       setCreateAppointmentDialog(false);
+      switch (data.type) {
+        case 'success':
+          toast.success(data.message);
+          break;
+        case 'info':
+          toast.info(data.message);
+          break;
+        case 'warning':
+          toast.warning?.(data.message);
+          break;
+        case 'error':
+          toast.error(data.message);
+          break;
+        default:
+          toast(data.message);
+      }
     },
     onError: (error) => {
       console.error(error);
