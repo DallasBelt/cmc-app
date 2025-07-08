@@ -111,19 +111,9 @@ export function getSlotMinTime(schedule) {
 // Max hour in the calendar
 export function getSlotMaxTime(schedule) {
   const checkOuts = schedule.flatMap((s) => s.shifts.map((shift) => shift.checkOut));
-
   const latest = checkOuts.sort().reverse()[0] || '19:30';
 
-  // Sumar 15 minutos para que se dibuje la fila final
-  const [hour, minute] = latest.split(':').map(Number);
-  const date = new Date();
-  date.setHours(hour, minute + 15, 0, 0);
-
-  // Asegurar formato HH:mm
-  const hh = date.getHours().toString().padStart(2, '0');
-  const mm = date.getMinutes().toString().padStart(2, '0');
-
-  return `${hh}:${mm}`;
+  return latest;
 }
 
 // Check if click is valid

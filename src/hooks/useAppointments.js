@@ -26,22 +26,7 @@ export const useAppointments = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries(['appointments']);
       setCreateAppointmentDialog(false);
-      switch (data.type) {
-        case 'success':
-          toast.success(data.message);
-          break;
-        case 'info':
-          toast.info(data.message);
-          break;
-        case 'warning':
-          toast.warning?.(data.message);
-          break;
-        case 'error':
-          toast.error(data.message);
-          break;
-        default:
-          toast(data.message);
-      }
+      toast.success(data.message);
     },
     onError: (error) => {
       console.error(error);
