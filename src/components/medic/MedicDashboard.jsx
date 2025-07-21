@@ -9,9 +9,7 @@ export const MedicDashboard = () => {
   const { appointmentsQuery } = useAppointments();
   const { medicId } = useMedicInfo();
 
-  const patients = (patientsQuery.data?.data ?? []).filter(
-    (patient) => patient.medic.id === medicId
-  );
+  const patients = (patientsQuery?.data ?? []).filter((patient) => patient.medic.id === medicId);
   const appointments = (appointmentsQuery.data?.data ?? []).filter(
     (appointment) => appointment.medic.id === medicId
   );

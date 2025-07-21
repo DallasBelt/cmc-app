@@ -26,6 +26,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Textarea,
 } from '@/components/ui';
 
 import { PhoneInput } from '@/components/interaction';
@@ -50,11 +51,14 @@ export const CreatePatientForm = () => {
       lastName: isEditingPatient ? patientData?.lastName : '',
       dniType: '',
       dni: '',
-      occupation: isEditingPatient ? patientData?.occupation : '',
       email: isEditingPatient ? patientData?.email : '',
       dob: isEditingPatient ? parseISO(patientData.dob) : null,
       phone: isEditingPatient ? patientData?.phone : '',
       address: isEditingPatient ? patientData?.address : '',
+      occupation: isEditingPatient ? patientData?.occupation : '',
+      allergies: isEditingPatient ? patientData?.allergies : '',
+      personalHistory: isEditingPatient ? patientData?.personalHistory : '',
+      familyHistory: isEditingPatient ? patientData?.familyHistory : '',
     },
   });
 
@@ -165,20 +169,6 @@ export const CreatePatientForm = () => {
 
           <FormField
             control={form.control}
-            name='occupation'
-            render={({ field }) => (
-              <FormItem className='w-full'>
-                <FormLabel>Ocupación</FormLabel>
-                <FormControl>
-                  <Input type='text' {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
             name='email'
             render={({ field }) => (
               <FormItem className='w-full'>
@@ -262,6 +252,62 @@ export const CreatePatientForm = () => {
                 <FormLabel>Dirección</FormLabel>
                 <FormControl>
                   <Input type='text' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='occupation'
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormLabel>Ocupación</FormLabel>
+                <FormControl>
+                  <Input type='text' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='allergies'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Alergias</FormLabel>
+                <FormControl>
+                  <Textarea className='resize-none' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='personalHistory'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Antecedentes personales</FormLabel>
+                <FormControl>
+                  <Textarea className='resize-none' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='personalHistory'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Antecedentes familiares</FormLabel>
+                <FormControl>
+                  <Textarea className='resize-none' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

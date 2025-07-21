@@ -4,28 +4,30 @@ import { useAppointmentStore, usePatientStore } from '@/store';
 
 export const useCalendar = () => {
   const {
+    setAppointmentData,
     setAppointmentDropdown,
     setAppointmentDropdownPosition,
     setCreateAppointmentDialog,
-    updateAppointmentField,
   } = useAppointmentStore();
 
   const { setPatientData } = usePatientStore();
 
   const handleDateClick = (arg) => {
-    // Set date and startTime properties of appointmentStore
-    updateAppointmentField('date', arg.date);
-    updateAppointmentField('startTime', format(arg.date, 'HH:mm'));
+    setAppointmentData({
+      date: arg.date,
+      startTime: format(arg.date, 'HH:mm'),
+    });
 
     setCreateAppointmentDialog(true);
   };
 
   const handleEventClick = async (info) => {
-    // Update id and status properties of appointmentStore
-    updateAppointmentField('id', info.event.id);
-    updateAppointmentField('status', info.event.extendedProps.status);
-    updateAppointmentField('patient', info.event.extendedProps.patient);
-    updateAppointmentField('medic', info.event.extendedProps.medic);
+    setAppointmentData({
+      id: info.event.id,
+      status: info.event.extendedProps.status,
+      patient: info.event.extendedProps.patient,
+      medic: info.event.extendedProps.medic,
+    });
 
     // Update patientData store
     setPatientData(info.event.extendedProps.patientData);

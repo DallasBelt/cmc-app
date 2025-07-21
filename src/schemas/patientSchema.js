@@ -8,7 +8,6 @@ export const newPatientSchema = z
     lastName: z.string().min(1, { message: 'Apellido requerido' }),
     dniType: z.string().min(1, { message: 'Tipo de documento requerido' }),
     dni: z.string().min(1, { message: 'Nº de documento requerido' }),
-    occupation: z.string().min(1, { message: 'Ocupación requerida' }),
     email: z
       .string()
       .min(1, { message: 'Correo electrónico requerido' })
@@ -27,6 +26,19 @@ export const newPatientSchema = z
         message: 'Número celular inválido',
       }),
     address: z.string().min(1, { message: 'Dirección requerida' }),
+    occupation: z.string().min(1, { message: 'Ocupación requerida' }),
+    allergies: z
+      .string()
+      .optional()
+      .transform((val) => (val === '' ? null : val)),
+    personalHistory: z
+      .string()
+      .optional()
+      .transform((val) => (val === '' ? null : val)),
+    familyHistory: z
+      .string()
+      .optional()
+      .transform((val) => (val === '' ? null : val)),
   })
   .superRefine((data, ctx) => {
     if (data.dniType === 'cedula' && !validateCedula(data.dni)) {
@@ -53,7 +65,6 @@ export const newPatientSchema = z
 export const editPatientSchema = z.object({
   firstName: z.string().min(1, { message: 'Nombre requerido' }),
   lastName: z.string().min(1, { message: 'Apellido requerido' }),
-  occupation: z.string().min(1, { message: 'Ocupación requerida' }),
   email: z
     .string()
     .min(1, { message: 'Correo electrónico requerido' })
@@ -71,4 +82,17 @@ export const editPatientSchema = z.object({
       message: 'Número celular inválido',
     }),
   address: z.string().min(1, { message: 'Dirección requerida' }),
+  occupation: z.string().min(1, { message: 'Ocupación requerida' }),
+  allergies: z
+    .union([z.string(), z.null()])
+    .optional()
+    .transform((val) => (val === '' ? null : val)),
+  personalHistory: z
+    .union([z.string(), z.null()])
+    .optional()
+    .transform((val) => (val === '' ? null : val)),
+  familyHistory: z
+    .union([z.string(), z.null()])
+    .optional()
+    .transform((val) => (val === '' ? null : val)),
 });

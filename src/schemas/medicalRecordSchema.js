@@ -1,6 +1,13 @@
 import { z } from 'zod';
 
+const optionalText = () =>
+  z.preprocess((val) => (val === '' || val === undefined ? null : val), z.string().nullable());
+
 export const medicalRecordSchema = z.object({
+  symptoms: z.string().min(1, { message: 'Síntomas requeridos' }),
+  diagnostic: z.string().min(1, { message: 'Diagnóstico requerido' }),
+  treatment: z.string().min(1, { message: 'Tratamiento requerido' }),
+  prescription: optionalText(),
   bloodPressure: z
     .object({
       systolic: z.preprocess(
@@ -32,17 +39,12 @@ export const medicalRecordSchema = z.object({
       }
     )
     .optional(),
-  oxygenSaturation: z.string(),
-  bodyTemperature: z.string(),
-  heartRate: z.string(),
-  respiratoryRate: z.string(),
-  weight: z.string(),
-  height: z.string(),
-  allergies: z.string(),
-  symptoms: z.string().min(1, { message: 'Síntomas requeridos' }),
-  diagnostic: z.string().min(1, { message: 'Diagnóstico requerido' }),
-  treatment: z.string().min(1, { message: 'Tratamiento requerido' }),
-  prescription: z.string(),
-  observations: z.string(),
+  oxygenSaturation: optionalText(),
+  bodyTemperature: optionalText(),
+  heartRate: optionalText(),
+  respiratoryRate: optionalText(),
+  weight: optionalText(),
+  height: optionalText(),
+  observations: optionalText(),
   patientId: z.string().uuid({ message: 'Paciente no válido' }),
 });

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import { ClipboardList, Ellipsis, Pencil, Trash } from 'lucide-react';
 
@@ -12,23 +14,19 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui';
 
-import {
-  DeletePatientDialog,
-  EditPatientDialog,
-  ViewMedicalRecordDialog,
-} from '@/components/patients';
+import { DeletePatientDialog, EditPatientDialog } from '@/components/patients';
 
 import { usePatientStore } from '@/store';
 
 export const PatientsDropdown = ({ row }) => {
-  const isAssistant = sessionStorage.getItem('role') === 'assistant';
+  const navigate = useNavigate();
+  const { setIsEditingPatient, setPatientData } = usePatientStore();
 
-  const [medicalRecordDialogOpen, setMedicalRecordDialogOpen] = useState(false);
+  const isAssistant = sessionStorage.getItem('role') === 'assistant';
+  const patient = row.original;
+
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  const setIsEditingPatient = usePatientStore((state) => state.setIsEditingPatient);
-  const setPatientData = usePatientStore((state) => state.setPatientData);
 
   return (
     <>
@@ -41,10 +39,13 @@ export const PatientsDropdown = ({ row }) => {
         <DropdownMenuContent align='end' className='flex flex-col select-none'>
           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {isAssistant ? (
-            ''
-          ) : (
-            <DropdownMenuItem onSelect={() => setMedicalRecordDialogOpen(true)}>
+          {!isAssistant && (
+            <DropdownMenuItem
+              onSelect={() => {
+                setPatientData(patient);
+                navigate(`/records/${patient.id}`);
+              }}
+            >
               <ClipboardList size={16} className='me-2' />
               Ver historial
             </DropdownMenuItem>
@@ -54,7 +55,7 @@ export const PatientsDropdown = ({ row }) => {
             onSelect={() => {
               setEditDialogOpen(true);
               setIsEditingPatient(true);
-              setPatientData(row.original);
+              setPatientData(patient);
             }}
           >
             <Pencil size={16} className='me-2' /> Editar
@@ -72,14 +73,17 @@ export const PatientsDropdown = ({ row }) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <ViewMedicalRecordDialog
-        open={medicalRecordDialogOpen}
-        onOpenChange={setMedicalRecordDialogOpen}
-      />
-
       <EditPatientDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} />
 
       <DeletePatientDialog row={row} open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} />
     </>
   );
+};
+
+PatientsDropdown.propTypes = {
+  row: PropTypes.shape({
+    original: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };

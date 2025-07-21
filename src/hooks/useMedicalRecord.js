@@ -1,17 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { createMedicalRecord, getMedicalRecords } from '@/api/medical-record';
-import { useMedicalRecordStore } from '@/store/useMedicalRecordStore';
+import { createMedicalRecord, getMedicalRecordByPatient } from '@/api/medical-record';
+import { useMedicalRecordStore } from '@/store';
 
-export const useMedicalRecords = () => {
+export const useMedicalRecord = (patientId) => {
   const queryClient = useQueryClient();
   const { setDialogOpen } = useMedicalRecordStore();
 
   const createMedicalRecordMutation = useMutation({
     mutationFn: createMedicalRecord,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(['medical-records']);
+      queryClient.invalidateQueries(['medical-record']);
       setDialogOpen(false);
       toast.success(data.message);
     },
@@ -21,15 +21,17 @@ export const useMedicalRecords = () => {
     },
   });
 
-  const medicalRecordsQuery = useQuery({
-    queryKey: ['medical-records'],
-    queryFn: getMedicalRecords,
+  const medicalRecordByPatientQuery = useQuery({
+    queryKey: ['medical-record', patientId],
+    queryFn: () => getMedicalRecordByPatient(patientId),
+    enabled: !!patientId,
+    select: (data) => data.data,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
 
   return {
     createMedicalRecordMutation,
-    medicalRecordsQuery,
+    medicalRecordByPatientQuery,
   };
 };

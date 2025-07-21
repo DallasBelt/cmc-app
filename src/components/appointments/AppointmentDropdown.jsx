@@ -2,16 +2,7 @@ import { CalendarCheck2, ClipboardList, Pencil, Stethoscope, Trash, X } from 'lu
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/components/ui';
 
-import {
-  AppointmentDialog,
-  ChangeAppointmentStatusDialog,
-  DeleteAppointmentDialog,
-} from '@/components/appointments';
-
-import { MedicalRecordDialog } from '@/components/medical-records';
-
-import { useAppointmentStore } from '@/store';
-import { useMedicalRecordStore } from '@/store/useMedicalRecordStore';
+import { useAppointmentStore, useMedicalRecordStore } from '@/store';
 
 export const AppointmentDropdown = () => {
   const isAssistant = sessionStorage.getItem('role') === 'assistant';
@@ -116,11 +107,6 @@ export const AppointmentDropdown = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <MedicalRecordDialog />
-      <AppointmentDialog />
-      <ChangeAppointmentStatusDialog />
-      <DeleteAppointmentDialog />
     </>
   );
 };

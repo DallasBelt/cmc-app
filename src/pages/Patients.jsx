@@ -9,7 +9,7 @@ export const Patients = () => {
   const { patientsQuery } = usePatients();
   const { medicId } = useMedicInfo();
 
-  const patientList = Array.isArray(patientsQuery.data?.data) ? patientsQuery.data.data : [];
+  const patientList = Array.isArray(patientsQuery?.data) ? patientsQuery?.data : [];
 
   // Show only the patients of the authenticated medic
   const data = patientList ? patientList.filter((patient) => patient.medic.id === medicId) : [];

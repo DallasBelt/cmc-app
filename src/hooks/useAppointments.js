@@ -15,11 +15,9 @@ import { useAppointmentStore } from '@/store';
 export const useAppointments = () => {
   const queryClient = useQueryClient();
 
-  const { updateAppointmentField } = useAppointmentStore();
+  const { setAppointmentData } = useAppointmentStore();
 
-  const setCreateAppointmentDialog = useAppointmentStore(
-    (state) => state.setCreateAppointmentDialog
-  );
+  const { setCreateAppointmentDialog } = useAppointmentStore();
 
   const createAppointmentMutation = useMutation({
     mutationFn: createAppointment,
@@ -55,7 +53,7 @@ export const useAppointments = () => {
     mutationFn: changeAppointmentStatus,
     onSuccess: (newAppointmentStatus) => {
       queryClient.invalidateQueries(['appointments']);
-      updateAppointmentField('status', newAppointmentStatus);
+      setAppointmentData({ status: newAppointmentStatus });
       toast.success(
         `La cita ha sido ${newAppointmentStatus === 'canceled' ? 'cancelada' : 'reagendada'}.`
       );

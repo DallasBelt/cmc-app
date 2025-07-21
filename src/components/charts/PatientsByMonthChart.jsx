@@ -21,7 +21,7 @@ const chartConfig = {
 
 export const PatientsByMonthChart = () => {
   const { patientsQuery } = usePatients();
-  const patients = patientsQuery.data?.data ?? [];
+  const patients = patientsQuery?.data ?? [];
 
   const data = patients
     ? patients.filter((patient) => patient.medic.id === sessionStorage.getItem('id'))

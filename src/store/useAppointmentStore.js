@@ -14,12 +14,11 @@ export const useAppointmentStore = create((set) => ({
     patient: {},
     medic: {},
   },
-  setAppointmentData: (data) => set({ appointmentData: data }),
-  updateAppointmentField: (field, value) =>
+  setAppointmentData: (data) =>
     set((state) => ({
       appointmentData: {
         ...state.appointmentData,
-        [field]: value,
+        ...data,
       },
     })),
 

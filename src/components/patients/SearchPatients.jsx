@@ -17,7 +17,7 @@ export const SearchPatients = ({ onSelectPatient }) => {
   const { medicId } = useMedicInfo();
 
   // Fallback if there's no data or it's not an array
-  const allPatients = Array.isArray(patientsQuery.data?.data) ? patientsQuery.data.data : [];
+  const allPatients = Array.isArray(patientsQuery?.data) ? patientsQuery?.data : [];
 
   // Filter only patients that belong to the logged-in doctor
   const patientList = allPatients.filter((patient) => patient.medic.id === medicId);

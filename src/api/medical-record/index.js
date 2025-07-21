@@ -1,2 +1,2 @@
 export * from './createMedicalRecord';
-export * from './getMedicalRecords';
+export * from './getMedicalRecordByPatient';

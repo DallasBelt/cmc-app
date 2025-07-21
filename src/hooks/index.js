@@ -3,7 +3,7 @@ export * from './useAssistants';
 export * from './useAuth';
 export * from './useCalendar';
 export * from './useMedicInfo';
-export * from './useMedicalRecords';
+export * from './useMedicalRecord';
 export * from './usePatients';
 export * from './useSchedule';
 export * from './useUserInfo';

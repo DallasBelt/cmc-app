@@ -1,14 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
-import {
-  CalendarDays,
-  ChartNoAxesCombined,
-  House,
-  LogOut,
-  Pill,
-  User2,
-  Users2,
-} from 'lucide-react';
+import { CalendarDays, ClipboardList, House, LogOut, Pill, User2, Users2 } from 'lucide-react';
 
 import {
   NavigationMenu,
@@ -107,7 +99,7 @@ export const NavMenu = ({ onLinkClick }) => {
             }
             onClick={onLinkClick}
           >
-            <ChartNoAxesCombined size={24} className='me-2 inline md:hidden' />
+            <ClipboardList size={24} className='me-2 inline md:hidden' />
             Reportes
           </NavLink>
         </NavigationMenuItem>

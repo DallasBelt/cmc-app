@@ -10,8 +10,11 @@ export const deletePatient = async (patientId) => {
     },
   });
 
+  const data = await res.json();
+
   if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.message || 'Error al eliminar paciente.');
+    throw new Error(data?.message);
   }
+
+  return data;
 };

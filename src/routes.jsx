@@ -5,6 +5,7 @@ import {
   ForgotPassword,
   Index,
   Login,
+  MedicalRecord,
   Patients,
   Profile,
   Root,
@@ -52,6 +53,14 @@ export const routes = [
         element: (
           <RoleBasedRoute allowedRoles={['medic', 'assistant']}>
             <Appointments />
+          </RoleBasedRoute>
+        ),
+      },
+      {
+        path: 'records/:patientId',
+        element: (
+          <RoleBasedRoute allowedRoles={['medic']}>
+            <MedicalRecord />
           </RoleBasedRoute>
         ),
       },

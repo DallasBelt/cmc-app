@@ -1,14 +1,13 @@
-export const updatePatient = async ({ updatedPatientData, patientId }) => {
+export const getPatientById = async (patientId) => {
   const token = sessionStorage.getItem('token');
   if (!token) throw new Error('Error de autenticación.');
 
   const res = await fetch(`http://localhost:3000/api/v1/patient/${patientId}`, {
-    method: 'PATCH',
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(updatedPatientData),
   });
 
   const data = await res.json();
